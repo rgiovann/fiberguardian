@@ -117,7 +117,7 @@
                     <div class="collapse" id="menu-cadastros">
                         <ul class="nav flex-column ms-3">
                             <li class="nav-item"><a class="nav-link" href="#"
-                                    onclick="FiberGuardian.carregarPagina('tela_recebimento.html')">Recebimentos</a>
+                                    onclick="FiberGuardian.CORE.carregarPagina('tela_recebimento.html')">Recebimentos</a>
                             </li>
                             <li class="nav-item"><a class="nav-link" href="#">Fornecedor</a></li>
                             <li class="nav-item"><a class="nav-link" href="#">Produto</a></li>
@@ -174,82 +174,8 @@
         Projeto elaborado pelos alunos Giovanni, Siegrid, Renata e Venâncio da turma 2025 do curso da Blusoft Entra21
     </footer>
 
-    <script>
-        // Garante que o namespace FiberGuardian exista no escopo global
-        window.FiberGuardian = window.FiberGuardian || {};
-
-        /**
-         * Mapeia páginas HTML para seus scripts JS correspondentes.
-         * A chave é o nome da página (parcial ou completo) e o valor é o caminho do script associado.
-         */
-        const pageToScriptMap = {
-            'tela_recebimento.html': 'assets/js/tela_recebimento.js'
-            // Ex: 'cadastro_usuario.html': 'assets/js/cadastro_usuario.js'
-        };
-
-        /**
-         * Carrega dinamicamente uma página HTML e seu script JS associado.
-         * 
-         * @param {string} pagina - Caminho relativo do HTML a ser carregado.
-         */
-        FiberGuardian.carregarPagina = function (pagina) {
-            fetch(pagina)
-                .then(resposta => {
-                    if (!resposta.ok) throw new Error("Erro ao carregar a página.");
-                    return resposta.text();
-                })
-                .then(html => {
-                    // Injeta o HTML carregado no elemento principal da aplicação
-                    document.getElementById("conteudo-principal").innerHTML = html;
-
-                    // Verifica se há script associado à página
-                    const scriptPath = pageToScriptMap[pagina];
-
-                    if (scriptPath) {
-                        const script = document.createElement('script');
-                        script.src = scriptPath;
-
-                        // Após carregar o script, identifica e inicializa o módulo JS correto
-                        script.onload = function () {
-                            console.log(`✅ Script carregado: ${scriptPath}`);
-
-                            /**
-                             * Transforma 'assets/js/tela_recebimento.js' em 'TelaRecebimento':
-                             * - Remove o caminho do diretório
-                             * - Remove extensão '.js'
-                             * - Substitui underscores por espaço
-                             * - Capitaliza palavras (camel-case)
-                             * - Remove espaços
-                             */
-                            const nomeModulo = scriptPath
-                                .replace(/^.*\//, '')                     // 'tela_recebimento.js'
-                                .replace('.js', '')                       // 'tela_recebimento'
-                                .replace(/_/g, ' ')                       // 'tela recebimento'
-                                .replace(/(^\w|\s\w)/g, m => m.toUpperCase()) // 'Tela Recebimento'
-                                .replace(/\s+/g, '');                     // 'TelaRecebimento'
-
-                            console.log(`🔍 Módulo identificado: [${nomeModulo}]`);
-
-                            // Inicializa o módulo se estiver corretamente registrado no namespace
-                            if (FiberGuardian[nomeModulo] && typeof FiberGuardian[nomeModulo].init === 'function') {
-                                console.log(`🚀 Inicializando módulo: [${nomeModulo}]`);
-                                FiberGuardian[nomeModulo].init();
-                            } else {
-                                console.warn(`⚠️ Módulo [${nomeModulo}] não encontrado ou não possui init().`);
-                            }
-                        };
-
-                        // Anexa dinamicamente o script ao <body>
-                        document.body.appendChild(script);
-                    }
-                })
-                .catch(erro => {
-                    console.error('❌ Falha ao carregar conteúdo:', erro);
-                    document.getElementById("conteudo-principal").innerHTML = "<p>Erro ao carregar conteúdo.</p>";
-                });
-        };
-    </script>
-
+    <script defer src="assets/js/fiberguardian_core.js"></script>
+    <script defer src="assets/js/fiberguardian_api.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
