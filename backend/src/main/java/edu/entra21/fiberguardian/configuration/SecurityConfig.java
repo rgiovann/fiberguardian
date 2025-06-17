@@ -34,6 +34,7 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
+   /*
     @Bean
     DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -41,11 +42,16 @@ public class SecurityConfig {
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
+    */
 
+/*
+Como seu formulário de login envia dados via POST e você usa sessões, 
+manter o CSRF ativado é uma boa prática de segurança.
+*/
+/*
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .authenticationProvider(authenticationProvider())
+        http     
                 .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/login", "/register").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -62,5 +68,31 @@ public class SecurityConfig {
 
         return http.build();
     }
+*/
+
+@Bean
+SecurityFilterChain filterChain(HttpSecurity http, @Value("${spring.profiles.active:default}") String profile) throws Exception {
+    if (!profile.equals("dev")) {
+        http.requiresChannel(channel -> channel.anyRequest().requiresSecure());
+    }
+    http
+        .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+        .authorizeHttpRequests(authz -> authz
+            .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
+            .requestMatchers(HttpMethod.GET, "/login", "/register").permitAll()
+            .requestMatchers("/admin/**").hasRole("ADMIN")
+            .anyRequest().authenticated()
+        )
+        .sessionManagement(session -> session
+            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+            .maximumSessions(1)
+        )
+        .logout(logout -> logout
+            .logoutUrl("/logout")
+            .logoutSuccessUrl("/login?logout=true")
+            .permitAll()
+        );
+    return http.build();
+}
 
 }
