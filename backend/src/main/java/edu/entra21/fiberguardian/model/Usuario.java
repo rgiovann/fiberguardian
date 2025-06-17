@@ -1,5 +1,12 @@
 package edu.entra21.fiberguardian.model;
 
+import java.time.OffsetDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -49,6 +56,22 @@ public class Usuario {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role = Role.USUARIO;
+
+    @CreationTimestamp
+    @Column(nullable = false, columnDefinition = "datetime")
+    private OffsetDateTime dataCadastro;
+
+    @UpdateTimestamp
+    @Column(name = "data_alteracao", nullable = true, columnDefinition = "datetime")
+    private OffsetDateTime dataAlteracao;
+
+    @CreatedBy
+    @Column(name = "criado_por", nullable = true, updatable = false)
+    private Long criadoPor;
+
+    @LastModifiedBy
+    @Column(name = "alterado_por", nullable = true)
+    private Long alteradoPor;
 
     public Usuario() {
     }

@@ -8,5 +8,9 @@ CREATE TABLE usuario (
     senha VARCHAR(50) NOT NULL,
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
     role ENUM('ADMIN', 'USUARIO', 'LABORATORIO', 'ENGENHARIA') NOT NULL DEFAULT 'USUARIO',
+    data_cadastro DATETIME NOT NULL,
+    data_alteracao DATETIME NULL,
+    criado_por BIGINT NULL,
+    alterado_por BIGINT NULL,
     CONSTRAINT uk_usuario_email UNIQUE (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
