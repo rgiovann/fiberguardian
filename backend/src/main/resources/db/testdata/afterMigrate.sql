@@ -12,11 +12,11 @@ alter table usuario auto_increment = 1;
 INSERT INTO usuario (nome, email, senha, ativo, role,data_cadastro) VALUES
 ('Ana Carolina Souza', 'ana.souza@fiberguardian.com', 'senha123', TRUE, 'ADMIN', utc_timestamp),
 ('Bruno Lima', 'bruno.lima@fiberguardian.com', 'senha456', TRUE, 'USUARIO',utc_timestamp),
-('Clara Mendes', 'clara.mendes@fiberguardian.com', 'senha789', FALSE, 'LABORATORIO',utc_timestamp),
+('Clara Mendes', 'clara.mendes@fiberguardian.com', 'senha789', FALSE, 'ENG_LAB',utc_timestamp),
 ('Diego Ferreira', 'diego.ferr@fiberguardian.com', 'senha101', TRUE, 'ENGENHARIA',utc_timestamp),
 ('Elisa Costa', 'elisa.costa@fiberguardian.com', 'senha202', TRUE, 'USUARIO',utc_timestamp),
 ('Felipe Santos', 'felipe.santos@fiberguardian.com', 'senha303', TRUE, 'LABORATORIO',utc_timestamp),
-('Gabriela Silva', 'gabriela.silva@fiberguardian.com', 'senha404', FALSE, 'ENGENHARIA',utc_timestamp),
+('Gabriela Silva', 'gabriela.silva@fiberguardian.com', 'senha404', FALSE, 'ENG_LAB',utc_timestamp),
 ('Henrique Almeida', 'henrique.almeida@fiberguardian.com', 'senha505', TRUE, 'ADMIN',utc_timestamp),
 ('Isabela Pereira', 'isabela.pereira@fiberguardian.com', 'senha606', TRUE, 'USUARIO',utc_timestamp),
 ('João Oliveira', 'joao.oliveira@fiberguardian.com', 'senha707', TRUE, 'LABORATORIO',utc_timestamp),

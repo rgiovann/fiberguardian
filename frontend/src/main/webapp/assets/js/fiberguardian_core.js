@@ -81,49 +81,4 @@
           "<p>Erro ao carregar conteúdo.</p>";
       });
   };
-
-  FiberGuardian.CORE.autenticar = function () {
-    const login = document.getElementById("login").value;
-    const senha = document.getElementById("senha").value;
-    const csrfToken = document.querySelector('input[name="_csrf"]').value; // Adicione no formulário
-    fetch("http://localhost:8080/api/login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": csrfToken // Envia o token CSRF
-        },
-        body: JSON.stringify({ login, senha }),
-    })
-
-    fetch("http://localhost:8080/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ login, senha }),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Credenciais inválidas");
-        return res.json(); // Espera um JSON com os dados do usuário
-      })
-      .then((usuario) => {
-        // Agora sim: estrutura real e não hardcoded
-        FiberGuardian.sessao = {
-          usuarioLogado: true,
-          nomeUsuario: usuario.nome,
-          roles: usuario.roles,
-          id: usuario.id,
-        };
-
-        // Persistência opcional
-        sessionStorage.setItem("usuarioLogado", "true");
-        sessionStorage.setItem("nomeUsuario", usuario.nome);
-        sessionStorage.setItem("roles", JSON.stringify(usuario.roles));
-        sessionStorage.setItem("id", usuario.id);
-
-        // Redirecionar para tela principal
-        window.location.href = "index.html";
-      })
-      .catch((err) => {
-        alert("Erro ao autenticar: " + err.message);
-      });
-  };
 })();
