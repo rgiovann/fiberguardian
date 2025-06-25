@@ -1,0 +1,44 @@
+package edu.entra21.fiberguardian.configuration;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+public class SameSiteCookieFilter extends OncePerRequestFilter {
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+
+        filterChain.doFilter(request, response);
+
+        Collection<String> headers = response.getHeaders("Set-Cookie");
+        if (headers == null || headers.isEmpty()) {
+            return;
+        }
+
+        List<String> newHeaders = new ArrayList<>();
+        for (String header : headers) {
+            if (header.startsWith("XSRF-TOKEN")) {
+                // Adiciona SameSite=Lax ao cookie XSRF-TOKEN
+                if (!header.toLowerCase().contains("samesite")) {
+                    header += "; SameSite=Lax";
+                }
+            }
+            newHeaders.add(header);
+        }
+
+        response.setHeader("Set-Cookie", null); // Remove todos
+        for (String newHeader : newHeaders) {
+            response.addHeader("Set-Cookie", newHeader);
+        }
+    }
+
+}

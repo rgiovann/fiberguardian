@@ -1,5 +1,9 @@
 package edu.entra21.fiberguardian.configuration;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,6 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -23,6 +30,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
     private final CustomUserDetailsService userDetailsService;
 
     SecurityConfig(CustomUserDetailsService userDetailsService) {
@@ -39,30 +47,52 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
-    @SuppressWarnings("deprecation")
+    @Bean
+    XorCsrfTokenRequestAttributeHandler xorCsrfTokenRequestAttributeHandler() {
+        return new XorCsrfTokenRequestAttributeHandler();
+    }
+
+    @Bean
+    CsrfTokenRepository csrfTokenRepository() {
+        CookieCsrfTokenRepository repository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        repository.setCookieName("XSRF-TOKEN");
+        repository.setHeaderName("X-XSRF-TOKEN");
+        repository.setParameterName("_csrf");
+        repository.setCookiePath("/");
+        repository.setCookieMaxAge(-1); // Session cookie
+        repository.setSecure(true); // HTTPS only
+        return repository;
+    }
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 // Configura CORS para frontend estático
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 // Configura CSRF com cookie acessível pelo frontend
+                .addFilterAfter(new SameSiteCookieFilter(), CsrfFilter.class)
+                //.csrf(csrf -> csrf.disable())
+
                 .csrf(csrf -> csrf
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .ignoringRequestMatchers("/fiberguardian/login") // Ignora CSRF para login inicial
+                .csrfTokenRepository(csrfTokenRepository())
+                .csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler())
+                .ignoringRequestMatchers("/fiberguardian/csrf-token") // Ignora CSRF para obter token
                 )
                 // Força HTTPS
                 .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                 // Configura autorização
                 .authorizeHttpRequests(authz -> authz
                 .requestMatchers(HttpMethod.POST, "/fiberguardian/login").permitAll()
-                .requestMatchers(HttpMethod.GET, "/fiberguardian/csrf-token").permitAll() // Endpoint para obter CSRF
+                .requestMatchers(HttpMethod.GET, "/fiberguardian/csrf-token").permitAll()
                 .requestMatchers(HttpMethod.GET, "/public/**").permitAll()
                 .anyRequest().authenticated()
                 )
                 // Configura sessões
                 .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                .sessionFixation().migrateSession() // Protege contra session fixation
+                .sessionFixation().migrateSession()
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(false)
                 )
                 // Desativa form login
                 .formLogin(form -> form.disable())
@@ -74,31 +104,21 @@ public class SecurityConfig {
                 .deleteCookies("JSESSIONID", "XSRF-TOKEN")
                 );
 
-        // Configura atributos do cookie JSESSIONID
-        /*
-        // O Spring Boot com Tomcat já aplica essas configurações 
-        // automaticamente a partir do application.properties
-        http.sessionManagement(session -> session
-                .sessionAuthenticationStrategy((authentication, request, response) -> {
-                    request.getSession().setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
-                    response.setHeader("Set-Cookie", "JSESSIONID=" + request.getSession().getId()
-                            + "; Secure; HttpOnly; SameSite=Strict");
-                })
-        );
-         */
         return http.build();
     }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("https://localhost:3000"); // Ajuste para o domínio do frontend
-        configuration.addAllowedMethod("*");
-        configuration.addAllowedHeader("*");
-        configuration.setAllowCredentials(true); // Permite envio de cookies
-        configuration.setMaxAge(3600L); // Cache de preflight por 1 hora
+        configuration.setAllowedOrigins(List.of("http://localhost:8080")); // ou a porta que esta servindo as paginas html
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("X-XSRF-TOKEN", "Content-Type", "Accept"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 }

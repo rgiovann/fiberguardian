@@ -3,7 +3,7 @@
   window.FiberGuardian = window.FiberGuardian || {};
 
   // Define o submódulo CORE
-  FiberGuardian.CORE = FiberGuardian.CORE || {};
+  FiberGuardian.Core = FiberGuardian.Core || {};
 
   /**
    * Mapeia páginas HTML para seus scripts JS correspondentes.
@@ -19,7 +19,7 @@
    *
    * @param {string} pagina - Caminho relativo do HTML a ser carregado.
    */
-  FiberGuardian.CORE.carregarPagina = function (pagina) {
+  FiberGuardian.Core.carregarPagina = function (pagina) {
     fetch(pagina)
       .then((resposta) => {
         if (!resposta.ok) throw new Error("Erro ao carregar a página.");
