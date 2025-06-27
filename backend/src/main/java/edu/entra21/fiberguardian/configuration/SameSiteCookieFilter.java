@@ -20,25 +20,29 @@ public class SameSiteCookieFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
 
         Collection<String> headers = response.getHeaders("Set-Cookie");
+
         if (headers == null || headers.isEmpty()) {
             return;
         }
 
         List<String> newHeaders = new ArrayList<>();
+
         for (String header : headers) {
-            if (header.startsWith("XSRF-TOKEN")) {
-                // Adiciona SameSite=Lax ao cookie XSRF-TOKEN
-                if (!header.toLowerCase().contains("samesite")) {
-                    header += "; SameSite=Lax";
-                }
+            String lower = header.toLowerCase();
+            String updatedHeader = header;
+
+            if ((header.startsWith("XSRF-TOKEN") || header.startsWith("JSESSIONID"))
+                    && !lower.contains("samesite")) {
+                updatedHeader += "; SameSite=Lax";
             }
-            newHeaders.add(header);
+
+            newHeaders.add(updatedHeader);
         }
 
-        response.setHeader("Set-Cookie", null); // Remove todos
+        // Remover apenas os headers já processados
+        response.setHeader("Set-Cookie", null);
         for (String newHeader : newHeaders) {
             response.addHeader("Set-Cookie", newHeader);
         }
     }
-
 }
