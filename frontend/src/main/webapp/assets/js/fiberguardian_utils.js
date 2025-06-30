@@ -1,11 +1,14 @@
 (function () {
-    // Inicializa o namespace FiberGuardian se não existir
-    window.FiberGuardian = window.FiberGuardian || {};
-  // Define o submódulo UTILS
-  FiberGuardian.Utils = {
-    
-getCookie: function (nome) {
-    // JSESSIONID ou XSRF-TOKEN
+  window.FiberGuardian = window.FiberGuardian || {};
+
+  FiberGuardian.Utils = (function () {
+    // 🔒 Função privada (não será exportada)
+    function normalizarEmail(email) {
+      return email.trim().toLowerCase();
+    }
+
+    // ✅ Função pública (exportada)
+    function getCookie(nome) {
       const cookies = document.cookie.split("; ");
       for (const cookie of cookies) {
         const [chave, valor] = cookie.split("=");
@@ -14,10 +17,18 @@ getCookie: function (nome) {
         }
       }
       return null;
-    },
- isEmailValido: function (email) {
+    }
+
+    // ✅ Outra função pública
+    function isEmailValido(email) {
+      email = normalizarEmail(email); // usando função privada
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
-  };
-    
+
+    // Exporta apenas o necessário
+    return {
+      getCookie: getCookie,
+      isEmailValido: isEmailValido,
+    };
+  })();
 })();

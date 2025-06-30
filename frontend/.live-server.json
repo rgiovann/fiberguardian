@@ -1,0 +1,9 @@
+{
+  "port": 5500,
+  "host": "localhost",
+  "https": {
+    "cert": "./cert/cert.pem",
+    "key": "./cert/key.pem"
+  },
+  "open": true
+}

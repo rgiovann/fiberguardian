@@ -1,33 +1,85 @@
 (function () {
-    window.FiberGuardian = window.FiberGuardian || {};
+  const API_BASE_URL = "https://localhost:8443/fiberguardian";
 
-    FiberGuardian.TelaLogin = {
-        // Propriedades para armazenar tokens
-        csrfToken: null,
-        sessionId: null,
+  window.FiberGuardian = window.FiberGuardian || {};
+  FiberGuardian.TelaLogin = (function () {
+    async function obterTokenCsrf() {
+      try {
+        const resposta = await fetch(`${API_BASE_URL}/csrf-token`, {
+          method: "GET",
+          credentials: "include",
+        });
 
-    autenticar: async function (email, senha) {
+        if (!resposta.ok) throw new Error("Erro ao obter token CSRF");
+
+        const dados = await resposta.json();
+        return dados.token;
+      } catch (erro) {
+        console.error("Falha ao obter token CSRF:", erro);
+        throw erro;
+      }
+    }
+
+    async function autenticar(email, senha) {
+      try {
+        await obterTokenCsrf(); // força criação da sessão e do cookie XSRF-TOKEN
+
         const csrfToken = FiberGuardian.Utils.getCookie("XSRF-TOKEN");
+        if (!csrfToken)
+          throw new Error("Token CSRF não encontrado nos cookies.");
 
-        const resposta = await fetch("https://localhost:8443/fiberguardian/login", {
+        const resposta = await fetch(`${API_BASE_URL}/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-XSRF-TOKEN": csrfToken
+            "X-XSRF-TOKEN": csrfToken,
           },
           credentials: "include",
-          body: JSON.stringify({ email, senha })
+          body: JSON.stringify({ email, senha }),
         });
 
         if (resposta.ok) {
           const usuario = await resposta.json();
           console.log("Login bem-sucedido:", usuario);
+          window.location.href = "index.html";
         } else if (resposta.status === 401) {
           alert("Credenciais inválidas.");
         } else {
-          alert("Erro ao autenticar.");
-          console.error("Erro:", await resposta.text());
+          console.error("Erro ao autenticar:", await resposta.text());
+          alert("Erro inesperado ao autenticar.");
         }
+      } catch (erro) {
+        console.error("Erro no processo de login:", erro);
+        alert("Falha ao autenticar. Tente novamente mais tarde.");
       }
+    }
+
+    function configurarEventos() {
+      const form = document.querySelector("form");
+      if (!form) return;
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const email = document.getElementById("email").value.trim();
+        const senha = document.getElementById("senha").value;
+
+        if (!FiberGuardian.Utils.isEmailValido(email)) {
+          alert("E-mail inválido.");
+          return;
+        }
+
+        if (!senha) {
+          alert("Informe a senha.");
+          return;
+        }
+
+        autenticar(email, senha);
+      });
+    }
+
+    return {
+      init: configurarEventos,
     };
+  })();
 })();
