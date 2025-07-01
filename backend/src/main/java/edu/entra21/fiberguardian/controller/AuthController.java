@@ -1,5 +1,6 @@
 package edu.entra21.fiberguardian.controller;
 
+import jakarta.servlet.http.HttpSession;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Validated UsuarioAutenticadoInput loginRequest, HttpServletRequest request) {
+        System.out.println("JSESSIONID recebido: " + request.getSession(false).getId()); // Log para depuração
+        System.out.println("Token CSRF esperado: " + request.getAttribute("_csrf")); // Log para depuração
+
         UsernamePasswordAuthenticationToken authToken
                 = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getSenha());
 
@@ -41,8 +45,12 @@ public class AuthController {
             Authentication authentication = authenticationManager.authenticate(authToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            // Garante criação da sessão
-            request.getSession(true);
+            HttpSession session = request.getSession(false);
+            if (session == null) {
+                // Segurança extra: recusar login se não houver sessão válida (token CSRF foi inválido)
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sessão inválida ou expirada");
+            }
+            System.out.println("Reutilizando sessão existente: " + session.getId());
 
             UsuarioAutenticado usuarioAutenticado = (UsuarioAutenticado) authentication.getPrincipal();
             Usuario usuario = usuarioAutenticado.getUsuario();

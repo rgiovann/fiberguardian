@@ -110,7 +110,10 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("http://localhost:*", "http://127.0.0.1:*"));
+        configuration.setAllowedOrigins(List.of(
+                "https://localhost:8080",
+                "https://127.0.0.1:8080"
+        ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("X-XSRF-TOKEN", "Content-Type", "Accept"));
         configuration.setAllowCredentials(true);

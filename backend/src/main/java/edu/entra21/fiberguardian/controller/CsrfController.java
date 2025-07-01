@@ -35,6 +35,11 @@ public class CsrfController {
     @GetMapping("/csrf-token")
     public ResponseEntity<Map<String, Object>> getCsrfToken(HttpServletRequest request) {
         try {
+            // ✅ Garante que a sessão seja criada (gera o cookie JSESSIONID)
+            HttpSession session = request.getSession(true);
+
+            System.out.println("Nova sessão criada: " + session.getId()); // Log para depuração
+
             CsrfToken token = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
 
             if (token == null || token.getToken() == null) {
@@ -49,6 +54,10 @@ public class CsrfController {
             tokenInfo.put("parameterName", token.getParameterName());
             tokenInfo.put("cookieName", "XSRF-TOKEN");
 
+            // Opcional: Log de depuração
+            logger.debug("Sessão criada: {}", session.getId());
+            logger.debug("Token CSRF retornado: {}", token.getToken());
+
             return ResponseEntity.ok(tokenInfo);
 
         } catch (Exception e) {
@@ -57,6 +66,7 @@ public class CsrfController {
                     .body(Map.of("error", "Erro ao obter token CSRF"));
         }
     }
+
 
     @GetMapping("/session-info")
     public ResponseEntity<Map<String, Object>> getSessionInfo(HttpServletRequest request) {

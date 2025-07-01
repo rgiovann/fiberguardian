@@ -10,9 +10,15 @@
           credentials: "include",
         });
 
-        if (!resposta.ok) throw new Error("Erro ao obter token CSRF");
+        if (!resposta.ok) {
+          throw new Error(`Erro ao obter token CSRF: ${resposta.statusText}`);
+        }
 
         const dados = await resposta.json();
+        if (!dados.token) {
+          throw new Error("Token CSRF não retornado pelo servidor.");
+        }
+
         return dados.token;
       } catch (erro) {
         console.error("Falha ao obter token CSRF:", erro);
@@ -22,12 +28,8 @@
 
     async function autenticar(email, senha) {
       try {
-        await obterTokenCsrf(); // força criação da sessão e do cookie XSRF-TOKEN
-
-        const csrfToken = FiberGuardian.Utils.getCookie("XSRF-TOKEN");
-        if (!csrfToken)
-          throw new Error("Token CSRF não encontrado nos cookies.");
-
+        const csrfToken = await obterTokenCsrf(); // Obtém o token diretamente do endpoint
+        console.log("Token CSRF a ser enviado:", csrfToken); // Log para depuração
         const resposta = await fetch(`${API_BASE_URL}/login`, {
           method: "POST",
           headers: {
@@ -56,7 +58,10 @@
 
     function configurarEventos() {
       const form = document.querySelector("form");
-      if (!form) return;
+      if (!form) {
+        console.error("Formulário de login não encontrado.");
+        return;
+      }
 
       form.addEventListener("submit", function (event) {
         event.preventDefault();
