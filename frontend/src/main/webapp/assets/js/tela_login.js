@@ -1,5 +1,6 @@
 (function () {
-  const API_BASE_URL = "https://localhost:8443/fiberguardian";
+  //const API_BASE_URL = "https://localhost:8443/fiberguardian";
+  const API_BASE_URL = "/fiberguardian"; // caddy
 
   window.FiberGuardian = window.FiberGuardian || {};
   FiberGuardian.TelaLogin = (function () {

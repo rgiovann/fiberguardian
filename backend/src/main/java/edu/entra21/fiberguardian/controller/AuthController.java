@@ -1,6 +1,5 @@
 package edu.entra21.fiberguardian.controller;
 
-import jakarta.servlet.http.HttpSession;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +19,7 @@ import edu.entra21.fiberguardian.input.UsuarioAutenticadoInput;
 import edu.entra21.fiberguardian.model.Usuario;
 import edu.entra21.fiberguardian.model.UsuarioAutenticado;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/fiberguardian")
@@ -35,6 +35,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Validated UsuarioAutenticadoInput loginRequest, HttpServletRequest request) {
+
         System.out.println("JSESSIONID recebido: " + request.getSession(false).getId()); // Log para depuração
         System.out.println("Token CSRF esperado: " + request.getAttribute("_csrf")); // Log para depuração
 

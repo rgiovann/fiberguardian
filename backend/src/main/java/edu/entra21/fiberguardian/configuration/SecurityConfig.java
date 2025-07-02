@@ -111,8 +111,9 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
-                "https://localhost:8080",
-                "https://127.0.0.1:8080"
+                "https://localhost:443", // Origem do frontend via Caddy
+                "https://localhost:8080", // Para testes diretos no frontend
+                "https://127.0.0.1:8080" // Para testes diretos no frontend
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("X-XSRF-TOKEN", "Content-Type", "Accept"));

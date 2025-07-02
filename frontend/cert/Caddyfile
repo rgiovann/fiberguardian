@@ -1,0 +1,18 @@
+localhost:443 {
+    tls cert.pem key.pem
+
+    # Rota para a API do backend, incluindo CSRF token
+    reverse_proxy /fiberguardian/* https://localhost:8443 {
+        transport http {
+            tls_insecure_skip_verify
+        }
+    }
+
+    # Rota para arquivos estáticos do frontend
+    reverse_proxy /* https://localhost:8080 {
+        transport http {
+            tls_insecure_skip_verify
+        }
+    }
+}
+
