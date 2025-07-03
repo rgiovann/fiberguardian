@@ -69,19 +69,21 @@
 <div class="error-message" id="emailInvalidError">Formato de e-mail inválido.</div>
 <div class="error-message" id="emailUsedError">E-mail já cadastrado.</div>
 </div>
-<!-- Checkbox Administrador -->
+<!-- Checkbox Administrador 
 <div class="mb-3 text-start">
 <div class="form-check">
 <input class="form-check-input" id="isAdmin" type="checkbox"/>
 <label class="form-check-label" for="isAdmin">Administrador</label>
 </div>
 </div>
+-->
 <!-- Campo dinâmico de Senha Administrador -->
+ <!--
 <div class="mb-3 text-start" id="adminPasswordContainer" style="display: none;">
 <label class="form-label" for="senhaAdmin"><i class="fas fa-key me-2"></i>Senha administrador</label>
 <input class="form-control" id="senhaAdmin" placeholder="Digite a senha de administrador" type="password"/>
 </div>
-
+-->
 <div class="mb-3 text-start">
 <label class="form-label" for="senha"><i class="fas fa-lock me-2"></i>Senha</label>
 <input class="form-control" id="senha" placeholder="Digite sua senha" required="" type="password"/>
@@ -186,12 +188,13 @@
       }
     });
   
-  const isAdminCheckbox = document.getElementById('isAdmin');
-  const adminPasswordContainer = document.getElementById('adminPasswordContainer');
+  //const isAdminCheckbox = document.getElementById('isAdmin');
+  //const adminPasswordContainer = document.getElementById('adminPasswordContainer');
 
-  isAdminCheckbox.addEventListener('change', function () {
-    adminPasswordContainer.style.display = this.checked ? 'block' : 'none';
-  });
+//  isAdminCheckbox.addEventListener('change', function () {
+//    adminPasswordContainer.style.display = this.checked ? 'block' : 'none';
+//  });
+
 </script>
 </body>
 </html>
