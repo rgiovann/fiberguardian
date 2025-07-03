@@ -1,9 +1,10 @@
 (function () {
   //const API_BASE_URL = "https://localhost:8443/fiberguardian";
-  const API_BASE_URL = "/fiberguardian"; // caddy
+  //const API_BASE_URL = "/fiberguardian"; // caddy
 
   window.FiberGuardian = window.FiberGuardian || {};
   FiberGuardian.TelaLogin = (function () {
+    /*
     async function obterTokenCsrf() {
       try {
         const resposta = await fetch(`${API_BASE_URL}/csrf-token`, {
@@ -26,12 +27,12 @@
         throw erro;
       }
     }
-
+*/
     async function autenticar(email, senha) {
       try {
-        const csrfToken = await obterTokenCsrf(); // Obtém o token diretamente do endpoint
+        const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
         console.log("Token CSRF a ser enviado:", csrfToken); // Log para depuração
-        const resposta = await fetch(`${API_BASE_URL}/login`, {
+        const resposta = await fetch(FiberGuardian.Utils.getApiUrl("/login"), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

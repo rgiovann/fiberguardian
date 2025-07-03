@@ -69,21 +69,19 @@
 <div class="error-message" id="emailInvalidError">Formato de e-mail inválido.</div>
 <div class="error-message" id="emailUsedError">E-mail já cadastrado.</div>
 </div>
-<!-- Checkbox Administrador 
+
+<!-- NOVO CAMPO PERFIL -->
 <div class="mb-3 text-start">
-<div class="form-check">
-<input class="form-check-input" id="isAdmin" type="checkbox"/>
-<label class="form-check-label" for="isAdmin">Administrador</label>
+  <label class="form-label" for="perfil"><i class="fas fa-id-badge me-2"></i>Perfil</label>
+  <select class="form-select" id="perfil" required>
+    <option value="" disabled selected>Selecione um perfil</option>
+    <option value="ADMINISTRADOR">Administrador</option>
+    <option value="LABORATORIO">Laboratório</option>
+    <option value="ENGENHARIA">Engenharia</option>
+    <option value="ENGENHARIA_LABORATORIO">Engenharia & Laboratório</option>
+  </select>
 </div>
-</div>
--->
-<!-- Campo dinâmico de Senha Administrador -->
- <!--
-<div class="mb-3 text-start" id="adminPasswordContainer" style="display: none;">
-<label class="form-label" for="senhaAdmin"><i class="fas fa-key me-2"></i>Senha administrador</label>
-<input class="form-control" id="senhaAdmin" placeholder="Digite a senha de administrador" type="password"/>
-</div>
--->
+
 <div class="mb-3 text-start">
 <label class="form-label" for="senha"><i class="fas fa-lock me-2"></i>Senha</label>
 <input class="form-control" id="senha" placeholder="Digite sua senha" required="" type="password"/>
@@ -97,8 +95,8 @@
 <i class="fas fa-user-plus me-2"></i>Criar Conta
         </button>
 <div class="text-center mt-3">
-<a class="text-decoration-none text-success" href="login.html">
-<i class="fas fa-arrow-left me-2"></i>Voltar ao Login
+<a class="text-decoration-none text-success" href="index.html">
+<i class="fas fa-arrow-left me-2"></i>Voltar ao Menur Principal
           </a>
 </div>
 </form>
@@ -188,12 +186,6 @@
       }
     });
   
-  //const isAdminCheckbox = document.getElementById('isAdmin');
-  //const adminPasswordContainer = document.getElementById('adminPasswordContainer');
-
-//  isAdminCheckbox.addEventListener('change', function () {
-//    adminPasswordContainer.style.display = this.checked ? 'block' : 'none';
-//  });
 
 </script>
 </body>
