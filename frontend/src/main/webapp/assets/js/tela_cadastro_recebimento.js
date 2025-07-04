@@ -1,7 +1,7 @@
 (function () {
   window.FiberGuardian = window.FiberGuardian || {};
 
-  FiberGuardian.TelaRecebimento = (function () {
+  FiberGuardian.TelaCadastroRecebimento = (function () {
     function init() {
       console.log("Módulo TelaRecebimento inicializado.");
 

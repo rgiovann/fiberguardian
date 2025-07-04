@@ -25,8 +25,7 @@
       return null;
     }
 
-    // ✅ Outra função pública
-    async function obterTokenCsrf() {
+    async function obterNovoToken() {
       try {
         const resposta = await fetch(getApiUrl("/csrf-token"), {
           method: "GET",
@@ -44,9 +43,20 @@
 
         return dados.token;
       } catch (erro) {
-        console.error("Falha ao obter token CSRF:", erro);
+        console.error("Falha ao obter novo token CSRF:", erro);
         throw erro;
       }
+    }
+
+    async function obterTokenCsrf() {
+      const tokenExistente = getCookie("XSRF-TOKEN");
+
+      if (tokenExistente) {
+        return tokenExistente;
+      }
+
+      // Fallback defensivo
+      return await obterNovoToken();
     }
 
     // ✅ Outra função pública
@@ -55,12 +65,40 @@
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
+    // 🔒 Função privada: verifica se a sessão ainda está ativa
+    async function verificarSessao() {
+      try {
+        const resposta = await fetch(getApiUrl("/sessao/valida"), {
+          method: "GET",
+          credentials: "include",
+        });
+
+        if (resposta.status === 401 || resposta.status === 403) {
+          alert("Sua sessão expirou. Você será redirecionado para o login.");
+          window.location.href = "tela_login.html";
+        }
+      } catch (erro) {
+        console.warn("Erro ao verificar sessão:", erro);
+      }
+    }
+
+    // 🔒 Função privada: inicia verificação periódica
+    function iniciarMonitoramentoSessao() {
+      setInterval(verificarSessao, 5 * 60 * 1000); // a cada 5 minutos
+    }
+
+    // ✅ Função pública para inicializar o watcher
+    function iniciarWatcherDeSessao() {
+      iniciarMonitoramentoSessao();
+    }
+
     // Exporta apenas as funções públicas necessárias
     return {
       getCookie: getCookie,
       isEmailValido: isEmailValido,
       obterTokenCsrf: obterTokenCsrf,
+      obterNovoToken: obterNovoToken,
       getApiUrl: getApiUrl,
-    };
+      iniciarWatcherDeSessao 
   })();
 })();

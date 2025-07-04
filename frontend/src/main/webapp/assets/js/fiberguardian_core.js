@@ -10,7 +10,8 @@
    * A chave é o nome da página (parcial ou completo) e o valor é o caminho do script associado.
    */
   const pageToScriptMap = {
-    "tela_recebimento.html": "assets/js/tela_recebimento.js",
+    "tela_cadastro_recebimento.html": "assets/js/tela_cadastro_recebimento.js",
+    "tela_cadastro_usuario.html": "assets/js/tela_cadastro_usuario.js",
     // Ex: 'cadastro_usuario.html': 'assets/js/cadastro_usuario.js'
   };
 

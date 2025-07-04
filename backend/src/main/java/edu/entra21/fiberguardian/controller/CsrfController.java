@@ -1,6 +1,5 @@
 package edu.entra21.fiberguardian.controller;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,8 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 
 @RestController
 @RequestMapping("/fiberguardian")
@@ -67,21 +70,35 @@ public class CsrfController {
         }
     }
 
+    @GetMapping("/sessao/valida")
+    public ResponseEntity<Void> validarSessao(HttpServletRequest request) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-    @GetMapping("/session-info")
-    public ResponseEntity<Map<String, Object>> getSessionInfo(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
+        boolean autenticado = auth != null &&
+                auth.isAuthenticated() &&
+                !(auth instanceof AnonymousAuthenticationToken);
 
-        Map<String, Object> sessionInfo = new HashMap<>();
-        if (session != null) {
-            sessionInfo.put("sessionId", session.getId());
-            sessionInfo.put("isNew", session.isNew());
-            sessionInfo.put("creationTime", new Date(session.getCreationTime()));
-            sessionInfo.put("maxInactiveInterval", session.getMaxInactiveInterval());
-        } else {
-            sessionInfo.put("message", "No active session");
-        }
-
-        return ResponseEntity.ok(sessionInfo);
+        return autenticado
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
+
+//    @GetMapping("/session-info")
+//    public ResponseEntity<Map<String, Object>> getSessionInfo(HttpServletRequest request) {
+//        HttpSession session = request.getSession(false);
+//
+//        Map<String, Object> sessionInfo = new HashMap<>();
+//        if (session != null) {
+//            sessionInfo.put("sessionId", session.getId());
+//            sessionInfo.put("isNew", session.isNew());
+//            sessionInfo.put("creationTime", new Date(session.getCreationTime()));
+//            sessionInfo.put("maxInactiveInterval", session.getMaxInactiveInterval());
+//        } else {
+//            sessionInfo.put("message", "No active session");
+//        }
+//
+//        return ResponseEntity.ok(sessionInfo);
+//    }
+
+
 }

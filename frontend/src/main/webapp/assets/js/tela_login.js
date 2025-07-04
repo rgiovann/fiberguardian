@@ -30,7 +30,7 @@
 */
     async function autenticar(email, senha) {
       try {
-        const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
+        const csrfToken = await FiberGuardian.Utils.obterNovoToken();
         console.log("Token CSRF a ser enviado:", csrfToken); // Log para depuração
         const resposta = await fetch(FiberGuardian.Utils.getApiUrl("/login"), {
           method: "POST",

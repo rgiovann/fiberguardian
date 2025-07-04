@@ -102,91 +102,15 @@
 </form>
 </div>
 </div>
-<script>
-    const form = document.getElementById('cadastroForm');
-    const emailField = document.getElementById('email');
-    const senhaField = document.getElementById('senha');
-    const confirmarSenhaField = document.getElementById('confirmarSenha');
-
-    const emailInvalidError = document.getElementById('emailInvalidError');
-    const emailUsedError = document.getElementById('emailUsedError');
-    const senhaError = document.getElementById('senhaError');
-
-    function validarEmail(email) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailRegex.test(email);
-    }
-
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      const email = emailField.value.trim();
-      const senha = senhaField.value;
-      const confirmarSenha = confirmarSenhaField.value;
-
-      let valido = true;
-
-      // Limpar erros anteriores
-      emailField.classList.remove('input-error');
-      emailInvalidError.style.display = 'none';
-      emailUsedError.style.display = 'none';
-      senhaError.style.display = 'none';
-      confirmarSenhaField.classList.remove('input-error');
-
-      if (!validarEmail(email)) {
-        emailInvalidError.style.display = 'block';
-        emailField.classList.add('input-error');
-        valido = false;
-      }
-
-      if (email === 'teste@exemplo.com') {
-        emailUsedError.style.display = 'block';
-        emailField.classList.add('input-error');
-        valido = false;
-      }
-
-      if (senha !== confirmarSenha) {
-        senhaError.style.display = 'block';
-        confirmarSenhaField.classList.add('input-error');
-        valido = false;
-      }
-
-      if (valido) {
-        alert('Cadastro realizado com sucesso!');
-        form.submit(); // Simulação de envio
-      }
-    });
-
-    emailField.addEventListener('input', function () {
-      const email = emailField.value.trim();
-      if (!validarEmail(email)) {
-        emailInvalidError.style.display = 'block';
-        emailField.classList.add('input-error');
-      } else {
-        emailInvalidError.style.display = 'none';
-        emailField.classList.remove('input-error');
-      }
-
-      if (email === 'teste@exemplo.com') {
-        emailUsedError.style.display = 'block';
-        emailField.classList.add('input-error');
-      } else {
-        emailUsedError.style.display = 'none';
-        if (validarEmail(email)) emailField.classList.remove('input-error');
-      }
-    });
-
-    confirmarSenhaField.addEventListener('input', function () {
-      if (senhaField.value !== confirmarSenhaField.value) {
-        senhaError.style.display = 'block';
-        confirmarSenhaField.classList.add('input-error');
-      } else {
-        senhaError.style.display = 'none';
-        confirmarSenhaField.classList.remove('input-error');
-      }
-    });
-  
-
+<script src="assets/js/fiberguardian_utils.js" defer></script>
+<script src="assets/js/tela_cadastro_usuario.js" defer></script>
+<script defer> // defer elimina a necessidade de DOMContentLoaded
+  FiberGuardian.TelaCadastroUsuario.init();
+  /*
+  document.addEventListener("DOMContentLoaded", function () {
+    FiberGuardian.TelaCadastroUsuario.init();
+  });
+*/
 </script>
 </body>
 </html>

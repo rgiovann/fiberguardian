@@ -76,7 +76,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf
                 .csrfTokenRepository(csrfTokenRepository())
                 .csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler())
-                .ignoringRequestMatchers("/fiberguardian/csrf-token") // Ignora CSRF para obter token
+                .ignoringRequestMatchers("/fiberguardian/csrf-token",
+                                                  "/fiberguardian/sessao/valida") // Ignora CSRF para obter token
                 )
                 // Força HTTPS
                 .requiresChannel(channel -> channel.anyRequest().requiresSecure())
