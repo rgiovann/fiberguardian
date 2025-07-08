@@ -21,7 +21,7 @@ import lombok.Getter;
         "title",
         "detail",
         "userMessage",
-        "objects"
+        "errorObjects"
 })
 @Schema(name = "Problema", description = "Detalhes de um erro ocorrido na API")
 public class Problem {
@@ -45,7 +45,9 @@ public class Problem {
     private String userMessage;
 
     @Schema(description = "Lista de objetos ou campos que geraram o erro (opcional)")
-    private List<Field> objects;
+    private List<Field> errorObjects;
+
+   // classe Field
 
     @Getter
     @Builder
@@ -53,7 +55,7 @@ public class Problem {
             "name",
             "userMessage"
     })
-    @Schema(name = "CampoProblema", description = "Campo ou objeto específico que gerou erro de validação")
+    @Schema( description = "Campo ou objeto específico que gerou erro de validação")
     public static class Field {
         @Schema(description = "Nome do objeto ou campo", example = "preco")
         private String name;

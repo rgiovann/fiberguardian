@@ -7,9 +7,7 @@ import java.util.stream.Collectors;
 
 import edu.entra21.fiberguardian.exception.exception.EntidadeNaoEncontradaException;
 import edu.entra21.fiberguardian.exception.exception.NegocioException;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -44,7 +43,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
     private static final String MSG_ERRO_GENERICA_USUARIO_FINAL = "Ocorreu um erro interno inesperado no sistema. Tente novamente e se o problema "
             +"persistir, entre em contato com o administrador do sistema.";
 
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
     public ApiExceptionHandler(MessageSource messageSource)
     {
@@ -95,8 +94,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 
 
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
-                                                                  HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(@NonNull HttpMessageNotReadableException ex,
+                                                                  @NonNull HttpHeaders headers,@NonNull HttpStatusCode status,@NonNull WebRequest request) {
 
         Throwable rootCause = getRootCause(ex);
 
@@ -127,27 +126,36 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 
     @Override
     protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(
-            HttpMediaTypeNotSupportedException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+            @NonNull HttpMediaTypeNotSupportedException ex,@NonNull HttpHeaders headers,@NonNull HttpStatusCode status,@NonNull WebRequest request) {
         // Log the exception details server-side for debugging
 
         return ResponseEntity.status(status).headers(headers).build();
 
     }
 
-    /*
-      TODO
-      Esse método foi removido do Spring 3.X incorporar a metodos mais genericos
-     */
+
+   /*  Spring Boot 3.x (Spring Framework 6.x):
+     Esse metodo foi removido da classe ResponseEntityExceptionHandler.
+
+
     @Override
     protected ResponseEntity<Object> handleBindException(
             BindException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         return handleValidationInternal(ex, ex.getBindingResult(), headers, status, request);
     }
 
+    */
+
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<Object>  handleBindException(BindException ex, WebRequest request) {
+        // evitando overengineetiring, não há valor real em complicar algo que é naturalmente 400
+        HttpStatusCode status = HttpStatus.BAD_REQUEST;
+        return handleValidationInternal(ex, ex.getBindingResult(), new HttpHeaders(), status, request);
+    }
 
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(
-            NoHandlerFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+            @NonNull NoHandlerFoundException ex, @NonNull HttpHeaders headers, @NonNull HttpStatusCode status, @NonNull WebRequest request) {
 
 
         String recurso = ex.getRequestURL();
@@ -160,8 +168,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
     }
 
     @Override
-    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers,
-                                                        HttpStatusCode status, WebRequest request) {
+    protected ResponseEntity<Object> handleTypeMismatch(@NonNull TypeMismatchException ex,@NonNull HttpHeaders headers,
+                                                        @NonNull HttpStatusCode status,@NonNull WebRequest request) {
 
         // rootCause é NumberFormatException mas MethodArgumentTypeMismatchException é lançada
         // sendo herdada de TypeMismatchException
@@ -184,8 +192,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 
 
     @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body, HttpHeaders headers,
-                                                             HttpStatusCode status, WebRequest request) {
+    protected ResponseEntity<Object> handleExceptionInternal(@NonNull Exception ex, @Nullable Object body,@NonNull HttpHeaders headers,
+                                                             HttpStatusCode status, @NonNull WebRequest request) {
         HttpStatus httpStatus = HttpStatus.resolve(status.value());
         String reasonPhrase = httpStatus != null ? httpStatus.getReasonPhrase() : "Unknown Status";
         if (body == null) {
@@ -209,7 +217,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+            @NonNull MethodArgumentNotValidException ex,@NonNull HttpHeaders headers,@NonNull HttpStatusCode status,@NonNull WebRequest request) {
 
         return handleValidationInternal( ex,ex.getBindingResult(),headers, status,request);
 
@@ -321,9 +329,19 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
                 .collect(Collectors.toList());
 
         String detail = "Um ou mais dados estão inválidos. Faça o preenchimento correto e tente novamente.";
-        Problem problem = createProblemBuilder(HttpStatusCode status, ProblemType.DADOS_INVALIDO, detail)
+//        Problem problem = createProblemBuilder(HttpStatusCode status, ProblemType.DADOS_INVALIDO, detail)
+//                .userMessage(detail)
+//                .errorObjects(problemObjects)
+//                .build();
+
+        Problem problem = Problem.builder()
+                .status(status.value()) // Converte HttpStatusCode para Integer
+                .type(ProblemType.DADOS_INVALIDO.getUri()) // Assume que ProblemType tem um método getUri() que retorna String
+                .title(ProblemType.DADOS_INVALIDO.getTitle()) // Assume que ProblemType tem um método getTitle()
+                .detail(detail)
                 .userMessage(detail)
-                .objects(problemObjects)
+                .errorObjects(problemObjects)
+                .timestamp(OffsetDateTime.now()) // Define o timestamp atual
                 .build();
 
         return handleExceptionInternal(ex, problem, headers, status, request);
