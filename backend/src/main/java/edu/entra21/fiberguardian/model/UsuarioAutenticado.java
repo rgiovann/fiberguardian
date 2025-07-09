@@ -9,7 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class UsuarioAutenticado implements UserDetails {
 
-    private final Usuario usuario;
+
+	private static final long serialVersionUID = 1L;
+	private final Usuario usuario;
 
     public UsuarioAutenticado(Usuario usuario) {
         this.usuario = usuario;

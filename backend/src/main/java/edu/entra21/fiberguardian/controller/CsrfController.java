@@ -23,7 +23,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 
 @RestController
-@RequestMapping("/fiberguardian")
 public class CsrfController {
 
     private static final Logger logger = LoggerFactory.getLogger(CsrfController.class);

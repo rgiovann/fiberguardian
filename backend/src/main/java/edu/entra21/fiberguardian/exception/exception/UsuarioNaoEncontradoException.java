@@ -4,7 +4,7 @@ public class UsuarioNaoEncontradoException extends EntidadeNaoEncontradaExceptio
 
     private static final long serialVersionUID = 1L;
 
-    public n(Long codigoPedidoId) {
+    public UsuarioNaoEncontradoException(Long codigoPedidoId) {
         super(String.format("Usuário de código %s não encontrada.",codigoPedidoId) );
     }
 

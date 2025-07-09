@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import edu.entra21.fiberguardian.exception.exception.n;
 
 public class CadastroUsuarioService {
     private static final String MSG_USUARIO_EM_USO = "Usuário de código %d não pode ser removido, pois está em uso.";
@@ -61,12 +60,14 @@ public class CadastroUsuarioService {
             usuarioRepository.flush();
 
         } catch (EmptyResultDataAccessException e) {
-            throw new n(usuarioId);
+            throw new UsuarioNaoEncontradoException(usuarioId);
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(String.format(MSG_USUARIO_EM_USO, usuarioId));
         }
 
     }
+    
+    
     public Usuario buscarOuFalhar(Long usuarioId) {
         return usuarioRepository.findById(usuarioId).orElseThrow(() -> new UsuarioNaoEncontradoException(usuarioId));
     }

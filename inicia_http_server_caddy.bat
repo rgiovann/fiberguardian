@@ -2,7 +2,7 @@
 setlocal
 
 rem Caminhos
-set "BASE_DIR=C:\Users\giovanni.rozza\Documents\projeto\fiberguardian\frontend"
+set "BASE_DIR=E:\ENTRA21\projetos\fiberguardian\frontend"
 set "CERT_DIR=%BASE_DIR%\cert"
 set "WEBAPP_DIR=%BASE_DIR%\src\main\webapp"
 
