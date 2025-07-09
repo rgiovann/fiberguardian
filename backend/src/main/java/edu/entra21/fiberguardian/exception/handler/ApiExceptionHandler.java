@@ -5,6 +5,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import edu.entra21.fiberguardian.exception.exception.EntidadeEmUsoException;
 import edu.entra21.fiberguardian.exception.exception.EntidadeNaoEncontradaException;
 import edu.entra21.fiberguardian.exception.exception.NegocioException;
 import org.springframework.beans.TypeMismatchException;
@@ -54,7 +55,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
     public ResponseEntity<Object> handleEntidadeNaoEncontradoException(EntidadeNaoEncontradaException ex,
                                                                        WebRequest request) {
 
-        HttpStatus status = HttpStatus.NOT_FOUND;
+        HttpStatusCode status = HttpStatus.NOT_FOUND;
         ProblemType problemType = ProblemType.RECURSO_NAO_ENCONTRADO;
         String detail = ex.getMessage();
         Problem problem = createProblemBuilder(status, problemType, detail)
@@ -67,7 +68,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
     @ExceptionHandler(NegocioException.class)
     public ResponseEntity<?> handleNegocioException(NegocioException ex, WebRequest request) {
 
-        HttpStatus status = HttpStatus.BAD_REQUEST;
+        HttpStatusCode status = HttpStatus.BAD_REQUEST;
         ProblemType problemType = ProblemType.PROBLEMA_NA_REQUISICAO;
         String detail = ex.getMessage();
         Problem problem = createProblemBuilder(status, problemType, detail)
@@ -78,10 +79,25 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 
     }
 
+    @ExceptionHandler(EntidadeEmUsoException.class)
+    public ResponseEntity<Object> handleEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest request) {
+
+        HttpStatusCode status;
+        status = HttpStatus.CONFLICT;
+        ProblemType problemType = ProblemType.ENTIDADE_EM_USO;
+        String detail = ex.getMessage();
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(detail)
+                .build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+    }
+
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleOtherExceptions(Exception ex, WebRequest request) {
 
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        HttpStatusCode status = HttpStatus.INTERNAL_SERVER_ERROR;
 
         ex.printStackTrace();  // #debug
         String details = MSG_ERRO_GENERICA_USUARIO_FINAL;

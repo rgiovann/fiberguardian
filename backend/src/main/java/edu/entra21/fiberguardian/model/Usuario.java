@@ -2,6 +2,7 @@ package edu.entra21.fiberguardian.model;
 
 import java.time.OffsetDateTime;
 
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedBy;
@@ -25,9 +26,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @Table(name = "usuario")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Usuario {
 
     @Id
+    @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
