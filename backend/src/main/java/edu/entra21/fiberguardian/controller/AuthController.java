@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import edu.entra21.fiberguardian.dto.UsuarioLoginResponseDto;
-import edu.entra21.fiberguardian.input.UsuarioInput;
+import com.fasterxml.jackson.annotation.JsonView;
+
+import edu.entra21.fiberguardian.dto.UsuarioDto;
+import edu.entra21.fiberguardian.input.UsuarioEmailSenhaInput;
+import edu.entra21.fiberguardian.jacksonview.UsuarioView;
 import edu.entra21.fiberguardian.model.Usuario;
 import edu.entra21.fiberguardian.model.UsuarioAutenticado;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +35,8 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody @Validated UsuarioInput.UsuarioAutenticado loginRequest,
+	@JsonView(UsuarioView.Autenticado.class)
+	public ResponseEntity<?> login(@RequestBody @Validated UsuarioEmailSenhaInput loginRequest,
 			HttpServletRequest request) {
 
 		System.out.println("JSESSIONID recebido: " + request.getSession(false).getId()); // Log para depuração
@@ -56,7 +60,7 @@ public class AuthController {
 			UsuarioAutenticado usuarioAutenticado = (UsuarioAutenticado) authentication.getPrincipal();
 			Usuario usuario = usuarioAutenticado.getUsuario();
 
-			UsuarioLoginResponseDto responseDto = modelMapper.map(usuario, UsuarioLoginResponseDto.class);
+			UsuarioDto responseDto = modelMapper.map(usuario, UsuarioDto.class);
 
 			return ResponseEntity.ok(responseDto);
 		} catch (AuthenticationException ex) {

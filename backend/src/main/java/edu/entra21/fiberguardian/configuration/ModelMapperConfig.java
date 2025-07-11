@@ -8,9 +8,21 @@ import org.springframework.context.annotation.Configuration;
 public class ModelMapperConfig {
 
     @Bean
-    ModelMapper modelMapper() {
-        ModelMapper modelMapper = new ModelMapper();
-        // Configurações adicionais podem ser adicionadas aqui, se necessário
-        return modelMapper;
+    Mapper mapper() {
+    	final  ModelMapper modelMapper = new ModelMapper(); 
+
+    	return new Mapper() {
+            @Override
+            public <D> D map(Object source, Class<D> destinationType) {
+                return modelMapper.map(source, destinationType);
+            }
+
+            @Override
+            public void map(Object source, Object destination) {
+                modelMapper.map(source, destination);
+            }
+        };     
+    }
+    	
     }
 }

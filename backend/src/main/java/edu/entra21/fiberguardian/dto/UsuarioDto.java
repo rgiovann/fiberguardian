@@ -1,5 +1,25 @@
 package edu.entra21.fiberguardian.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
+import edu.entra21.fiberguardian.jacksonview.UsuarioView;
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class UsuarioDto {
+
+	@JsonView({ UsuarioView.Completo.class, UsuarioView.Autenticado.class })
+	private Long id;
+	@JsonView({ UsuarioView.Completo.class, UsuarioView.Autenticado.class })
+	private String nome;
+	@JsonView({ UsuarioView.Completo.class, UsuarioView.Autenticado.class })
+	private String email;
+	@JsonView({ UsuarioView.Completo.class, UsuarioView.Autenticado.class })
+	private String role;
+
+	@JsonView(UsuarioView.Completo.class)
+	private Boolean ativo;
 
 }
