@@ -30,100 +30,87 @@ import jakarta.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
-    private final CustomUserDetailsService userDetailsService;
+	private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
+	private final CustomUserDetailsService userDetailsService;
 
-    SecurityConfig(CustomUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
+	SecurityConfig(CustomUserDetailsService userDetailsService) {
+		this.userDetailsService = userDetailsService;
+	}
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-    @Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
+	@Bean
+	AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+		return config.getAuthenticationManager();
+	}
 
-    @Bean
-    XorCsrfTokenRequestAttributeHandler xorCsrfTokenRequestAttributeHandler() {
-        return new XorCsrfTokenRequestAttributeHandler();
-    }
+	@Bean
+	XorCsrfTokenRequestAttributeHandler xorCsrfTokenRequestAttributeHandler() {
+		return new XorCsrfTokenRequestAttributeHandler();
+	}
 
-    @Bean
-    CsrfTokenRepository csrfTokenRepository() {
-        CookieCsrfTokenRepository repository = CookieCsrfTokenRepository.withHttpOnlyFalse();
-        repository.setCookieName("XSRF-TOKEN");
-        repository.setHeaderName("X-XSRF-TOKEN");
-        repository.setParameterName("_csrf");
-        repository.setCookiePath("/");
-        repository.setCookieMaxAge(-1); // Session cookie
-        repository.setSecure(true); // HTTPS only
-        return repository;
-    }
+	@Bean
+	CsrfTokenRepository csrfTokenRepository() {
+		CookieCsrfTokenRepository repository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+		repository.setCookieName("XSRF-TOKEN");
+		repository.setHeaderName("X-XSRF-TOKEN");
+		repository.setParameterName("_csrf");
+		repository.setCookiePath("/");
+		repository.setCookieMaxAge(-1); // Session cookie
+		repository.setSecure(true); // HTTPS only
+		return repository;
+	}
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                // Configura CORS para frontend estático
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                // Configura CSRF com cookie acessível pelo frontend
-                .addFilterAfter(new SameSiteCookieFilter(), CsrfFilter.class)
-                //.csrf(csrf -> csrf.disable())
+	@Bean
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http
+				// Configura CORS para frontend estático
+				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+				// Configura CSRF com cookie acessível pelo frontend
+				.addFilterAfter(new SameSiteCookieFilter(), CsrfFilter.class)
+				// .csrf(csrf -> csrf.disable())
 
-                .csrf(csrf -> csrf
-                .csrfTokenRepository(csrfTokenRepository())
-                .csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler())
-                .ignoringRequestMatchers("/fiberguardian/csrf-token",
-                                                  "/fiberguardian/sessao/valida") // Ignora CSRF para obter token
-                )
-                // Força HTTPS
-                .requiresChannel(channel -> channel.anyRequest().requiresSecure())
-                // Configura autorização
-                .authorizeHttpRequests(authz -> authz
-                .requestMatchers(HttpMethod.POST, "/fiberguardian/login").permitAll()
-                .requestMatchers(HttpMethod.GET, "/fiberguardian/csrf-token").permitAll()
-                .requestMatchers(HttpMethod.GET, "/public/**").permitAll()
-                .anyRequest().authenticated()
-                )
-                // Configura sessões
-                .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                .sessionFixation().migrateSession()
-                .maximumSessions(1)
-                .maxSessionsPreventsLogin(false)
-                )
-                // Desativa form login
-                .formLogin(form -> form.disable())
-                // Configura logout
-                .logout(logout -> logout
-                .logoutUrl("/fiberguardian/logout")
-                .logoutSuccessHandler((req, res, auth) -> res.setStatus(HttpServletResponse.SC_OK))
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID", "XSRF-TOKEN")
-                );
+				.csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository())
+						.csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler())
+						.ignoringRequestMatchers("/csrf-token", "/sessao/valida") // Ignora CSRF para obter token
+				)
+				// Força HTTPS
+				.requiresChannel(channel -> channel.anyRequest().requiresSecure())
+				// Configura autorização
+				.authorizeHttpRequests(authz -> authz.requestMatchers(HttpMethod.POST, "/login").permitAll()
+						.requestMatchers(HttpMethod.GET, "/csrf-token").permitAll()
+						.requestMatchers(HttpMethod.GET, "/public/**").permitAll().anyRequest().authenticated())
+				// Configura sessões
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+						.sessionFixation().migrateSession().maximumSessions(1).maxSessionsPreventsLogin(false))
+				// Desativa form login
+				.formLogin(form -> form.disable())
+				// Configura logout
+				.logout(logout -> logout.logoutUrl("/fiberguardian/logout")
+						.logoutSuccessHandler((req, res, auth) -> res.setStatus(HttpServletResponse.SC_OK))
+						.invalidateHttpSession(true).deleteCookies("JSESSIONID", "XSRF-TOKEN"));
 
-        return http.build();
-    }
+		return http.build();
+	}
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(
-                "https://localhost:443", // Origem do frontend via Caddy
-                "https://localhost:8080", // Para testes diretos no frontend
-                "https://127.0.0.1:8080" // Para testes diretos no frontend
-        ));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("X-XSRF-TOKEN", "Content-Type", "Accept"));
-        configuration.setAllowCredentials(true);
-        configuration.setMaxAge(3600L);
+	@Bean
+	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(List.of("https://localhost:443", // Origem do frontend via Caddy
+				"https://localhost:8080", // Para testes diretos no frontend
+				"https://127.0.0.1:8080" // Para testes diretos no frontend
+		));
+		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		configuration.setAllowedHeaders(List.of("X-XSRF-TOKEN", "Content-Type", "Accept"));
+		configuration.setAllowCredentials(true);
+		configuration.setMaxAge(3600L);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
 
 }

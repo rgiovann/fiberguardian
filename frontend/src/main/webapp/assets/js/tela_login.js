@@ -32,7 +32,7 @@
       try {
         const csrfToken = await FiberGuardian.Utils.obterNovoToken();
         console.log("Token CSRF a ser enviado:", csrfToken); // Log para depuração
-        const resposta = await fetch(FiberGuardian.Utils.getApiUrl("/login"), {
+        const resposta = await fetch("/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

@@ -20,9 +20,6 @@ public class UsuarioCompletoSemSenhaInput {
 	@EmailValido
 	private String email;
 
-	@NotNull(message = "Ativo é obrigatório")
-	private Boolean ativo;
-
 	@NotNull(message = "Role é obrigatória")
 	@Enumerated(EnumType.STRING)
 	private String role;

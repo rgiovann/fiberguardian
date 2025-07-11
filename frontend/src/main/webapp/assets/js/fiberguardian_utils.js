@@ -2,18 +2,13 @@
   window.FiberGuardian = window.FiberGuardian || {};
 
   FiberGuardian.Utils = (function () {
-    const API_BASE_URL = "/fiberguardian";
 
-    function getApiUrl(path) {
-      return `${API_BASE_URL}${path}`;
-    }
-
-    // 🔒 Função privada (não será exportada)
+    // Função privada (não será exportada)
     function normalizarEmail(email) {
       return email.trim().toLowerCase();
     }
 
-    // ✅ Função pública (exportada)
+    // Função pública (exportada)
     function getCookie(nome) {
       const cookies = document.cookie.split("; ");
       for (const cookie of cookies) {
@@ -27,7 +22,7 @@
 
     async function obterNovoToken() {
       try {
-        const resposta = await fetch(getApiUrl("/csrf-token"), {
+        const resposta = await fetch("/csrf-token", {
           method: "GET",
           credentials: "include",
         });
@@ -59,16 +54,16 @@
       return await obterNovoToken();
     }
 
-    // ✅ Outra função pública
+    // Outra função pública
     function isEmailValido(email) {
       email = normalizarEmail(email); // usando função privada
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
-    // 🔒 Função privada: verifica se a sessão ainda está ativa
+    // Função privada: verifica se a sessão ainda está ativa
     async function verificarSessao() {
       try {
-        const resposta = await fetch(getApiUrl("/sessao/valida"), {
+        const resposta = await fetch( "/sessao/valida" , {
           method: "GET",
           credentials: "include",
         });
@@ -82,12 +77,12 @@
       }
     }
 
-    // 🔒 Função privada: inicia verificação periódica
+    // Função privada: inicia verificação periódica
     function iniciarMonitoramentoSessao() {
       setInterval(verificarSessao, 5 * 60 * 1000); // a cada 5 minutos
     }
 
-    // ✅ Função pública para inicializar o watcher
+    // Função pública para inicializar o watcher
     function iniciarWatcherDeSessao() {
       iniciarMonitoramentoSessao();
     }
@@ -98,7 +93,8 @@
       isEmailValido: isEmailValido,
       obterTokenCsrf: obterTokenCsrf,
       obterNovoToken: obterNovoToken,
-      getApiUrl: getApiUrl,
       iniciarWatcherDeSessao 
-  })();
+  };
+  
+})();
 })();

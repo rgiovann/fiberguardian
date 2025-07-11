@@ -5,18 +5,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
-
+import edu.entra21.fiberguardian.configuration.Mapper;
 import lombok.Getter;
 
 @Getter
 public abstract class EntitytDtoAssembler<M, D> {
 
-	private final ModelMapper mapper;
+	private final Mapper mapper;
 	private final Class<M> dtoObject;
 
 	@SuppressWarnings("unchecked")
-	public EntitytDtoAssembler(ModelMapper mapper) {
+	public EntitytDtoAssembler(Mapper mapper) {
 		ParameterizedType type = (ParameterizedType) getClass().getGenericSuperclass();
 		this.mapper = mapper;
 		this.dtoObject = (Class<M>) type.getActualTypeArguments()[0];
