@@ -23,21 +23,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Usuários", description = "Gerenciamento de usuários do sistema")
 public interface UsuarioControllerOpenApi {
 
-	@Operation(summary = "Autentica um usuário", description = "Realiza login com email e senha, retornando um cookie de sessão (JSESSIONID) e CSRF token (XSRF-TOKEN)")
-	@ApiResponses({
-			@ApiResponse(responseCode = "200", description = "Autenticação bem-sucedida, cookies JSESSIONID e XSRF-TOKEN retornados"),
-			@ApiResponse(responseCode = "400", description = "Dados de autenticação inválidos", content = @Content(schema = @Schema(implementation = Problem.class))),
-			@ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = Problem.class))) })
-
-	String autenticar(
-			@Parameter(description = "Credenciais do usuário (email e senha)", required = true) UsuarioEmailSenhaInput usuarioInput);
-
-	@Operation(summary = "Lista todos os usuários", description = "Retorna uma lista de usuários cadastrados. Requer autenticação via cookie JSESSIONID.")
-	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Lista de usuários retornada com sucesso"),
-			@ApiResponse(responseCode = "403", description = "Acesso negado (sessão inválida ou ausente)", content = @Content(schema = @Schema(implementation = Problem.class))),
-			@ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = Problem.class))) })
-	@SecurityRequirement(name = "cookieAuth")
-
 	List<UsuarioDto> listar();
 
 	@Operation(summary = "Busca um usuário por ID", description = "Retorna os detalhes de um usuário específico. Requer autenticação via cookie JSESSIONID.")

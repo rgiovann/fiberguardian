@@ -2,7 +2,11 @@ package edu.entra21.fiberguardian.controller;
 
 import java.util.List;
 
+import edu.entra21.fiberguardian.input.UsuarioCompletoComSenhaInput;
+import edu.entra21.fiberguardian.input.UsuarioCompletoSemSenhaInput;
+import edu.entra21.fiberguardian.input.UsuarioNovaSenhaInput;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,11 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.entra21.fiberguardian.assembler.UsuarioCriarUsuarioInputDisassembler;
 import edu.entra21.fiberguardian.assembler.UsuarioDtoAssembler;
 import edu.entra21.fiberguardian.dto.UsuarioDto;
-import edu.entra21.fiberguardian.input.UsuarioInput.AlterarSenha;
-import edu.entra21.fiberguardian.input.UsuarioInput.AlterarUsuario;
-import edu.entra21.fiberguardian.input.UsuarioInput.CriarUsuario;
-import edu.entra21.fiberguardian.input.UsuarioInput.HabilitarDesabilitarUsuario;
-import edu.entra21.fiberguardian.input.UsuarioInput.UsuarioAutenticado;
 import edu.entra21.fiberguardian.openapi.UsuarioControllerOpenApi;
 import edu.entra21.fiberguardian.service.CadastroUsuarioService;
 
@@ -23,29 +22,23 @@ import edu.entra21.fiberguardian.service.CadastroUsuarioService;
 public class UsuarioController implements UsuarioControllerOpenApi {
 
 	private final CadastroUsuarioService usuarioService;
-	private final UsuarioDtoAssembler usuarioDtoListaUsuarioDtoAssembler;
-	private final UsuarioCriarUsuarioInputDisassembler usuarioCriarUsuarioInputAssembler;
+	private final UsuarioDtoAssembler usuarioDtoAssembler;
+	private final UsuarioCompletoComSenhaInput usuarioCompletoComSenhaInput;
 
 	public UsuarioController(CadastroUsuarioService usuarioService,
-			UsuarioDtoAssembler usuarioDtoAssembler,
-			UsuarioCriarUsuarioInputDisassembler usuarioInputDisassembler) {
+                             UsuarioDtoAssembler usuarioDtoAssembler,
+                             UsuarioCriarUsuarioInputDisassembler usuarioInputDisassembler, UsuarioCompletoComSenhaInput usuarioCompletoComSenhaInput) {
 
 		this.usuarioService = usuarioService;
 		this.usuarioDtoAssembler = usuarioDtoAssembler;
-		this.usuarioInputDisassembler = usuarioInputDisassembler;
-	}
-
-	@Override
-	public String autenticar(UsuarioAutenticado usuarioInput) {
-		// TODO Auto-generated method stub
-		return null;
+        this.usuarioCompletoComSenhaInput = usuarioCompletoComSenhaInput;
 	}
 
 	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<UsuarioDto> listar() {
 		// TODO Auto-generated method stub
-		return usuarioDtoAssembler.toCollectionModel(usuarioService.listar());
+		return usuarioDtoAssembler.toCollectionDto(usuarioService.listar());
 	}
 
 	@Override
@@ -55,28 +48,30 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	}
 
 	@Override
-	public UsuarioDto adicionar(CriarUsuario usuarioInput) {
-		// TODO Auto-generated method stub
+	public UsuarioDto adicionar(UsuarioCompletoComSenhaInput usuarioInput) {
 		return null;
 	}
 
 	@Override
-	public UsuarioDto atualizar(Long usuarioId, AlterarUsuario usuarioInput) {
-		// TODO Auto-generated method stub
+	public UsuarioDto atualizar(Long usuarioId, UsuarioCompletoSemSenhaInput usuarioInput) {
 		return null;
 	}
 
 	@Override
-	public void habilitarDesabilitar(Long usuarioId, HabilitarDesabilitarUsuario usuarioInput) {
-		// TODO Auto-generated method stub
-
+	public ResponseEntity<Void> inativarUsuario(Long usuarioId) {
+		return null;
 	}
 
 	@Override
-	public void alterarSenha(Long usuarioId, AlterarSenha senha) {
-		// TODO Auto-generated method stub
-
+	public ResponseEntity<Void> ativarUsuario(Long usuarioId) {
+		return null;
 	}
+
+	@Override
+	public ResponseEntity<Void> alterarSenha(Long usuarioId, UsuarioNovaSenhaInput usuarioSoSenhaInput) {
+		return null;
+	}
+
 
 //	@Override
 //	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
