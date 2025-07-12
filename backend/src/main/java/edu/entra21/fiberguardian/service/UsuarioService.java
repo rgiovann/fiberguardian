@@ -88,4 +88,11 @@ public class UsuarioService {
 		return usuarioRepository.findByEmail(email).orElseThrow(() -> new UsuarioNaoEncontradoException(email));
 	}
 
+	public boolean existeEmailCadastrado(String email) {
+		if (usuarioRepository.existsByEmail(email)) {
+			throw new EntidadeEmUsoException("Já existe um usuário com o e-mail informado.");
+		}
+		return true;
+	}
+
 }

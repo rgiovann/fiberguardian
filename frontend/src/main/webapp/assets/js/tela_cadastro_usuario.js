@@ -31,7 +31,7 @@
         const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
 
         const resposta = await fetch(
-          FiberGuardian.Utils.getApiUrl("/usuarios"),
+          "/usuarios",
           {
             method: "POST",
             headers: {

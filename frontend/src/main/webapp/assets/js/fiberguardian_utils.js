@@ -2,7 +2,8 @@
   window.FiberGuardian = window.FiberGuardian || {};
 
   FiberGuardian.Utils = (function () {
-
+    console.log("FiberGuardian.Utils carregado com sucesso.");
+    
     // Função privada (não será exportada)
     function normalizarEmail(email) {
       return email.trim().toLowerCase();
