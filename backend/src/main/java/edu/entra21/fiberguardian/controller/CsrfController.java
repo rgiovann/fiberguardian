@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,11 +28,11 @@ public class CsrfController {
 
     private static final Logger logger = LoggerFactory.getLogger(CsrfController.class);
     private final CsrfTokenRepository csrfTokenRepository;
-    private final XorCsrfTokenRequestAttributeHandler xorCsrfTokenRequestAttributeHandler;
+    private final CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler;
 
-    public CsrfController(CsrfTokenRepository csrfTokenRepository, XorCsrfTokenRequestAttributeHandler xorCsrfTokenRequestAttributeHandler) {
+    public CsrfController(CsrfTokenRepository csrfTokenRepository, CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler) {
         this.csrfTokenRepository = csrfTokenRepository;
-        this.xorCsrfTokenRequestAttributeHandler = xorCsrfTokenRequestAttributeHandler;
+        this.csrfTokenRequestAttributeHandler = csrfTokenRequestAttributeHandler;
     }
 
     @GetMapping("/csrf-token")
@@ -81,23 +82,6 @@ public class CsrfController {
                 ? ResponseEntity.ok().build()
                 : ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
-
-//    @GetMapping("/session-info")
-//    public ResponseEntity<Map<String, Object>> getSessionInfo(HttpServletRequest request) {
-//        HttpSession session = request.getSession(false);
-//
-//        Map<String, Object> sessionInfo = new HashMap<>();
-//        if (session != null) {
-//            sessionInfo.put("sessionId", session.getId());
-//            sessionInfo.put("isNew", session.isNew());
-//            sessionInfo.put("creationTime", new Date(session.getCreationTime()));
-//            sessionInfo.put("maxInactiveInterval", session.getMaxInactiveInterval());
-//        } else {
-//            sessionInfo.put("message", "No active session");
-//        }
-//
-//        return ResponseEntity.ok(sessionInfo);
-//    }
 
 
 }

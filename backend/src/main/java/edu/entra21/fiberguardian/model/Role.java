@@ -4,5 +4,6 @@ public enum Role {
     ADMIN,
     USUARIO,
     LABORATORIO,
-    ENGENHARIA
+    ENGENHARIA,
+    LAB_ENG
 }

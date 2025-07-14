@@ -10,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -86,10 +87,19 @@ public class AuthController {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sessão inválida ou expirada");
 			}
 
+			// Salvar explicitamente o contexto na sessão HTTP
+			session.setAttribute(
+					HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+					SecurityContextHolder.getContext()
+			);
+
 			logger.debug("Reutilizando sessão existente: " + session.getId());
+
 
 			UsuarioAutenticado usuarioAutenticado = (UsuarioAutenticado) authentication.getPrincipal();
 			Usuario usuario = usuarioAutenticado.getUsuario();
+
+			logger.info("Usuário [" + usuarioAutenticado.getUsuario().getNome() + "] autenticado com sucesso.");
 
 			UsuarioDto responseDto = usuarioDtoAssembler.toDto(usuario);
 

@@ -15,10 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfFilter;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.csrf.*;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -48,8 +45,8 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	XorCsrfTokenRequestAttributeHandler xorCsrfTokenRequestAttributeHandler() {
-		return new XorCsrfTokenRequestAttributeHandler();
+	CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler() {
+		return new CsrfTokenRequestAttributeHandler();
 	}
 
 	@Bean
@@ -74,7 +71,7 @@ public class SecurityConfig {
 				// .csrf(csrf -> csrf.disable())
 
 				.csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository())
-						.csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler())
+						.csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
 						.ignoringRequestMatchers("/csrf-token", "/sessao/valida") // Ignora CSRF para obter token
 				)
 				// Força HTTPS
@@ -82,7 +79,8 @@ public class SecurityConfig {
 				// Configura autorização
 				.authorizeHttpRequests(authz -> authz.requestMatchers(HttpMethod.POST, "/login").permitAll()
 						.requestMatchers(HttpMethod.GET, "/csrf-token").permitAll()
-						.requestMatchers(HttpMethod.GET, "/public/**").permitAll().anyRequest().authenticated())
+						.requestMatchers(HttpMethod.POST, "/usuarios").hasRole("ADMIN") // Aqui exige o papel
+						.anyRequest().authenticated())
 				// Configura sessões
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
 						.sessionFixation().migrateSession().maximumSessions(1).maxSessionsPreventsLogin(false))

@@ -2,9 +2,13 @@ package edu.entra21.fiberguardian.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +33,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	private final UsuarioService usuarioService;
 	private final UsuarioDtoAssembler usuarioDtoAssembler;
 	private final UsuarioNovoInputDisassembler UsuarioCriarUsuarioInputDisassembler;
+	private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
 	public UsuarioController(UsuarioService usuarioService, UsuarioDtoAssembler usuarioDtoAssembler,
 			UsuarioNovoInputDisassembler UsuarioCriarUsuarioInputDisassembler) {
@@ -51,15 +56,14 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 		return null;
 	}
 
-//	@Override
-//	public UsuarioDto adicionar(UsuarioCompletoComSenhaInput usuarioInput) {
-//		return null;
-//	}
-
 	@Override
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public UsuarioDto adicionar(@RequestBody @Valid UsuarioCompletoComSenhaInput usuarioNomeInput) {
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		logger.debug("Usuário autenticado: " + auth.getName());
+		logger.debug("Authorities: " + auth.getAuthorities());
 
 		usuarioService.existeEmailCadastrado(usuarioNomeInput.getEmail());
 

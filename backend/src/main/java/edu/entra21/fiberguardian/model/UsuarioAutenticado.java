@@ -22,7 +22,8 @@ public class UsuarioAutenticado implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + usuario.getRole().name()));
+		String role = "ROLE_" + usuario.getRole().name(); // Ex: ADMIN → ROLE_ADMIN
+		return Collections.singletonList(new SimpleGrantedAuthority(role));
 	}
 
 	@Override
