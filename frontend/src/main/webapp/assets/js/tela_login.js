@@ -4,34 +4,12 @@
 
   window.FiberGuardian = window.FiberGuardian || {};
   FiberGuardian.TelaLogin = (function () {
-    /*
-    async function obterTokenCsrf() {
-      try {
-        const resposta = await fetch(`${API_BASE_URL}/csrf-token`, {
-          method: "GET",
-          credentials: "include",
-        });
 
-        if (!resposta.ok) {
-          throw new Error(`Erro ao obter token CSRF: ${resposta.statusText}`);
-        }
-
-        const dados = await resposta.json();
-        if (!dados.token) {
-          throw new Error("Token CSRF não retornado pelo servidor.");
-        }
-
-        return dados.token;
-      } catch (erro) {
-        console.error("Falha ao obter token CSRF:", erro);
-        throw erro;
-      }
-    }
-*/
     async function autenticar(email, senha) {
       try {
         const csrfToken = await FiberGuardian.Utils.obterNovoToken();
-        console.log("Token CSRF a ser enviado:", csrfToken); // Log para depuração
+        console.log("Token CSRF a ser enviado:", csrfToken);
+
         const resposta = await fetch("/login", {
           method: "POST",
           headers: {
@@ -43,18 +21,21 @@
         });
 
         if (resposta.ok) {
-          const usuario = await resposta.json();
-          console.log("Login bem-sucedido:", usuario);
-          window.location.href = "index.html";
+          FiberGuardian.Utils.exibirMensagem("Login realizado com sucesso!", "success");
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1500);
         } else if (resposta.status === 401) {
-          alert("Credenciais inválidas.");
+          FiberGuardian.Utils.exibirMensagem("Credenciais inválidas.", "danger");
+          document.getElementById("senha").value = "";
+          document.getElementById("senha").focus();
         } else {
           console.error("Erro ao autenticar:", await resposta.text());
-          alert("Erro inesperado ao autenticar.");
+          FiberGuardian.Utils.exibirMensagem("Erro inesperado ao autenticar.", "danger");
         }
       } catch (erro) {
         console.error("Erro no processo de login:", erro);
-        alert("Falha ao autenticar. Tente novamente mais tarde.");
+        FiberGuardian.Utils.exibirMensagem("Falha ao autenticar. Tente novamente mais tarde.", "danger");
       }
     }
 

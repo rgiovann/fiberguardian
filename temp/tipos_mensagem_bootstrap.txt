@@ -1,0 +1,7 @@
+Cenário	tipo sugerido
+Cadastro realizado com sucesso	success
+E-mail já em uso	danger
+Senhas não coincidem	warning
+Falha de comunicação com servidor	danger
+"Por favor, selecione um perfil"	warning
+Mensagem informativa não crítica	info ou primary

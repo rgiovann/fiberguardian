@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,9 +21,11 @@ public class UsuarioService {
 	private static final String MSG_SENHA_ATUAL_NAO_PODE_SER_A_MESMA = "Senha nova do usuário %d igual a senha anterior.";
 	private static final String MSG_SENHA_ATUAL_INCORRETA = "Senha atual do usuário %d é incorreta.";
 	private final UsuarioRepository usuarioRepository;
+	private final PasswordEncoder passwordEncoder;
 
-	public UsuarioService(UsuarioRepository usuarioRepository) {
+	public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
 		this.usuarioRepository = usuarioRepository;
+		this.passwordEncoder = passwordEncoder;
 
 	}
 
@@ -38,7 +41,7 @@ public class UsuarioService {
 	}
 
 	@Transactional
-	public Usuario salvar(Usuario usuario) {
+	public Usuario cadastrarNovoUsuario(Usuario usuario) {
 
 		// codigo defensivo, validation no controller já
 		// barra email vazio.
@@ -60,6 +63,9 @@ public class UsuarioService {
 		if (emailCadastradoPorOutro) {
 			throw new NegocioException(String.format("Já existe usuário cadastrado com o e-mail %s", email));
 		}
+
+		String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
+		usuario.setSenha(senhaCriptografada);
 
 		return usuarioRepository.save(usuario);
 	}

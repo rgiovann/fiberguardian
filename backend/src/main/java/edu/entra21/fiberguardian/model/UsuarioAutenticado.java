@@ -55,4 +55,8 @@ public class UsuarioAutenticado implements UserDetails {
 	public boolean isEnabled() {
 		return usuario.getAtivo();
 	}
+
+	public Long getId() {
+		return usuario.getId();
+	}
 }

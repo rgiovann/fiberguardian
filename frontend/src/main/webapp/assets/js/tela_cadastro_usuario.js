@@ -49,8 +49,10 @@
         );
 
         if (resposta.ok) {
-          alert("Cadastro realizado com sucesso!");
-          window.location.href = "index.html";
+          FiberGuardian.Utils.exibirMensagem("Login realizado com sucesso!", "success");
+          form.reset();
+          limparErros();
+          nomeField.focus();
         } else if (resposta.status === 409) {
           emailUsedError.style.display = "block";
           emailField.classList.add("input-error");

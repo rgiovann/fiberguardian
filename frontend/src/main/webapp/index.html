@@ -1,242 +1,211 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <title>FiberGuardian - Tela Principal</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <script
-      src="https://kit.fontawesome.com/c0d30aa2de.js"
-      crossorigin="anonymous"
-    ></script>
-    <style>
-      body {
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        margin: 0;
-      }
 
-      .main-wrapper {
-        flex: 1;
-        display: flex;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <title>FiberGuardian - Tela Principal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://kit.fontawesome.com/c0d30aa2de.js" crossorigin="anonymous"></script>
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      /* Desativa scroll up/down */
+    }
 
-      .sidebar {
-        width: 250px;
-        background-color: #84c3ec;
-        color: #fff;
-      }
+    body {
+      display: flex;
+      flex-direction: column;
+    }
 
-      .sidebar a {
-        color: #000000;
-        text-decoration: none;
-        font-weight: 600;
-      }
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      /* Evita scroll horizontal/vertical */
+    }
 
-      .sidebar a:hover {
-        color: #fff;
-        background-color: #495057;
-        font-weight: 800;
-      }
+    .sidebar {
+      width: 250px;
+      background-color: #84c3ec;
+      color: #fff;
+      overflow-y: auto;
+    }
 
-      .sidebar .nav-link.active {
-        background-color: #495057;
-        color: #fff;
-      }
+    .sidebar a {
+      color: #000000;
+      text-decoration: none;
+      font-weight: 600;
+    }
 
-      .content {
-        flex-grow: 1;
-        padding: 20px;
-      }
+    .sidebar a:hover {
+      color: #fff;
+      background-color: #495057;
+      font-weight: 800;
+    }
 
-      .sidebar .menu-header {
-        padding: 1rem;
-        font-size: 1.25rem;
-        font-weight: bold;
-        background-color: #212529;
-        text-align: center;
-      }
+    .sidebar .nav-link.active {
+      background-color: #495057;
+      color: #fff;
+    }
 
-      footer {
-        background-color: #cae5f3;
-        text-align: center;
-        padding: 0.75rem;
-        font-size: 0.8rem;
-        border-top: 1px solid #dee2e6;
-        font-weight: 600;
-      }
+    .content {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
 
-      /* ALTERADO: divisória bonita com sombra suave e sem interação */
-      .logo-divider {
-        height: 2px;
-        background: linear-gradient(to right, #ffffff33, #ffffffaa, #ffffff33);
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-        pointer-events: none;
-        -webkit-user-select: none;
-        user-select: none;
-      }
+    .sidebar .menu-header {
+      padding: 1rem;
+      font-size: 1.25rem;
+      font-weight: bold;
+      background-color: #212529;
+      text-align: center;
+    }
 
-      /* ALTERADO: container isolado da logo + divisor */
-      .logo-container {
-        background-color: #edf0f3;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 1rem 0;
-        -webkit-user-select: none;
-        user-select: none;
-        border-radius: 50%;
-        border-color: #92aac2;
-        border-width: 2px;
-        border-style: solid;
-      }
+    footer {
+      background-color: #cae5f3;
+      text-align: center;
+      padding: 0.75rem;
+      font-size: 0.8rem;
+      border-top: 1px solid #dee2e6;
+      font-weight: 600;
+    }
 
-      .logo-container img {
-        max-height: 170px;
-        pointer-events: none;
-        -webkit-user-select: none;
-        user-select: none;
-      }
-    </style>
-  </head>
+    .logo-divider {
+      height: 2px;
+      background: linear-gradient(to right, #ffffff33, #ffffffaa, #ffffff33);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      pointer-events: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
 
-  <body>
-    <div class="main-wrapper">
-      <nav class="sidebar d-flex flex-column p-2">
-        <!-- ALTERADO: logo e divisória separados da menu-header -->
-        <div class="logo-container">
-          <img
-            src="assets/img/logo-fiberguardian.png"
-            alt="FiberGuardian Logo"
-            class="img-fluid mb-2"
-          />
-          <!-- <div class="logo-divider w-100 my-2"></div> -->
-        </div>
+    .logo-container {
+      background-color: #edf0f3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem 0;
+      -webkit-user-select: none;
+      user-select: none;
+      border-radius: 50%;
+      border-color: #92aac2;
+      border-width: 2px;
+      border-style: solid;
+    }
 
-        <!-- Menu começa aqui -->
-        <ul class="nav nav-pills flex-column" id="menu">
-          <li class="nav-item">
-            <a
-              class="nav-link"
-              data-bs-toggle="collapse"
-              href="#menu-cadastros"
-              role="button"
-              aria-expanded="false"
-              >Cadastros</a
-            >
-            <div class="collapse" id="menu-cadastros">
-              <ul class="nav flex-column ms-3">
-                <li class="nav-item">
-                  <a
-                    class="nav-link"
-                    href="#"
-                    onclick="FiberGuardian.Core.carregarPagina('tela_cadastro_recebimento.html')"
-                    >Recebimentos</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Fornecedor</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Produto</a>
-                </li>
-              </ul>
-            </div>
-          </li>
+    .logo-container img {
+      max-height: 170px;
+      pointer-events: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+  </style>
+</head>
 
-          <li class="nav-item mt-2">
-            <a
-              class="nav-link"
-              data-bs-toggle="collapse"
-              href="#menu-laboratorio"
-              role="button"
-              aria-expanded="false"
-              >Laboratório</a
-            >
-            <div class="collapse" id="menu-laboratorio">
-              <ul class="nav flex-column ms-3">
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Cadastrar Resultados</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Relatórios</a>
-                </li>
-              </ul>
-            </div>
-          </li>
+<body>
+  <div class="main-wrapper">
+    <nav class="sidebar d-flex flex-column p-2">
+      <!-- ALTERADO: logo e divisória separados da menu-header -->
+      <div class="logo-container">
+        <img src="assets/img/logo-fiberguardian.png" alt="FiberGuardian Logo" class="img-fluid mb-2" />
+        <!-- <div class="logo-divider w-100 my-2"></div> -->
+      </div>
 
-          <li class="nav-item mt-2">
-            <a
-              class="nav-link"
-              data-bs-toggle="collapse"
-              href="#menu-engenharia"
-              role="button"
-              aria-expanded="false"
-              >Engenharia</a
-            >
-            <div class="collapse" id="menu-engenharia">
-              <ul class="nav flex-column ms-3">
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Cadastrar Parecer</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Relatórios</a>
-                </li>
-              </ul>
-            </div>
-          </li>
+      <!-- Menu começa aqui -->
+      <ul class="nav nav-pills flex-column" id="menu">
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="collapse" href="#menu-cadastros" role="button"
+            aria-expanded="false">Cadastros</a>
+          <div class="collapse" id="menu-cadastros">
+            <ul class="nav flex-column ms-3">
+              <li class="nav-item">
+                <a class="nav-link" href="#"
+                  onclick="FiberGuardian.Core.carregarPagina('tela_cadastro_recebimento.html')">Recebimentos</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Fornecedor</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Produto</a>
+              </li>
+            </ul>
+          </div>
+        </li>
 
-          <li class="nav-item mt-2">
-            <a
-              class="nav-link"
-              data-bs-toggle="collapse"
-              href="#menu-perfil"
-              role="button"
-              aria-expanded="false"
-              >Gestão De Usuários</a
-            >
-            <div class="collapse" id="menu-perfil">
-              <ul class="nav flex-column ms-3">
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Listar Usuários</a>
-                </li>
-                <li class="nav-item">
-                  <a
-                    class="nav-link"
-                    href="#"
-                    onclick="FiberGuardian.Core.carregarPagina('tela_cadastro_usuario.html')"
-                    >Cadastrar Novo Usuário</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Alterar Perfil de Usuário</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Bloquear/Desbloquear Usuário</a>
-                </li>
-              </ul>
-            </div>
-          </li>
-        </ul>
-      </nav>
+        <li class="nav-item mt-2">
+          <a class="nav-link" data-bs-toggle="collapse" href="#menu-laboratorio" role="button"
+            aria-expanded="false">Laboratório</a>
+          <div class="collapse" id="menu-laboratorio">
+            <ul class="nav flex-column ms-3">
+              <li class="nav-item">
+                <a class="nav-link" href="#">Cadastrar Resultados</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Relatórios</a>
+              </li>
+            </ul>
+          </div>
+        </li>
 
-      <main class="content" id="conteudo-principal">
-        <h3>Bem-vindo ao FiberGuardian</h3>
-        <p>Selecione uma opção no menu lateral para começar.</p>
-      </main>
-    </div>
+        <li class="nav-item mt-2">
+          <a class="nav-link" data-bs-toggle="collapse" href="#menu-engenharia" role="button"
+            aria-expanded="false">Engenharia</a>
+          <div class="collapse" id="menu-engenharia">
+            <ul class="nav flex-column ms-3">
+              <li class="nav-item">
+                <a class="nav-link" href="#">Cadastrar Parecer</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Relatórios</a>
+              </li>
+            </ul>
+          </div>
+        </li>
 
-    <footer class="text-start">
-      <i class="fas fa-box"></i>
-      Projeto elaborado pelos alunos Giovanni, Siegrid, Renata e Venâncio da
-      turma 2025 do curso da Blusoft Entra21
-    </footer>
+        <li class="nav-item mt-2">
+          <a class="nav-link" data-bs-toggle="collapse" href="#menu-perfil" role="button" aria-expanded="false">Gestão
+            De Usuários</a>
+          <div class="collapse" id="menu-perfil">
+            <ul class="nav flex-column ms-3">
+              <li class="nav-item">
+                <a class="nav-link" href="#">Listar Usuários</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#"
+                  onclick="FiberGuardian.Core.carregarPagina('tela_cadastro_usuario.html')">Cadastrar Novo Usuário</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Alterar Perfil de Usuário</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Bloquear/Desbloquear Usuário</a>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </nav>
 
-    <script defer src="assets/js/fiberguardian_core.js"></script>
-    <script defer src="assets/js/fiberguardian_api.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
+    <main class="content" id="conteudo-principal">
+      <h3>Bem-vindo ao FiberGuardian</h3>
+      <p>Selecione uma opção no menu lateral para começar.</p>
+    </main>
+  </div>
+
+  <footer class="text-start">
+    <i class="fas fa-box"></i>
+    Projeto elaborado pelos alunos Giovanni, Siegrid, Renata e Venâncio da
+    turma 2025 do curso da Blusoft Entra21
+  </footer>
+
+  <script defer src="assets/js/fiberguardian_core.js"></script>
+  <script defer src="assets/js/fiberguardian_api.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
 </html>

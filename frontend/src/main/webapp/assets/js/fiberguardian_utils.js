@@ -61,6 +61,14 @@
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
+    function exibirMensagem(texto, tipo){
+      const alerta = document.getElementById("mensagemSistema");
+      alerta.textContent = texto;
+      alerta.className = `alert alert-${tipo} mt-3`;
+      alerta.classList.remove("d-none");
+      setTimeout(() => alerta.classList.add("d-none"), 1000);
+    }
+
     // Função privada: verifica se a sessão ainda está ativa
     async function verificarSessao() {
       try {
@@ -70,7 +78,7 @@
         });
 
         if (resposta.status === 401 || resposta.status === 403) {
-          alert("Sua sessão expirou. Você será redirecionado para o login.");
+          exibirMensagem("Sua sessão expirou. Você será redirecionado para o login.", "danger");
           window.location.href = "tela_login.html";
         }
       } catch (erro) {
@@ -94,7 +102,8 @@
       isEmailValido: isEmailValido,
       obterTokenCsrf: obterTokenCsrf,
       obterNovoToken: obterNovoToken,
-      iniciarWatcherDeSessao 
+      iniciarWatcherDeSessao,
+      exibirMensagem
   };
   
 })();

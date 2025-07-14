@@ -68,7 +68,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 		usuarioService.existeEmailCadastrado(usuarioNomeInput.getEmail());
 
 		return usuarioDtoAssembler
-				.toDto(usuarioService.salvar(UsuarioCriarUsuarioInputDisassembler.toEntity(usuarioNomeInput)));
+				.toDto(usuarioService.cadastrarNovoUsuario(UsuarioCriarUsuarioInputDisassembler.toEntity(usuarioNomeInput)));
 
 	}
 
