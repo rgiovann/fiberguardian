@@ -12,11 +12,15 @@
   const pageToScriptMap = {
     "tela_cadastro_recebimento.html": [
       "assets/js/fiberguardian_utils.js",
-      "assets/js/tela_cadastro_recebimento.js"
+      "assets/js/tela_cadastro_recebimento.js",
     ],
     "tela_cadastro_usuario.html": [
       "assets/js/fiberguardian_utils.js",
-      "assets/js/tela_cadastro_usuario.js"
+      "assets/js/tela_cadastro_usuario.js",
+    ],
+    "tela_alteracao_cadastro_usuario.html": [
+      "assets/js/fiberguardian_utils.js",
+      "assets/js/tela_alteracao_cadastro_usuario.js",
     ],
     // Adicione outras páginas conforme necessário
     // "tela_listagem_usuarios.html": [
@@ -42,7 +46,9 @@
     fetch(pagina)
       .then((resposta) => {
         if (!resposta.ok) {
-          throw new Error(`Erro HTTP ${resposta.status}: ${resposta.statusText}`);
+          throw new Error(
+            `Erro HTTP ${resposta.status}: ${resposta.statusText}`
+          );
         }
         return resposta.text();
       })
@@ -52,7 +58,7 @@
 
         // Carrega os scripts associados à página
         const scriptsAssociados = pageToScriptMap[pagina];
-        
+
         if (scriptsAssociados && scriptsAssociados.length > 0) {
           carregarScriptsSequencial(scriptsAssociados, pagina);
         } else {
@@ -61,8 +67,9 @@
       })
       .catch((erro) => {
         console.error("Falha ao carregar conteúdo:", erro);
-        document.getElementById("conteudo-principal").innerHTML = 
-          `<div class="alert alert-danger">
+        document.getElementById(
+          "conteudo-principal"
+        ).innerHTML = `<div class="alert alert-danger">
             <i class="fas fa-exclamation-triangle"></i> 
             Erro ao carregar conteúdo: ${erro.message}
           </div>`;
@@ -71,13 +78,13 @@
 
   /**
    * Carrega scripts sequencialmente (um após o outro) para garantir dependências.
-   * 
+   *
    * @param {string[]} scripts - Array de caminhos dos scripts
    * @param {string} paginaOrigem - Nome da página que originou o carregamento
    */
   function carregarScriptsSequencial(scripts, paginaOrigem) {
     console.log(`Carregando ${scripts.length} script(s) para: ${paginaOrigem}`);
-    
+
     let indiceAtual = 0;
 
     function carregarProximoScript() {
@@ -88,7 +95,7 @@
       }
 
       const scriptPath = scripts[indiceAtual];
-      
+
       // Verifica se o script já foi carregado
       if (scriptsCarregados.has(scriptPath)) {
         console.log(`Script já carregado (cache): ${scriptPath}`);
@@ -98,7 +105,7 @@
       }
 
       console.log(`Carregando script: ${scriptPath}`);
-      
+
       const script = document.createElement("script");
       script.src = scriptPath;
 
@@ -125,7 +132,7 @@
 
   /**
    * Inicializa o módulo principal da página após todos os scripts serem carregados.
-   * 
+   *
    * @param {string} paginaOrigem - Nome da página para identificar o módulo
    */
   function inicializarModuloPrincipal(paginaOrigem) {
@@ -175,5 +182,4 @@
     console.log("Scripts em cache:", Array.from(scriptsCarregados));
     return Array.from(scriptsCarregados);
   };
-
 })();
