@@ -15,7 +15,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.csrf.*;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -79,8 +82,10 @@ public class SecurityConfig {
 				// Configura autorização
 				.authorizeHttpRequests(authz -> authz.requestMatchers(HttpMethod.POST, "/login").permitAll()
 						.requestMatchers(HttpMethod.GET, "/csrf-token").permitAll()
-						.requestMatchers(HttpMethod.POST, "/usuarios").hasRole("ADMIN") // Aqui exige o papel
-						.anyRequest().authenticated())
+						.requestMatchers(HttpMethod.POST, "/usuarios").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.GET, "/usuarios").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.GET, "/usuarios/buscar-por-email").permitAll().anyRequest()
+						.authenticated())
 				// Configura sessões
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
 						.sessionFixation().migrateSession().maximumSessions(1).maxSessionsPreventsLogin(false))

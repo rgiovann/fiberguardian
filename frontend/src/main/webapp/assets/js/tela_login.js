@@ -21,10 +21,18 @@
         });
 
         if (resposta.ok) {
+          const usuario = await resposta.json(); 
           FiberGuardian.Utils.exibirMensagem("Login realizado com sucesso!", "success");
-          setTimeout(() => {
-            window.location.href = "index.html";
-          }, 1500);
+          // Armazenar dados do usuário autenticado globalmente
+          FiberGuardian.UsuarioLogado = {
+            nome: usuario.nome,
+            email: usuario.email,
+            role: usuario.role,
+          };
+           // Persiste no sessionStorage para uso futuro (nova aba, F5 etc.)
+           sessionStorage.setItem("usuario", JSON.stringify(FiberGuardian.UsuarioLogado));    
+           window.location.href = "index.html";
+   
         } else if (resposta.status === 401) {
           FiberGuardian.Utils.exibirMensagem("Credenciais inválidas.", "danger");
           document.getElementById("senha").value = "";

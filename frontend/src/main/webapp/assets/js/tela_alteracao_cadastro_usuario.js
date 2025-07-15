@@ -1,7 +1,7 @@
 (function () {
   window.FiberGuardian = window.FiberGuardian || {};
   FiberGuardian.TelaAlteracaoCadastroUsuario = (function () {
-    const URL_BASE = "/me";
+    const URL_BASE_BUSCAR_POR_EMAIL = "/usuarios/buscar-por-email";
 
     async function configurarEventos() {
       await preencherCampos();
@@ -11,8 +11,15 @@
 
     async function preencherCampos() {
       try {
-        const resposta = await fetch(URL_BASE, {
+        const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
+        const emailUsuario = FiberGuardian.UsuarioLogado?.email;
+
+        if (!emailUsuario) {
+          throw new Error("Email do usuário não encontrado. Faça login novamente.");
+        }
+        const resposta = await fetch(`${URL_BASE_BUSCAR_POR_EMAIL}?email=${encodeURIComponent(emailUsuario)}`, {
           method: "GET",
+          headers: { "X-XSRF-TOKEN": csrfToken },
           credentials: "include",
         });
 

@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.annotation.JsonView;
 
 import edu.entra21.fiberguardian.assembler.UsuarioDtoAssembler;
 import edu.entra21.fiberguardian.assembler.UsuarioNovoInputDisassembler;
@@ -22,6 +25,7 @@ import edu.entra21.fiberguardian.dto.UsuarioDto;
 import edu.entra21.fiberguardian.input.UsuarioCompletoComSenhaInput;
 import edu.entra21.fiberguardian.input.UsuarioCompletoSemSenhaInput;
 import edu.entra21.fiberguardian.input.UsuarioNovaSenhaInput;
+import edu.entra21.fiberguardian.jacksonview.UsuarioView;
 import edu.entra21.fiberguardian.openapi.UsuarioControllerOpenApi;
 import edu.entra21.fiberguardian.service.UsuarioService;
 import jakarta.validation.Valid;
@@ -51,12 +55,6 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	}
 
 	@Override
-	public UsuarioDto buscar(Long usuarioId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public UsuarioDto adicionar(@RequestBody @Valid UsuarioCompletoComSenhaInput usuarioNomeInput) {
@@ -67,9 +65,15 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 
 		usuarioService.existeEmailCadastrado(usuarioNomeInput.getEmail());
 
-		return usuarioDtoAssembler
-				.toDto(usuarioService.cadastrarNovoUsuario(UsuarioCriarUsuarioInputDisassembler.toEntity(usuarioNomeInput)));
+		return usuarioDtoAssembler.toDto(
+				usuarioService.cadastrarNovoUsuario(UsuarioCriarUsuarioInputDisassembler.toEntity(usuarioNomeInput)));
 
+	}
+
+	@GetMapping(path = "/buscar-por-email")
+	@JsonView(UsuarioView.Autenticado.class)
+	public UsuarioDto buscarPorEmail(@RequestParam("email") String email) {
+		return usuarioDtoAssembler.toDto(usuarioService.buscarPorEmailObrigatorio(email));
 	}
 
 	@Override

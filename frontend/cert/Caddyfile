@@ -22,11 +22,11 @@ localhost:443 {
         }
     }
 	
-	reverse_proxy /usuarios https://localhost:8443 {
-        transport http {
-            tls_insecure_skip_verify
-        }
-    }
+	reverse_proxy /usuarios* https://localhost:8443 {
+		transport http {
+			tls_insecure_skip_verify
+		}
+	}
 
     # Rota para arquivos estáticos do frontend
     reverse_proxy /* https://localhost:8080 {

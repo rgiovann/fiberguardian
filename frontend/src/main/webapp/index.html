@@ -172,15 +172,17 @@
             De Usuários</a>
           <div class="collapse" id="menu-perfil">
             <ul class="nav flex-column ms-3">
-              <li class="nav-item">
+              <li class="nav-item" id="menuListarUsuarios" data-role-allowed="ADMIN">
                 <a class="nav-link" href="#">Listar Usuários</a>
               </li>
-              <li class="nav-item">
+              <li class="nav-item" id="menuCadastrarUsuario" data-role-allowed="ADMIN">
                 <a class="nav-link" href="#"
                   onclick="FiberGuardian.Core.carregarPagina('tela_cadastro_usuario.html')">Cadastrar Novo Usuário</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Alterar Perfil de Usuário</a>
+                <a class="nav-link" href="#"
+                  onclick="FiberGuardian.Core.carregarPagina('tela_alteracao_cadastro_usuario.html')">Alterar Meus
+                  Dados</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#">Bloquear/Desbloquear Usuário</a>
@@ -199,8 +201,7 @@
 
   <footer class="text-start">
     <i class="fas fa-box"></i>
-    Projeto elaborado pelos alunos Giovanni, Siegrid, Renata e Venâncio da
-    turma 2025 do curso da Blusoft Entra21
+    Projeto final turma 2025 do curso <b>Entra21</b> da Blusoft.
   </footer>
 
   <script defer src="assets/js/fiberguardian_core.js"></script>

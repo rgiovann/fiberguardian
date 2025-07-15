@@ -8,7 +8,6 @@ import edu.entra21.fiberguardian.dto.UsuarioDto;
 import edu.entra21.fiberguardian.exception.handler.Problem;
 import edu.entra21.fiberguardian.input.UsuarioCompletoComSenhaInput;
 import edu.entra21.fiberguardian.input.UsuarioCompletoSemSenhaInput;
-import edu.entra21.fiberguardian.input.UsuarioEmailSenhaInput;
 import edu.entra21.fiberguardian.input.UsuarioNovaSenhaInput;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -33,8 +32,8 @@ public interface UsuarioControllerOpenApi {
 			@ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	@SecurityRequirement(name = "cookieAuth")
 
-	UsuarioDto buscar(
-			@Parameter(description = "ID do usuário a ser buscado", example = "1", required = true) Long usuarioId);
+	UsuarioDto buscarPorEmail(
+			@Parameter(description = "Email do usuário a ser buscado", example = "email@dominio.com", required = true) String email);
 
 	@Operation(summary = "Cadastra um novo usuário", description = "Cria um novo usuário com os dados fornecidos. Requer autenticação via cookie JSESSIONID e token CSRF no header X-XSRF-TOKEN.")
 	@ApiResponses({ @ApiResponse(responseCode = "201", description = "Usuário cadastrado com sucesso"),

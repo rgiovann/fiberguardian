@@ -2,6 +2,35 @@
   // Garante que o namespace FiberGuardian exista no escopo global
   window.FiberGuardian = window.FiberGuardian || {};
 
+  // Recupera os dados do usuário autenticado, se existirem
+  const dadosUsuario = sessionStorage.getItem("usuario");
+
+  if (dadosUsuario) {
+    try {
+      FiberGuardian.UsuarioLogado = JSON.parse(dadosUsuario);
+      console.log("Usuário logado recuperado:", FiberGuardian.UsuarioLogado);
+    /*
+      // Exemplo: mostrar itens de menu baseados no role
+      if (FiberGuardian.UsuarioLogado.role === "ADMIN") {
+        const menuAdmin = document.getElementById("menuAdmin");
+        if (menuAdmin) {
+          menuAdmin.classList.remove("d-none");
+        }
+      }
+    */
+      aplicarControleDeAcesso(FiberGuardian.UsuarioLogado.role);
+
+
+    } catch (erro) {
+      console.warn("Erro ao interpretar dados do usuário no sessionStorage:", erro);
+      sessionStorage.removeItem("usuario"); // fallback defensivo
+      window.location.href = "login.html"; // força nova autenticação
+    }
+  } else {
+    console.warn("Usuário não autenticado. Redirecionando para login.");
+    window.location.href = "login.html";
+  }
+
   // Define o submódulo CORE
   FiberGuardian.Core = FiberGuardian.Core || {};
 
@@ -75,6 +104,28 @@
           </div>`;
       });
   };
+
+
+  /**
+   * Esconde elementos com base nos roles permitidos definidos em data-role-allowed
+   * @param {string} roleUsuario - Role do usuário logado (ex: ADMIN, USUARIO, etc)
+   */
+  function aplicarControleDeAcesso(roleUsuario) {
+    const elementosProtegidos = document.querySelectorAll("[data-role-allowed]");
+
+    elementosProtegidos.forEach((el) => {
+      const rolesPermitidos = el
+        .getAttribute("data-role-allowed")
+        .split(",")
+        .map((r) => r.trim().toUpperCase());
+
+      if (!rolesPermitidos.includes(roleUsuario.toUpperCase())) {
+        el.classList.add("d-none");
+      }
+    });
+  }
+
+
 
   /**
    * Carrega scripts sequencialmente (um após o outro) para garantir dependências.
