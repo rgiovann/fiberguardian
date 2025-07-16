@@ -11,15 +11,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import edu.entra21.fiberguardian.exception.exception.EntidadeEmUsoException;
 import edu.entra21.fiberguardian.exception.exception.NegocioException;
+import edu.entra21.fiberguardian.exception.exception.SenhaIncorretaException;
 import edu.entra21.fiberguardian.exception.exception.UsuarioNaoEncontradoException;
 import edu.entra21.fiberguardian.model.Usuario;
 import edu.entra21.fiberguardian.repository.UsuarioRepository;
 
 @Service
+@Transactional(readOnly = true) // padrão: todos os métodos SÃO transacionais, mas SÓ de leitura
 public class UsuarioService {
 	private static final String MSG_USUARIO_EM_USO = "Usuário de código %d não pode ser removido, pois está em uso.";
-	private static final String MSG_SENHA_ATUAL_NAO_PODE_SER_A_MESMA = "Senha nova do usuário %d igual a senha anterior.";
-	private static final String MSG_SENHA_ATUAL_INCORRETA = "Senha atual do usuário %d é incorreta.";
 	private final UsuarioRepository usuarioRepository;
 	private final PasswordEncoder passwordEncoder;
 
@@ -86,8 +86,33 @@ public class UsuarioService {
 
 	}
 
+	public boolean senhaCorreta(String senhaInformada, Usuario usuario) {
+		return passwordEncoder.matches(senhaInformada, usuario.getSenha());
+	}
+
+	public boolean senhaRepetida(String novaSenha, Usuario usuario) {
+		return (passwordEncoder.matches(novaSenha, usuario.getSenha()));
+	}
+
 	@Transactional
-	public Usuario alterarNomeUsuario(String novoNome, Usuario usuario){
+	public void atualizarSenha(Usuario usuario, String novaSenha, String senhaAtual) {
+
+		// checa senha atual é diferente da nova senha...
+		if (senhaRepetida(novaSenha, usuario)) {
+			throw new NegocioException("A nova senha não pode ser igual à anterior.");
+		}
+		// problema na autenticacao...
+		if (!senhaCorreta(senhaAtual, usuario)) {
+			throw new SenhaIncorretaException("Senha invalida!");
+		}
+
+		String senhaCriptografada = passwordEncoder.encode(novaSenha);
+		usuario.setSenha(senhaCriptografada);
+		usuarioRepository.save(usuario);
+	}
+
+	@Transactional
+	public Usuario alterarNomeUsuario(String novoNome, Usuario usuario) {
 		usuario.setNome(novoNome);
 		return usuarioRepository.save(usuario);
 	}

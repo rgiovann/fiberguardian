@@ -33,7 +33,7 @@
     }
 
     h4 {
-      font-size: 1.25rem;
+      font-size: 1.0rem;
       margin-bottom: 1rem;
     }
 
@@ -53,6 +53,20 @@
 
     #mensagemSistema {
       font-size: 0.875rem;
+      min-height: 1.5rem;
+      transition: opacity 0.2s ease-in-out;
+
+      /* ou ajuste visual desejado, ex: 24px */
+
+    }
+
+    #mensagemSistema.alert {
+      padding: 0.25rem 0.75rem;
+      /* vertical 4px, horizontal 12px */
+      font-size: 0.8rem;
+      border-radius: 0.25rem;
+      /* reduz arredondamento */
+
     }
 
     .text-success {
@@ -64,7 +78,7 @@
 <body>
   <div class="container">
     <div class="card shadow-sm text-center">
-      <div class="bg-secondary text-white py-2 px-3 rounded mb-5">
+      <div class="bg-secondary text-white py-2 px-3 rounded mb-3">
         <h4 class="m-0">CADASTRO DE USUÁRIO</h4>
       </div>
       <form id="cadastroForm">
@@ -109,11 +123,14 @@
           </div>
         </div>
 
-        <button class="btn btn-primary w-100 mt-2" type="submit">
+        <button class="btn btn-primary w-100 mb-2" type="submit">
           <i class="fas fa-user-plus me-2"></i>Criar Conta
         </button>
+        <!--
+        <div id="mensagemSistema" class="alert d-none mt-3" role="alert"></div>        
+        -->
 
-        <div id="mensagemSistema" class="alert d-none mt-3" role="alert"></div>
+        <div id="mensagemSistema" class="alert  mt-1 mb-2 invisible" role="alert"></div>
 
         <div class="text-center mt-3">
           <a class="text-decoration-none text-success" href="index.html">

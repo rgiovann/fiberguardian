@@ -60,13 +60,24 @@
       email = normalizarEmail(email); // usando função privada
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
+    /*
+    function exibirMensagem(texto, tipo) {
+      const alerta = document.getElementById("mensagemSistema");
+      alerta.textContent = texto;
+      alerta.className = `alert alert-${tipo} mt-1`;
+      alerta.classList.remove("d-none");
+      setTimeout(() => alerta.classList.add("d-none"), 1500);
+    }
+    */
 
     function exibirMensagem(texto, tipo) {
       const alerta = document.getElementById("mensagemSistema");
       alerta.textContent = texto;
-      alerta.className = `alert alert-${tipo} mt-3`;
-      alerta.classList.remove("d-none");
-      setTimeout(() => alerta.classList.add("d-none"), 1500);
+      alerta.className = `alert alert-${tipo} mt-1 visible`;
+      
+      setTimeout(() => {
+        alerta.classList.replace("visible", "invisible");
+      }, 1500);
     }
 
     // Função privada: verifica se a sessão ainda está ativa

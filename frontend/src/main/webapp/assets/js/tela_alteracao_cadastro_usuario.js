@@ -3,11 +3,14 @@
   FiberGuardian.TelaAlteracaoCadastroUsuario = (function () {
     const URL_BASE = "/usuarios";
     const URL_BUSCAR_ALTERAR_NOME = `${URL_BASE}/me/nome`;
+    const URL_ALTERAR_SENHA = `${URL_BASE}/me/senha`;
+
+    let nomeOriginal = "";
 
     async function configurarEventos() {
       await preencherCampos();
       alterarFormularioNome();
-      configurarFormularioSenha();
+      alterarFormularioSenha();
     }
 
     async function preencherCampos() {
@@ -30,6 +33,7 @@
         }
 
         const usuario = await resposta.json();
+        nomeOriginal = usuario.nome || "";
         document.getElementById("nome").value = usuario.nome || "";
         document.getElementById("email").value = usuario.email || "";
       } catch (erro) {
@@ -58,6 +62,15 @@
           return;
         }
 
+        // Verifica se o nome não mudou
+        if (nome === nomeOriginal) {
+          FiberGuardian.Utils.exibirMensagem(
+            "O nome informado já é o mesmo cadastrado.",
+            "info"
+          );
+          return;
+        }
+
         botaoSubmit.disabled = true;
 
         try {
@@ -77,6 +90,7 @@
             const dados = await resposta.json();
             // Reflete o novo nome retornado no campo de input
             campoNome.value = dados.nome || "";
+            nomeOriginal = dados.nome || "";
 
             FiberGuardian.Utils.exibirMensagem(
               "Nome alterado com sucesso.",
@@ -105,61 +119,64 @@
       });
     }
 
-    function configurarFormularioSenha() {
+    function alterarFormularioSenha() {
       const form = document.getElementById("formAlterarSenha");
+      const campoSenhaAtual = document.getElementById("senhaAtual");
+      const campoNovaSenha = document.getElementById("novaSenha");
+      const campoConfirmar = document.getElementById("confirmarSenha");
+      const erroMismatch = document.getElementById("senhaMismatchError");
+
       form.addEventListener("submit", async function (e) {
         e.preventDefault();
 
-        const senhaAtual = document.getElementById("senhaAtual").value;
-        const novaSenha = document.getElementById("novaSenha").value;
-        const confirmar = document.getElementById("confirmarSenha").value;
+        const senhaAtual = campoSenhaAtual.value;
+        const novaSenha = campoNovaSenha.value;
+        const confirmar = campoConfirmar.value;
 
+        // Verifica se nova senha e confirmação coincidem
         if (novaSenha !== confirmar) {
-          document.getElementById("senhaMismatchError").style.display = "block";
+          erroMismatch.style.display = "block";
           return;
         } else {
-          document.getElementById("senhaMismatchError").style.display = "none";
+          erroMismatch.style.display = "none";
         }
 
         try {
-          const csrf = await FiberGuardian.Utils.obterNovoToken();
+          const csrf = await FiberGuardian.Utils.obterTokenCsrf();
 
-          const resposta = await fetch(`${URL_BASE}/senha`, {
+          const resposta = await fetch(URL_ALTERAR_SENHA, {
             method: "PUT",
             credentials: "include",
             headers: {
               "Content-Type": "application/json",
               "X-XSRF-TOKEN": csrf,
             },
-            body: JSON.stringify({ senhaAtual, novaSenha }),
+            body: JSON.stringify({
+              senhaAtual: senhaAtual,
+              novaSenha: novaSenha,
+            }),
           });
 
           if (resposta.ok) {
-            FiberGuardian.Utils.exibirMensagem(
-              "Senha alterada com sucesso.",
-              "success"
-            );
-            form.reset();
-          } else if (resposta.status === 401) {
-            FiberGuardian.Utils.exibirMensagem(
-              "Senha atual incorreta.",
-              "danger"
-            );
+            FiberGuardian.Utils.exibirMensagem("Senha alterada com sucesso.", "success");
+            form.reset(); // limpa os campos por segurança
+          } else if (resposta.status === 400 || resposta.status === 403) {
+            const tipo = resposta.headers.get("Content-Type") || "";
+            const mensagemErro = tipo.includes("application/json")
+              ? (await resposta.json()).userMessage || "Erro ao alterar a senha."
+              : await resposta.text();
+
+            FiberGuardian.Utils.exibirMensagem(mensagemErro, "danger");
           } else {
-            FiberGuardian.Utils.exibirMensagem(
-              "Erro ao atualizar a senha.",
-              "danger"
-            );
+            FiberGuardian.Utils.exibirMensagem("Erro inesperado ao alterar senha.", "danger");
           }
         } catch (erro) {
           console.error(erro);
-          FiberGuardian.Utils.exibirMensagem(
-            "Erro ao enviar requisição.",
-            "danger"
-          );
+          FiberGuardian.Utils.exibirMensagem("Erro ao enviar requisição: " + erro.message, "danger");
         }
       });
     }
+
     return { init: configurarEventos };
   })();
 })();
