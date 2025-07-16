@@ -1,53 +1,69 @@
 (function () {
   window.FiberGuardian = window.FiberGuardian || {};
   FiberGuardian.TelaAlteracaoCadastroUsuario = (function () {
-    const URL_BASE_BUSCAR_POR_EMAIL = "/usuarios/buscar-por-email";
+    const URL_BASE = "/usuarios";
+    const URL_BUSCAR_ALTERAR_NOME = `${URL_BASE}/me/nome`;
 
     async function configurarEventos() {
       await preencherCampos();
-      configurarFormularioNome();
+      alterarFormularioNome();
       configurarFormularioSenha();
     }
 
     async function preencherCampos() {
       try {
         const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
-        const emailUsuario = FiberGuardian.UsuarioLogado?.email;
 
-        if (!emailUsuario) {
-          throw new Error("Email do usuário não encontrado. Faça login novamente.");
-        }
-        const resposta = await fetch(`${URL_BASE_BUSCAR_POR_EMAIL}?email=${encodeURIComponent(emailUsuario)}`, {
+        const resposta = await fetch(URL_BUSCAR_ALTERAR_NOME, {
           method: "GET",
           headers: { "X-XSRF-TOKEN": csrfToken },
           credentials: "include",
         });
 
-        if (!resposta.ok) throw new Error("Erro ao obter dados");
+        if (!resposta.ok) {
+          const tipo = resposta.headers.get("Content-Type") || "";
+          const mensagemErro = tipo.includes("application/json")
+            ? (await resposta.json()).erro || "Erro inesperado."
+            : await resposta.text();
+
+          throw new Error(mensagemErro);
+        }
 
         const usuario = await resposta.json();
         document.getElementById("nome").value = usuario.nome || "";
         document.getElementById("email").value = usuario.email || "";
       } catch (erro) {
-        exibirMensagem("Erro ao carregar seus dados.", "danger");
+        console.error(erro);
+        FiberGuardian.Utils.exibirMensagem(
+          "Erro ao carregar seus dados: " + erro.message,
+          "danger"
+        );
       }
     }
 
-    function configurarFormularioNome() {
+    function alterarFormularioNome() {
       const form = document.getElementById("formAlterarNome");
+      const botaoSubmit = form.querySelector("button[type=submit]");
+      const campoNome = document.getElementById("nome");
+
       form.addEventListener("submit", async function (e) {
         e.preventDefault();
 
-        const nome = document.getElementById("nome").value.trim();
+        const nome = campoNome.value.trim();
         if (!nome) {
-          exibirMensagem("O nome não pode estar vazio.", "danger");
+          FiberGuardian.Utils.exibirMensagem(
+            "O nome não pode estar vazio.",
+            "danger"
+          );
           return;
         }
 
-        try {
-          const csrf = await FiberGuardian.Utils.obterNovoToken();
+        botaoSubmit.disabled = true;
 
-          const resposta = await fetch(`${URL_BASE}/nome`, {
+        try {
+          const csrf = await FiberGuardian.Utils.obterTokenCsrf();
+
+          const resposta = await fetch(URL_BUSCAR_ALTERAR_NOME, {
             method: "PUT",
             credentials: "include",
             headers: {
@@ -58,13 +74,33 @@
           });
 
           if (resposta.ok) {
-            exibirMensagem("Nome alterado com sucesso.", "success");
+            const dados = await resposta.json();
+            // Reflete o novo nome retornado no campo de input
+            campoNome.value = dados.nome || "";
+
+            FiberGuardian.Utils.exibirMensagem(
+              "Nome alterado com sucesso.",
+              "success"
+            );
           } else {
-            exibirMensagem("Erro ao atualizar o nome.", "danger");
+            const tipo = resposta.headers.get("Content-Type") || "";
+            const mensagemErro = tipo.includes("application/json")
+              ? (await resposta.json()).erro || "Erro inesperado."
+              : await resposta.text();
+
+            FiberGuardian.Utils.exibirMensagem(
+              "Erro ao atualizar o nome: " + mensagemErro,
+              "danger"
+            );
           }
         } catch (erro) {
           console.error(erro);
-          exibirMensagem("Erro ao enviar requisição.", "danger");
+          FiberGuardian.Utils.exibirMensagem(
+            "Erro ao enviar requisição: " + erro.message,
+            "danger"
+          );
+        } finally {
+          botaoSubmit.disabled = false;
         }
       });
     }
@@ -99,31 +135,31 @@
           });
 
           if (resposta.ok) {
-            exibirMensagem("Senha alterada com sucesso.", "success");
+            FiberGuardian.Utils.exibirMensagem(
+              "Senha alterada com sucesso.",
+              "success"
+            );
             form.reset();
           } else if (resposta.status === 401) {
-            exibirMensagem("Senha atual incorreta.", "danger");
+            FiberGuardian.Utils.exibirMensagem(
+              "Senha atual incorreta.",
+              "danger"
+            );
           } else {
-            exibirMensagem("Erro ao atualizar a senha.", "danger");
+            FiberGuardian.Utils.exibirMensagem(
+              "Erro ao atualizar a senha.",
+              "danger"
+            );
           }
         } catch (erro) {
           console.error(erro);
-          exibirMensagem("Erro ao enviar requisição.", "danger");
+          FiberGuardian.Utils.exibirMensagem(
+            "Erro ao enviar requisição.",
+            "danger"
+          );
         }
       });
     }
-
-    function exibirMensagem(texto, tipo) {
-      const msg = document.getElementById("mensagemSistema");
-      msg.classList.remove("d-none", "alert-success", "alert-danger");
-      msg.classList.add(`alert-${tipo}`);
-      msg.textContent = texto;
-
-      setTimeout(() => {
-        msg.classList.add("d-none");
-      }, 5000);
-    }
-
     return { init: configurarEventos };
   })();
 })();

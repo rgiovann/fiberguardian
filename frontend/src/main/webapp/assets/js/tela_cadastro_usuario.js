@@ -30,26 +30,26 @@
       try {
         const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
 
-        const resposta = await fetch(
-          "/usuarios",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-XSRF-TOKEN": csrfToken,
-            },
-            credentials: "include",
-            body: JSON.stringify({
-              nome: nome.trim(),
-              email: email.trim().toLowerCase(),
-              senha: senha,
-              role: perfil,
-            }),
-          }
-        );
+        const resposta = await fetch("/usuarios", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-XSRF-TOKEN": csrfToken,
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            nome: nome.trim(),
+            email: email.trim().toLowerCase(),
+            senha: senha,
+            role: perfil,
+          }),
+        });
 
         if (resposta.ok) {
-          FiberGuardian.Utils.exibirMensagem("Login realizado com sucesso!", "success");
+          FiberGuardian.Utils.exibirMensagem(
+            "Login realizado com sucesso!",
+            "success"
+          );
           form.reset();
           limparErros();
           nomeField.focus();

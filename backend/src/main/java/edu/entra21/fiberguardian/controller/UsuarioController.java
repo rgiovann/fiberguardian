@@ -2,6 +2,8 @@ package edu.entra21.fiberguardian.controller;
 
 import java.util.List;
 
+import edu.entra21.fiberguardian.input.UsuarioAlteraNomeInput;
+import edu.entra21.fiberguardian.model.Usuario;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -9,13 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -24,7 +20,7 @@ import edu.entra21.fiberguardian.assembler.UsuarioNovoInputDisassembler;
 import edu.entra21.fiberguardian.dto.UsuarioDto;
 import edu.entra21.fiberguardian.input.UsuarioCompletoComSenhaInput;
 import edu.entra21.fiberguardian.input.UsuarioCompletoSemSenhaInput;
-import edu.entra21.fiberguardian.input.UsuarioNovaSenhaInput;
+import edu.entra21.fiberguardian.input.UsuarioAlteraSenhaInput;
 import edu.entra21.fiberguardian.jacksonview.UsuarioView;
 import edu.entra21.fiberguardian.openapi.UsuarioControllerOpenApi;
 import edu.entra21.fiberguardian.service.UsuarioService;
@@ -70,10 +66,29 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 
 	}
 
-	@GetMapping(path = "/buscar-por-email")
+	@GetMapping(path = "/me/nome")
 	@JsonView(UsuarioView.Autenticado.class)
-	public UsuarioDto buscarPorEmail(@RequestParam("email") String email) {
-		return usuarioDtoAssembler.toDto(usuarioService.buscarPorEmailObrigatorio(email));
+	public UsuarioDto buscarNome(Authentication authentication) {
+		String emailAutenticado = authentication.getName();
+		return usuarioDtoAssembler.toDto(usuarioService.buscarPorEmailObrigatorio(emailAutenticado));
+	}
+
+	/*
+	TODO: depois atualizar interface OpenAPI
+	 */
+	@PutMapping(path = "/me/nome",produces = MediaType.APPLICATION_JSON_VALUE)
+	@JsonView(UsuarioView.SomenteNome.class)
+	public ResponseEntity<UsuarioDto> alterarNome(
+			@RequestBody @Valid UsuarioAlteraNomeInput input,
+			Authentication authentication) {
+
+		String emailAutenticado = authentication.getName();
+
+		Usuario usuario = usuarioService.buscarPorEmailObrigatorio(emailAutenticado);
+		Usuario atualizado = usuarioService.alterarNomeUsuario(input.getNome(), usuario);
+		UsuarioDto dto = usuarioDtoAssembler.toDto(atualizado);
+
+		return ResponseEntity.ok(dto);
 	}
 
 	@Override
@@ -92,7 +107,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	}
 
 	@Override
-	public ResponseEntity<Void> alterarSenha(Long usuarioId, UsuarioNovaSenhaInput usuarioSoSenhaInput) {
+	public ResponseEntity<Void> alterarSenha(Long usuarioId, UsuarioAlteraSenhaInput usuarioSoSenhaInput) {
 		return null;
 	}
 

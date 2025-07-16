@@ -8,7 +8,7 @@ import edu.entra21.fiberguardian.dto.UsuarioDto;
 import edu.entra21.fiberguardian.exception.handler.Problem;
 import edu.entra21.fiberguardian.input.UsuarioCompletoComSenhaInput;
 import edu.entra21.fiberguardian.input.UsuarioCompletoSemSenhaInput;
-import edu.entra21.fiberguardian.input.UsuarioNovaSenhaInput;
+import edu.entra21.fiberguardian.input.UsuarioAlteraSenhaInput;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.core.Authentication;
 
 @Tag(name = "Usuários", description = "Gerenciamento de usuários do sistema")
 public interface UsuarioControllerOpenApi {
@@ -32,11 +33,11 @@ public interface UsuarioControllerOpenApi {
 			@ApiResponse(responseCode = "500", description = "Erro interno do servidor", content = @Content(schema = @Schema(implementation = Problem.class))) })
 	@SecurityRequirement(name = "cookieAuth")
 
-	UsuarioDto buscarPorEmail(
-			@Parameter(description = "Email do usuário a ser buscado", example = "email@dominio.com", required = true) String email);
+	UsuarioDto buscarNome(
+			@Parameter(description = "Dados do usuario autenticado", example = "email@dominio.com", required = true) Authentication emailAutenticado);
 
-	@Operation(summary = "Cadastra um novo usuário", description = "Cria um novo usuário com os dados fornecidos. Requer autenticação via cookie JSESSIONID e token CSRF no header X-XSRF-TOKEN.")
-	@ApiResponses({ @ApiResponse(responseCode = "201", description = "Usuário cadastrado com sucesso"),
+	@Operation(summary = "Busca o nome do usuário autenticado", description = "Busca o nome do usuário autenticado. Requer autenticação via cookie JSESSIONID e token CSRF no header X-XSRF-TOKEN.")
+	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Nome do usuário autenticado realizado com sucesso"),
 			@ApiResponse(responseCode = "400", description = "Dados do usuário inválidos", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "403", description = "Acesso negado (sessão inválida ou CSRF inválido)", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "409", description = "Email já cadastrado", content = @Content(schema = @Schema(implementation = Problem.class))),
@@ -89,6 +90,6 @@ public interface UsuarioControllerOpenApi {
 	ResponseEntity<Void> alterarSenha(
 			@Parameter(description = "ID do usuário cuja senha será alterada", example = "1", required = true) Long usuarioId,
 
-			@RequestBody(description = "Dados da senha atual e nova senha", required = true) UsuarioNovaSenhaInput usuarioSoSenhaInput);
+			@RequestBody(description = "Dados da senha atual e nova senha", required = true) UsuarioAlteraSenhaInput usuarioSoSenhaInput);
 
 }

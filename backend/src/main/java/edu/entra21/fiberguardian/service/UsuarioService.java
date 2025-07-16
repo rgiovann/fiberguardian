@@ -86,6 +86,12 @@ public class UsuarioService {
 
 	}
 
+	@Transactional
+	public Usuario alterarNomeUsuario(String novoNome, Usuario usuario){
+		usuario.setNome(novoNome);
+		return usuarioRepository.save(usuario);
+	}
+
 	public Usuario buscarOuFalhar(Long usuarioId) {
 		return usuarioRepository.findById(usuarioId).orElseThrow(() -> new UsuarioNaoEncontradoException(usuarioId));
 	}

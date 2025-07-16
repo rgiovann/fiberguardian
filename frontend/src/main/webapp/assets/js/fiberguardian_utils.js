@@ -66,7 +66,7 @@
       alerta.textContent = texto;
       alerta.className = `alert alert-${tipo} mt-3`;
       alerta.classList.remove("d-none");
-      setTimeout(() => alerta.classList.add("d-none"), 3000);
+      setTimeout(() => alerta.classList.add("d-none"), 1500);
     }
 
     // Função privada: verifica se a sessão ainda está ativa

@@ -10,4 +10,8 @@ public interface UsuarioView {
 
 	}
 
+	public interface SomenteNome {
+
+	}
+
 }
