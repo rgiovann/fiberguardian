@@ -22,8 +22,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import edu.entra21.fiberguardian.assembler.UsuarioDtoAssembler;
 import edu.entra21.fiberguardian.assembler.UsuarioNovoInputDisassembler;
 import edu.entra21.fiberguardian.dto.UsuarioDto;
-import edu.entra21.fiberguardian.exception.exception.NegocioException;
-import edu.entra21.fiberguardian.exception.exception.SenhaIncorretaException;
 import edu.entra21.fiberguardian.input.UsuarioAlteraNomeInput;
 import edu.entra21.fiberguardian.input.UsuarioAlteraSenhaInput;
 import edu.entra21.fiberguardian.input.UsuarioCompletoComSenhaInput;
@@ -98,6 +96,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 		return ResponseEntity.ok(dto);
 	}
 
+	@Override
 	@PutMapping(path = "/me/senha", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> alterarSenha(@RequestBody @Valid UsuarioAlteraSenhaInput input,
 			Authentication authentication) {
@@ -105,16 +104,8 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 		String emailAutenticado = authentication.getName();
 
 		Usuario usuario = usuarioService.buscarPorEmailObrigatorio(emailAutenticado);
-
-		try {
-			usuarioService.atualizarSenha(usuario, input.getNovaSenha(), input.getSenhaAtual());
-			return ResponseEntity.noContent().build();
-		} catch (SenhaIncorretaException e) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-		} catch (NegocioException e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
-		}
-
+		usuarioService.atualizarSenha(usuario, input.getNovaSenha(), input.getSenhaAtual());
+		return ResponseEntity.noContent().build();
 	}
 
 	@Override
@@ -129,11 +120,6 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 
 	@Override
 	public ResponseEntity<Void> ativarUsuario(Long usuarioId) {
-		return null;
-	}
-
-	@Override
-	public ResponseEntity<Void> alterarSenha(Long usuarioId, UsuarioAlteraSenhaInput usuarioSoSenhaInput) {
 		return null;
 	}
 

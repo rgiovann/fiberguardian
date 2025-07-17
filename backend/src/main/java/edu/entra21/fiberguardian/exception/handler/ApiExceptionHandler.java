@@ -61,9 +61,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler(NegocioException.class)
-	public ResponseEntity<?> handleNegocioException(NegocioException ex, WebRequest request) {
+	public ResponseEntity<Object> handleNegocioException(NegocioException ex, WebRequest request) {
 
-		HttpStatusCode status = HttpStatus.BAD_REQUEST;
+		HttpStatus status = HttpStatus.BAD_REQUEST;
 		ProblemType problemType = ProblemType.PROBLEMA_NA_REQUISICAO;
 		String detail = ex.getMessage();
 		Problem problem = createProblemBuilder(status, problemType, detail).userMessage(detail).build();
@@ -75,7 +75,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(EntidadeEmUsoException.class)
 	public ResponseEntity<Object> handleEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest request) {
 
-		HttpStatusCode status;
+		HttpStatus status;
 		status = HttpStatus.CONFLICT;
 		ProblemType problemType = ProblemType.ENTIDADE_EM_USO;
 		String detail = ex.getMessage();
@@ -87,7 +87,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<Object> handleOtherExceptions(Exception ex, WebRequest request) {
 
-		HttpStatusCode status = HttpStatus.INTERNAL_SERVER_ERROR;
+		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
 		ex.printStackTrace(); // #debug
 		String details = MSG_ERRO_GENERICA_USUARIO_FINAL;
