@@ -1,11 +1,12 @@
 package edu.entra21.fiberguardian.openapi;
 
-import java.util.List;
-
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 
+import edu.entra21.fiberguardian.dto.PageDto;
 import edu.entra21.fiberguardian.dto.UsuarioDto;
+import edu.entra21.fiberguardian.dto.UsuarioListagemDto;
 import edu.entra21.fiberguardian.exception.handler.Problem;
 import edu.entra21.fiberguardian.input.UsuarioAlteraSenhaInput;
 import edu.entra21.fiberguardian.input.UsuarioCompletoComSenhaInput;
@@ -23,9 +24,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Usuários", description = "Gerenciamento de usuários do sistema")
 public interface UsuarioControllerOpenApi {
 
-	List<UsuarioDto> listar();
+	public PageDto<UsuarioListagemDto> listarPaginado(Pageable listarPaginado);
 
-	@Operation(summary = "Busca um usuário por ID", description = "Retorna os detalhes de um usuário específico. Requer autenticação via cookie JSESSIONID.")
+	@Operation(summary = "Lista Usuarios", description = "Retorna Retorna uma lista paginada de usuarios. Requer autenticação via cookie JSESSIONID.")
 	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Usuário encontrado"),
 			@ApiResponse(responseCode = "400", description = "ID do usuário inválido", content = @Content(schema = @Schema(implementation = Problem.class))),
 			@ApiResponse(responseCode = "403", description = "Acesso negado (sessão inválida ou ausente)", content = @Content(schema = @Schema(implementation = Problem.class))),

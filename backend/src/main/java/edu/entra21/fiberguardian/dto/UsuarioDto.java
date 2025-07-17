@@ -11,8 +11,6 @@ import lombok.Setter;
 @Getter
 public class UsuarioDto {
 
-	@JsonView({ UsuarioView.Completo.class })
-	private Long id;
 	@JsonView({ UsuarioView.Completo.class, UsuarioView.Autenticado.class, UsuarioView.SomenteNome.class })
 	private String nome;
 	@JsonView({ UsuarioView.Completo.class, UsuarioView.Autenticado.class })

@@ -4,6 +4,10 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import edu.entra21.fiberguardian.assembler.UsuarioDtoAssembler;
+import edu.entra21.fiberguardian.assembler.UsuarioListagemDtoAssembler;
 import edu.entra21.fiberguardian.assembler.UsuarioNovoInputDisassembler;
+import edu.entra21.fiberguardian.dto.PageDto;
 import edu.entra21.fiberguardian.dto.UsuarioDto;
+import edu.entra21.fiberguardian.dto.UsuarioListagemDto;
 import edu.entra21.fiberguardian.input.UsuarioAlteraNomeInput;
 import edu.entra21.fiberguardian.input.UsuarioAlteraSenhaInput;
 import edu.entra21.fiberguardian.input.UsuarioCompletoComSenhaInput;
@@ -38,22 +45,50 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 
 	private final UsuarioService usuarioService;
 	private final UsuarioDtoAssembler usuarioDtoAssembler;
+	private final UsuarioListagemDtoAssembler usuarioListagemDtoAssembler;
 	private final UsuarioNovoInputDisassembler UsuarioCriarUsuarioInputDisassembler;
 	private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
+	private static final int TAMANHO_PAGINA_PADRAO = 10;
+	private static final String CAMPO_ORDEM_PADRAO = "nome";
+
 	public UsuarioController(UsuarioService usuarioService, UsuarioDtoAssembler usuarioDtoAssembler,
+			UsuarioListagemDtoAssembler usuarioListagemDtoAssembler,
 			UsuarioNovoInputDisassembler UsuarioCriarUsuarioInputDisassembler) {
 
 		this.usuarioService = usuarioService;
 		this.usuarioDtoAssembler = usuarioDtoAssembler;
+		this.usuarioListagemDtoAssembler = usuarioListagemDtoAssembler;
 		this.UsuarioCriarUsuarioInputDisassembler = UsuarioCriarUsuarioInputDisassembler;
 	}
+	/*
+	 * @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE) public
+	 * Page<UsuarioListagemDto> listarPaginado(
+	 * 
+	 * @PageableDefault(size = TAMANHO_PAGINA_PADRAO, sort = CAMPO_ORDEM_PADRAO,
+	 * direction = Sort.Direction.ASC) Pageable pageable) { Page<Usuario> pagina =
+	 * usuarioService.listarPaginado(pageable); List<UsuarioListagemDto> dtos =
+	 * usuarioListagemDtoAssembler.toCollectionDto(pagina.getContent());
+	 * Page<UsuarioListagemDto> paginaDto = new PageImpl<>(dtos, pageable,
+	 * pagina.getTotalElements()); return paginaDto; }
+	 */
 
-	@Override
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<UsuarioDto> listar() {
-		// TODO Auto-generated method stub
-		return usuarioDtoAssembler.toCollectionDto(usuarioService.listar());
+	public PageDto<UsuarioListagemDto> listarPaginado(
+			@PageableDefault(size = TAMANHO_PAGINA_PADRAO, sort = CAMPO_ORDEM_PADRAO, direction = Sort.Direction.ASC) Pageable pageable) {
+
+		Page<Usuario> pagina = usuarioService.listarPaginado(pageable);
+		List<UsuarioListagemDto> dtos = usuarioListagemDtoAssembler.toCollectionDto(pagina.getContent());
+
+		PageDto<UsuarioListagemDto> dtoPaged = new PageDto<UsuarioListagemDto>();
+		dtoPaged.setContent(dtos);
+		dtoPaged.setPageNumber(pagina.getNumber());
+		dtoPaged.setPageSize(pagina.getSize());
+		dtoPaged.setTotalElements(pagina.getTotalElements());
+		dtoPaged.setTotalPages(pagina.getTotalPages());
+		dtoPaged.setLast(pagina.isLast());
+
+		return dtoPaged;
 	}
 
 	@Override
