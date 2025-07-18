@@ -9,7 +9,7 @@
     try {
       FiberGuardian.UsuarioLogado = JSON.parse(dadosUsuario);
       console.log("Usuário logado recuperado:", FiberGuardian.UsuarioLogado);
-    /*
+      /*
       // Exemplo: mostrar itens de menu baseados no role
       if (FiberGuardian.UsuarioLogado.role === "ADMIN") {
         const menuAdmin = document.getElementById("menuAdmin");
@@ -19,10 +19,11 @@
       }
     */
       aplicarControleDeAcesso(FiberGuardian.UsuarioLogado.role);
-
-
     } catch (erro) {
-      console.warn("Erro ao interpretar dados do usuário no sessionStorage:", erro);
+      console.warn(
+        "Erro ao interpretar dados do usuário no sessionStorage:",
+        erro
+      );
       sessionStorage.removeItem("usuario"); // fallback defensivo
       window.location.href = "login.html"; // força nova autenticação
     }
@@ -51,6 +52,10 @@
       "assets/js/fiberguardian_utils.js",
       "assets/js/tela_alteracao_cadastro_usuario.js",
     ],
+    "tela_lista_cadastro_usuario.html": [
+      "assets/js/fiberguardian_utils.js",
+      "assets/js/tela_lista_cadastro_usuario.js",
+    ],
     // Adicione outras páginas conforme necessário
     // "tela_listagem_usuarios.html": [
     //   "assets/js/fiberguardian_utils.js",
@@ -69,6 +74,7 @@
    *
    * @param {string} pagina - Caminho relativo do HTML a ser carregado.
    */
+
   FiberGuardian.Core.carregarPagina = function (pagina) {
     console.log(`Carregando página: ${pagina}`);
 
@@ -82,36 +88,66 @@
         return resposta.text();
       })
       .then((html) => {
-        // Injeta o HTML carregado no elemento principal da aplicação
-        document.getElementById("conteudo-principal").innerHTML = html;
+        // Verificação defensiva contra scripts inline
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, "text/html");
+        const inlineScripts = doc.querySelectorAll("script:not([src])");
 
-        // Carrega os scripts associados à página
+        if (inlineScripts.length > 0) {
+          console.error(
+            "HTML rejeitado: contém scripts inline não permitidos."
+          );
+          document.getElementById("conteudo-principal").innerHTML = `
+          <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle"></i>
+            Erro: Conteúdo rejeitado por conter scripts inline.
+          </div>`;
+          return;
+        }
+
+        // Injeta o conteúdo limpo (sem script inline) na DOM
+        const container = document.getElementById("conteudo-principal");
+        if (container) {
+          container.innerHTML = html;
+          console.info(
+            `[FiberGuardian] Página '${pagina}' carregada com sucesso.`
+          );
+        } else {
+          console.warn("Elemento #conteudo-principal não encontrado.");
+        }
+
+        // Carrega os scripts externos associados à página
         const scriptsAssociados = pageToScriptMap[pagina];
 
         if (scriptsAssociados && scriptsAssociados.length > 0) {
-          carregarScriptsSequencial(scriptsAssociados, pagina);
+          //carregarScriptsSequencial(scriptsAssociados, pagina);
+          try {
+            carregarScriptsSequencial(scriptsAssociados, pagina);
+          } catch (e) {
+            console.error(`Erro ao carregar scripts da página ${pagina}:`, e);
+          }
         } else {
           console.warn(`Nenhum script associado encontrado para: ${pagina}`);
         }
       })
       .catch((erro) => {
         console.error("Falha ao carregar conteúdo:", erro);
-        document.getElementById(
-          "conteudo-principal"
-        ).innerHTML = `<div class="alert alert-danger">
-            <i class="fas fa-exclamation-triangle"></i> 
-            Erro ao carregar conteúdo: ${erro.message}
-          </div>`;
+        document.getElementById("conteudo-principal").innerHTML = `
+        <div class="alert alert-danger">
+          <i class="fas fa-exclamation-triangle"></i>
+          Erro ao carregar conteúdo: ${erro.message}
+        </div>`;
       });
   };
-
 
   /**
    * Esconde elementos com base nos roles permitidos definidos em data-role-allowed
    * @param {string} roleUsuario - Role do usuário logado (ex: ADMIN, USUARIO, etc)
    */
   function aplicarControleDeAcesso(roleUsuario) {
-    const elementosProtegidos = document.querySelectorAll("[data-role-allowed]");
+    const elementosProtegidos = document.querySelectorAll(
+      "[data-role-allowed]"
+    );
 
     elementosProtegidos.forEach((el) => {
       const rolesPermitidos = el
@@ -124,8 +160,6 @@
       }
     });
   }
-
-
 
   /**
    * Carrega scripts sequencialmente (um após o outro) para garantir dependências.

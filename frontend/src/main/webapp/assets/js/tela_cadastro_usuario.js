@@ -1,4 +1,6 @@
 (function () {
+  "use strict";
+
   window.FiberGuardian = window.FiberGuardian || {};
 
   FiberGuardian.TelaCadastroUsuario = (function () {
@@ -117,6 +119,10 @@
         }
       });
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      FiberGuardian.TelaCadastroUsuario.init();
+    });
 
     return {
       init: configurarEventos,

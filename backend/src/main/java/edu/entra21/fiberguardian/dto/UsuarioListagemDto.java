@@ -11,5 +11,6 @@ public class UsuarioListagemDto {
 	private String nome;
 	private String email;
 	private Role role;
+	private Boolean ativo;
 
 }
