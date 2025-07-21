@@ -2,6 +2,7 @@ package edu.entra21.fiberguardian.controller;
 
 import java.util.List;
 
+import edu.entra21.fiberguardian.input.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -13,13 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -29,10 +24,6 @@ import edu.entra21.fiberguardian.assembler.UsuarioNovoInputDisassembler;
 import edu.entra21.fiberguardian.dto.PageDto;
 import edu.entra21.fiberguardian.dto.UsuarioDto;
 import edu.entra21.fiberguardian.dto.UsuarioListagemDto;
-import edu.entra21.fiberguardian.input.UsuarioAlteraNomeInput;
-import edu.entra21.fiberguardian.input.UsuarioAlteraSenhaInput;
-import edu.entra21.fiberguardian.input.UsuarioCompletoComSenhaInput;
-import edu.entra21.fiberguardian.input.UsuarioCompletoSemSenhaInput;
 import edu.entra21.fiberguardian.jacksonview.UsuarioView;
 import edu.entra21.fiberguardian.model.Usuario;
 import edu.entra21.fiberguardian.openapi.UsuarioControllerOpenApi;
@@ -117,45 +108,64 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	/*
 	 * TODO: depois atualizar interface OpenAPI
 	 */
+
 	@PutMapping(path = "/me/nome", produces = MediaType.APPLICATION_JSON_VALUE)
 	@JsonView(UsuarioView.SomenteNome.class)
 	public ResponseEntity<UsuarioDto> alterarNome(@RequestBody @Valid UsuarioAlteraNomeInput input,
-			Authentication authentication) {
+												  Authentication authentication) {
 
 		String emailAutenticado = authentication.getName();
-
-		Usuario usuario = usuarioService.buscarPorEmailObrigatorio(emailAutenticado);
-		Usuario atualizado = usuarioService.alterarNomeUsuario(input.getNome(), usuario);
+		Usuario atualizado = usuarioService.alterarNomeUsuario(emailAutenticado, input.getNome());
 		UsuarioDto dto = usuarioDtoAssembler.toDto(atualizado);
-
 		return ResponseEntity.ok(dto);
 	}
+
 
 	@Override
 	@PutMapping(path = "/me/senha", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> alterarSenha(@RequestBody @Valid UsuarioAlteraSenhaInput input,
-			Authentication authentication) {
+											   Authentication authentication) {
 
 		String emailAutenticado = authentication.getName();
+		usuarioService.atualizarSenha(emailAutenticado, input.getNovaSenha(), input.getSenhaAtual());
+		return ResponseEntity.noContent().build();
+	}
 
-		Usuario usuario = usuarioService.buscarPorEmailObrigatorio(emailAutenticado);
-		usuarioService.atualizarSenha(usuario, input.getNovaSenha(), input.getSenhaAtual());
+//	@Override
+//	@DeleteMapping("/ativo")
+//	@ResponseStatus(HttpStatus.NO_CONTENT)
+//	public ResponseEntity<Void> inativarUsuario(@RequestBody @Valid UsuarioAlteraStatusInput input,
+//												Authentication authentication) {
+//		usuarioService.mudaStatusUsuario(authentication.getName(),input.getEmail(),false);
+//		return ResponseEntity.noContent().build();
+//	}
+//
+//	@Override
+//	@PutMapping("/ativo")
+//	@ResponseStatus(HttpStatus.NO_CONTENT)
+//	public ResponseEntity<Void> ativarUsuario(@RequestBody @Valid UsuarioAlteraStatusInput input,
+//											  Authentication authentication) {
+//
+//		usuarioService.mudaStatusUsuario(authentication.getName(),input.getEmail(),true);
+//		return ResponseEntity.noContent().build();
+//	}
+
+	@Override
+	@DeleteMapping("/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public ResponseEntity<Void> inativarUsuario(@RequestBody @Valid UsuarioAlteraStatusInput input,
+												Authentication authentication) {
+		usuarioService.inativarUsuario(authentication.getName(), input.getEmail());
 		return ResponseEntity.noContent().build();
 	}
 
 	@Override
-	public UsuarioDto atualizar(Long usuarioId, UsuarioCompletoSemSenhaInput usuarioInput) {
-		return null;
-	}
-
-	@Override
-	public ResponseEntity<Void> inativarUsuario(Long usuarioId) {
-		return null;
-	}
-
-	@Override
-	public ResponseEntity<Void> ativarUsuario(Long usuarioId) {
-		return null;
+	@PutMapping("/ativo")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public ResponseEntity<Void> ativarUsuario(@RequestBody @Valid UsuarioAlteraStatusInput input,
+											  Authentication authentication) {
+		usuarioService.ativarUsuario(authentication.getName(), input.getEmail());
+		return ResponseEntity.noContent().build();
 	}
 
 }

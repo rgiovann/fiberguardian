@@ -84,6 +84,7 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.GET, "/csrf-token").permitAll()
 						.requestMatchers(HttpMethod.POST, "/usuarios").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.GET, "/usuarios").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.GET, "/ativa").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.GET, "/usuarios/buscar-por-email").permitAll().anyRequest()
 						.authenticated())
 				// Configura sessões

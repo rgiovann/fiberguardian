@@ -2,25 +2,20 @@ package edu.entra21.fiberguardian.service;
 
 import java.util.Optional;
 
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
+import edu.entra21.fiberguardian.exception.exception.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import edu.entra21.fiberguardian.exception.exception.EntidadeEmUsoException;
-import edu.entra21.fiberguardian.exception.exception.NegocioException;
-import edu.entra21.fiberguardian.exception.exception.SenhaIncorretaException;
-import edu.entra21.fiberguardian.exception.exception.UsuarioNaoEncontradoException;
 import edu.entra21.fiberguardian.model.Usuario;
 import edu.entra21.fiberguardian.repository.UsuarioRepository;
 
 @Service
 @Transactional(readOnly = true) // padrão: todos os métodos SÃO transacionais, mas SÓ de leitura
 public class UsuarioService {
-	private static final String MSG_USUARIO_EM_USO = "Usuário de código %d não pode ser removido, pois está em uso.";
+	//private static final String MSG_USUARIO_EM_USO = "Usuário de código %d não pode ser removido, pois está em uso.";
 	private final UsuarioRepository usuarioRepository;
 	private final PasswordEncoder passwordEncoder;
 
@@ -69,22 +64,6 @@ public class UsuarioService {
 		return usuarioRepository.save(usuario);
 	}
 
-	@Transactional
-	public void excluir(Long usuarioId) {
-		try {
-
-			usuarioRepository.deleteById(usuarioId);
-
-			usuarioRepository.flush();
-
-		} catch (EmptyResultDataAccessException e) {
-			throw new UsuarioNaoEncontradoException(usuarioId);
-		} catch (DataIntegrityViolationException e) {
-			throw new EntidadeEmUsoException(String.format(MSG_USUARIO_EM_USO, usuarioId));
-		}
-
-	}
-
 	public boolean senhaCorreta(String senhaInformada, Usuario usuario) {
 		return passwordEncoder.matches(senhaInformada, usuario.getSenha());
 	}
@@ -93,16 +72,34 @@ public class UsuarioService {
 		return (passwordEncoder.matches(novaSenha, usuario.getSenha()));
 	}
 
-	@Transactional
-	public void atualizarSenha(Usuario usuario, String novaSenha, String senhaAtual) {
+//	@Transactional
+//	public void atualizarSenha(Usuario usuario, String novaSenha, String senhaAtual) {
+//
+//		// checa senha atual é diferente da nova senha...
+//		if (senhaRepetida(novaSenha, usuario)) {
+//			throw new NegocioException("A nova senha não pode ser igual à anterior.");
+//		}
+//		// problema na autenticacao...
+//		if (!senhaCorreta(senhaAtual, usuario)) {
+//			throw new UsuarioSenhaIncorretaException("Senha invalida!");
+//		}
+//
+//		String senhaCriptografada = passwordEncoder.encode(novaSenha);
+//		usuario.setSenha(senhaCriptografada);
+//		usuarioRepository.save(usuario);
+//	}
 
-		// checa senha atual é diferente da nova senha...
+	@Transactional
+	public void atualizarSenha(String email, String novaSenha, String senhaAtual) {
+
+		Usuario usuario = buscarPorEmailObrigatorio(email);
+
 		if (senhaRepetida(novaSenha, usuario)) {
 			throw new NegocioException("A nova senha não pode ser igual à anterior.");
 		}
-		// problema na autenticacao...
+
 		if (!senhaCorreta(senhaAtual, usuario)) {
-			throw new SenhaIncorretaException("Senha invalida!");
+			throw new UsuarioSenhaIncorretaException("Senha inválida!");
 		}
 
 		String senhaCriptografada = passwordEncoder.encode(novaSenha);
@@ -110,14 +107,18 @@ public class UsuarioService {
 		usuarioRepository.save(usuario);
 	}
 
+
+//	@Transactional
+//	public Usuario alterarNomeUsuario(String novoNome, Usuario usuario) {
+//		usuario.setNome(novoNome);
+//		return usuarioRepository.save(usuario);
+//	}
+
 	@Transactional
-	public Usuario alterarNomeUsuario(String novoNome, Usuario usuario) {
+	public Usuario alterarNomeUsuario(String emailUsuario, String novoNome) {
+		Usuario usuario = buscarPorEmailObrigatorio(emailUsuario);
 		usuario.setNome(novoNome);
 		return usuarioRepository.save(usuario);
-	}
-
-	public Usuario buscarOuFalhar(Long usuarioId) {
-		return usuarioRepository.findById(usuarioId).orElseThrow(() -> new UsuarioNaoEncontradoException(usuarioId));
 	}
 
 	public Usuario buscarPorEmailObrigatorio(String email) {
@@ -129,6 +130,41 @@ public class UsuarioService {
 			throw new EntidadeEmUsoException("Já existe um usuário com o e-mail informado.");
 		}
 		return true;
+	}
+
+//	@Transactional
+//	public void mudaStatusUsuario(String emailAutenticado, String emailUsuario, Boolean status) {
+//		// Verifica se o usuário está tentando mudar o próprio status
+//		if (emailAutenticado.equalsIgnoreCase(emailUsuario)) {
+//			throw new UsuarioAutoMudancaStatusException("Usuário não pode alterar seu próprio status");
+//		}
+//
+//		// Verifica se o usuário de destino existe
+//		Usuario usuario = buscarPorEmailObrigatorio(emailUsuario);
+//		usuario.setAtivo(status);
+//		usuarioRepository.save(usuario);
+//	}
+
+	@Transactional
+	public void ativarUsuario(String emailAutenticado, String emailUsuario) {
+		validarMudancaStatus(emailAutenticado, emailUsuario);
+		Usuario usuario = buscarPorEmailObrigatorio(emailUsuario);
+		usuario.setAtivo(true);
+		usuarioRepository.save(usuario);
+	}
+
+	@Transactional
+	public void inativarUsuario(String emailAutenticado, String emailUsuario) {
+		validarMudancaStatus(emailAutenticado, emailUsuario);
+		Usuario usuario = buscarPorEmailObrigatorio(emailUsuario);
+		usuario.setAtivo(false);
+		usuarioRepository.save(usuario);
+	}
+
+	private void validarMudancaStatus(String emailAutenticado, String emailUsuario) {
+		if (emailAutenticado.equalsIgnoreCase(emailUsuario)) {
+			throw new UsuarioAutoMudancaStatusException("Usuário não pode alterar seu próprio status");
+		}
 	}
 
 }

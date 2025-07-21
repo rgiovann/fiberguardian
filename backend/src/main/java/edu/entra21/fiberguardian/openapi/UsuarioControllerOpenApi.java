@@ -1,5 +1,6 @@
 package edu.entra21.fiberguardian.openapi;
 
+import edu.entra21.fiberguardian.input.UsuarioAlteraStatusInput;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -59,15 +60,16 @@ public interface UsuarioControllerOpenApi {
 	@SecurityRequirement(name = "cookieAuth")
 	@SecurityRequirement(name = "csrfToken")
 
-	UsuarioDto atualizar(
-			@Parameter(description = "ID do usuário a ser atualizado", example = "1", required = true) Long usuarioId,
-			@Parameter(description = "Novos dados do usuário (nome e role)", required = true) UsuarioCompletoSemSenhaInput usuarioInput);
+//	UsuarioDto atualizar(
+//			@Parameter(description = "ID do usuário a ser atualizado", example = "1", required = true) Long usuarioId,
+//			@Parameter(description = "Novos dados do usuário (nome e role)", required = true) UsuarioCompletoSemSenhaInput usuarioInput);
+//
+//	@Operation(summary = "Inativa um usuário por Id")
+//	@ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Usuário inativado com sucesso"),
+//			@ApiResponse(responseCode = "404", description = "Usuário não encontrado") })
 
-	@Operation(summary = "Inativa um usuário por Id")
-	@ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Usuário inativado com sucesso"),
-			@ApiResponse(responseCode = "404", description = "Usuário não encontrado") })
 	ResponseEntity<Void> inativarUsuario(
-			@Parameter(description = "Id de um usuário", example = "1", required = true) Long usuarioId);
+			@Parameter(description = "Email usuario", example = "usuario@email.com", required = true) UsuarioAlteraStatusInput input, Authentication authentication);
 
 	@SecurityRequirement(name = "cookieAuth")
 	@SecurityRequirement(name = "csrfToken")
@@ -75,8 +77,10 @@ public interface UsuarioControllerOpenApi {
 	@Operation(summary = "Ativa um usuário por Id")
 	@ApiResponses(value = { @ApiResponse(responseCode = "204", description = "Usuário ativado com sucesso"),
 			@ApiResponse(responseCode = "404", description = "Usuário não encontrado") })
+
 	ResponseEntity<Void> ativarUsuario(
-			@Parameter(description = "Id de um usuário", example = "1", required = true) Long usuarioId);
+			@Parameter(description = "Emaild usuário", example = "usuario@email.com", required = true) UsuarioAlteraStatusInput input,
+			Authentication authentication);
 
 	@SecurityRequirement(name = "cookieAuth")
 	@SecurityRequirement(name = "csrfToken")
