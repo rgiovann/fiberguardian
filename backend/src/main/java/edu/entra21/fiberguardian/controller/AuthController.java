@@ -1,5 +1,6 @@
 package edu.entra21.fiberguardian.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.servlet.http.Cookie;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -108,4 +110,30 @@ public class AuthController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");
 		}
 	}
+
+	@PostMapping("/logout")
+	public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+		HttpSession session = request.getSession(false);
+
+		if (session != null) {
+			String sessionId = session.getId();
+			session.invalidate(); // Invalida a sessão
+			logger.info("Sessão encerrada com sucesso. JSESSIONID: " + sessionId);
+		} else {
+			logger.info("Logout chamado sem sessão ativa.");
+		}
+
+		SecurityContextHolder.clearContext(); // Limpa o contexto de autenticação
+
+		// Opcional: deletar cookie JSESSIONID (seguro, mas depende do client respeitar)
+		Cookie cookie = new Cookie("JSESSIONID", "");
+		cookie.setPath("/");
+		cookie.setMaxAge(0); // Expira imediatamente
+		cookie.setHttpOnly(true);
+		cookie.setSecure(true); // True se seu app está servindo via HTTPS
+		response.addCookie(cookie);
+
+		return ResponseEntity.ok().body("Logout realizado com sucesso");
+	}
+
 }

@@ -84,18 +84,20 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.GET, "/csrf-token").permitAll()
 						.requestMatchers(HttpMethod.POST, "/usuarios").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.GET, "/usuarios").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.GET, "/ativa").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.GET, "/usuarios/buscar-por-email").permitAll().anyRequest()
-						.authenticated())
+						.requestMatchers(HttpMethod.PUT, "/ativo").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.DELETE, "/ativo").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.POST, "/logout").authenticated()
+						.requestMatchers(HttpMethod.GET, "/usuarios/buscar-por-email").authenticated()
+						.anyRequest().authenticated())
 				// Configura sessões
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
 						.sessionFixation().migrateSession().maximumSessions(1).maxSessionsPreventsLogin(false))
 				// Desativa form login
 				.formLogin(form -> form.disable())
-				// Configura logout
-				.logout(logout -> logout.logoutUrl("/fiberguardian/logout")
-						.logoutSuccessHandler((req, res, auth) -> res.setStatus(HttpServletResponse.SC_OK))
-						.invalidateHttpSession(true).deleteCookies("JSESSIONID", "XSRF-TOKEN"));
+				.logout(logout -> logout.logoutUrl("/spring-logout"));
+
+		// Desativa form logout
+				//.logout(form -> form.disable());
 
 		return http.build();
 	}

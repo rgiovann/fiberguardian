@@ -267,4 +267,26 @@
     console.log("Scripts em cache:", Array.from(scriptsCarregados));
     return Array.from(scriptsCarregados);
   };
+
+  FiberGuardian.Core.realizarLogout = async function () {
+    try {
+      const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
+      const resp = await fetch("/logout", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "X-XSRF-TOKEN": csrfToken,
+        },
+      });
+
+      if (!resp.ok) throw new Error("Erro ao encerrar sessão");
+
+      window.location.href = "login.html";
+    } catch (e) {
+      FiberGuardian.Utils?.exibirMensagem?.(
+        "Erro no logout: " + e.message,
+        "danger"
+      );
+    }
+  };
 })();

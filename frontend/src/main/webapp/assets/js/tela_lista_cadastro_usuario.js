@@ -60,7 +60,7 @@
           <td>${u.email}</td>
           <td class="${statusClass}">${statusTexto}</td>
           <td>
-            <button type="button" class="btn btn-sm ${botaoClasse}" data-email="${
+            <button type="button" class="btn btn-sm ${botaoClasse} btn-status" data-email="${
           u.email
         }" data-ativo="${u.ativo}">
               ${botaoTexto}
@@ -78,26 +78,37 @@
       const botoes = document.querySelectorAll(
         "#tabelaUsuarios button[data-email]"
       );
+
       botoes.forEach((botao) => {
-        botao.addEventListener("click", () => {
+        botao.addEventListener("click", async () => {
           const email = botao.getAttribute("data-email");
           const ativo = botao.getAttribute("data-ativo") === "true";
-          const endpoint = ativo ? "inativar" : "ativar";
+          const metodoHttp = ativo ? "DELETE" : "PUT";
 
-          fetch(`${API_URL}/${endpoint}?email=${encodeURIComponent(email)}`, {
-            method: "PUT",
-            credentials: "include",
-          })
-            .then((resp) => {
-              if (!resp.ok) throw new Error("Falha ao atualizar status");
-              carregarUsuarios(paginaAtual);
-            })
-            .catch((err) =>
-              FiberGuardian.Utils?.exibirMensagem?.(
-                "Erro: " + err.message,
-                "danger"
-              )
+          try {
+            const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
+
+            const resposta = await fetch(`${API_URL}/ativo`, {
+              method: metodoHttp,
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json",
+                "X-XSRF-TOKEN": csrfToken,
+              },
+              body: JSON.stringify({ email }),
+            });
+
+            if (!resposta.ok) {
+              throw new Error("Falha ao atualizar status");
+            }
+
+            carregarUsuarios(paginaAtual);
+          } catch (err) {
+            FiberGuardian.Utils?.exibirMensagem?.(
+              "Erro: " + err.message,
+              "danger"
             );
+          }
         });
       });
     }

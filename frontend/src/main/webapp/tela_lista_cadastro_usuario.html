@@ -38,12 +38,31 @@
         color: red;
         font-weight: bold;
       }
+
+      .btn-status {
+        min-width: 100px; /* Largura fixa padronizada */
+        text-align: center;
+        padding-top: 6px;
+        padding-bottom: 6px;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+      .altura-cabecalho {
+        min-height: 50px;
+      }
     </style>
   </head>
 
   <body>
     <div class="container mt-4">
-      <h2 class="text-center mb-4">GESTÃO DE USUÁRIOS</h2>
+      <div
+        class="bg-secondary text-white px-3 rounded mb-3 d-flex align-items-center justify-content-center altura-cabecalho"
+      >
+        <h2 class="m-0 text-center">GESTÃO DE USUÁRIOS</h2>
+      </div>
       <div class="form-container">
         <div class="table-responsive">
           <table class="table table-bordered table-hover align-middle">
