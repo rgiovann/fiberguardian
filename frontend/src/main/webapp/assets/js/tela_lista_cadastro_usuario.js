@@ -2,7 +2,7 @@
   window.FiberGuardian = window.FiberGuardian || {};
 
   FiberGuardian.TelaListaCadastroUsuario = (function () {
-    const API_URL = "/usuarios";
+    const API_URL = "/api/usuarios";
     const PAGE_SIZE = 10;
     let paginaAtual = 0;
     let totalPaginas = 1;

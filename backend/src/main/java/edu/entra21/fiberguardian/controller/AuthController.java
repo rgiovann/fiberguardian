@@ -1,6 +1,5 @@
 package edu.entra21.fiberguardian.controller;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -16,7 +15,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import jakarta.servlet.http.Cookie;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -30,7 +28,9 @@ import edu.entra21.fiberguardian.jacksonview.UsuarioView;
 import edu.entra21.fiberguardian.model.Usuario;
 import edu.entra21.fiberguardian.model.UsuarioAutenticado;
 import edu.entra21.fiberguardian.service.UsuarioService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
@@ -55,7 +55,7 @@ public class AuthController {
 		this.usuarioDtoAssembler = usuarioDtoAssembler;
 	}
 
-	@PostMapping("/login")
+	@PostMapping("/api/fg-login")
 	@JsonView(UsuarioView.Autenticado.class)
 	public ResponseEntity<?> login(@RequestBody @Validated UsuarioEmailSenhaInput loginRequest,
 			HttpServletRequest request) {
@@ -90,13 +90,10 @@ public class AuthController {
 			}
 
 			// Salvar explicitamente o contexto na sessão HTTP
-			session.setAttribute(
-					HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-					SecurityContextHolder.getContext()
-			);
+			session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+					SecurityContextHolder.getContext());
 
 			logger.debug("Reutilizando sessão existente: " + session.getId());
-
 
 			UsuarioAutenticado usuarioAutenticado = (UsuarioAutenticado) authentication.getPrincipal();
 			Usuario usuario = usuarioAutenticado.getUsuario();
@@ -111,7 +108,7 @@ public class AuthController {
 		}
 	}
 
-	@PostMapping("/logout")
+	@PostMapping("/api/fg-logout")
 	public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession(false);
 

@@ -3,7 +3,7 @@
 
   window.FiberGuardian = window.FiberGuardian || {};
   FiberGuardian.TelaAlteracaoCadastroUsuario = (function () {
-    const URL_BASE = "/usuarios";
+    const URL_BASE = "/api/usuarios";
     const URL_BUSCAR_ALTERAR_NOME = `${URL_BASE}/me/nome`;
     const URL_ALTERAR_SENHA = `${URL_BASE}/me/senha`;
 

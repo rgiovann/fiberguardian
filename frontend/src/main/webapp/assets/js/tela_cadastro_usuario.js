@@ -32,7 +32,7 @@
       try {
         const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
 
-        const resposta = await fetch("/usuarios", {
+        const resposta = await fetch("/api/usuarios", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

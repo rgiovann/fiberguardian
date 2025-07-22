@@ -23,7 +23,7 @@
 
     async function obterNovoToken() {
       try {
-        const resposta = await fetch("/csrf-token", {
+        const resposta = await fetch("/api/csrf-token", {
           method: "GET",
           credentials: "include",
         });
@@ -74,7 +74,7 @@
       const alerta = document.getElementById("mensagemSistema");
       alerta.textContent = texto;
       alerta.className = `alert alert-${tipo} mt-1 visible`;
-      
+
       setTimeout(() => {
         alerta.classList.replace("visible", "invisible");
       }, 1500);
@@ -83,7 +83,7 @@
     // Função privada: verifica se a sessão ainda está ativa
     async function verificarSessao() {
       try {
-        const resposta = await fetch("/sessao/valida", {
+        const resposta = await fetch("/api/sessao/valida", {
           method: "GET",
           credentials: "include",
         });

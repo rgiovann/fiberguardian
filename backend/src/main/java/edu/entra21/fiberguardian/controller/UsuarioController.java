@@ -2,7 +2,6 @@ package edu.entra21.fiberguardian.controller;
 
 import java.util.List;
 
-import edu.entra21.fiberguardian.input.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -14,7 +13,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -24,6 +30,10 @@ import edu.entra21.fiberguardian.assembler.UsuarioNovoInputDisassembler;
 import edu.entra21.fiberguardian.dto.PageDto;
 import edu.entra21.fiberguardian.dto.UsuarioDto;
 import edu.entra21.fiberguardian.dto.UsuarioListagemDto;
+import edu.entra21.fiberguardian.input.UsuarioAlteraNomeInput;
+import edu.entra21.fiberguardian.input.UsuarioAlteraSenhaInput;
+import edu.entra21.fiberguardian.input.UsuarioAlteraStatusInput;
+import edu.entra21.fiberguardian.input.UsuarioCompletoComSenhaInput;
 import edu.entra21.fiberguardian.jacksonview.UsuarioView;
 import edu.entra21.fiberguardian.model.Usuario;
 import edu.entra21.fiberguardian.openapi.UsuarioControllerOpenApi;
@@ -31,7 +41,7 @@ import edu.entra21.fiberguardian.service.UsuarioService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/usuarios")
+@RequestMapping(value = "/api/usuarios")
 public class UsuarioController implements UsuarioControllerOpenApi {
 
 	private final UsuarioService usuarioService;
@@ -52,17 +62,6 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 		this.usuarioListagemDtoAssembler = usuarioListagemDtoAssembler;
 		this.UsuarioCriarUsuarioInputDisassembler = UsuarioCriarUsuarioInputDisassembler;
 	}
-	/*
-	 * @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE) public
-	 * Page<UsuarioListagemDto> listarPaginado(
-	 * 
-	 * @PageableDefault(size = TAMANHO_PAGINA_PADRAO, sort = CAMPO_ORDEM_PADRAO,
-	 * direction = Sort.Direction.ASC) Pageable pageable) { Page<Usuario> pagina =
-	 * usuarioService.listarPaginado(pageable); List<UsuarioListagemDto> dtos =
-	 * usuarioListagemDtoAssembler.toCollectionDto(pagina.getContent());
-	 * Page<UsuarioListagemDto> paginaDto = new PageImpl<>(dtos, pageable,
-	 * pagina.getTotalElements()); return paginaDto; }
-	 */
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public PageDto<UsuarioListagemDto> listarPaginado(
@@ -112,7 +111,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	@PutMapping(path = "/me/nome", produces = MediaType.APPLICATION_JSON_VALUE)
 	@JsonView(UsuarioView.SomenteNome.class)
 	public ResponseEntity<UsuarioDto> alterarNome(@RequestBody @Valid UsuarioAlteraNomeInput input,
-												  Authentication authentication) {
+			Authentication authentication) {
 
 		String emailAutenticado = authentication.getName();
 		Usuario atualizado = usuarioService.alterarNomeUsuario(emailAutenticado, input.getNome());
@@ -120,41 +119,21 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 		return ResponseEntity.ok(dto);
 	}
 
-
 	@Override
 	@PutMapping(path = "/me/senha", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> alterarSenha(@RequestBody @Valid UsuarioAlteraSenhaInput input,
-											   Authentication authentication) {
+			Authentication authentication) {
 
 		String emailAutenticado = authentication.getName();
 		usuarioService.atualizarSenha(emailAutenticado, input.getNovaSenha(), input.getSenhaAtual());
 		return ResponseEntity.noContent().build();
 	}
 
-//	@Override
-//	@DeleteMapping("/ativo")
-//	@ResponseStatus(HttpStatus.NO_CONTENT)
-//	public ResponseEntity<Void> inativarUsuario(@RequestBody @Valid UsuarioAlteraStatusInput input,
-//												Authentication authentication) {
-//		usuarioService.mudaStatusUsuario(authentication.getName(),input.getEmail(),false);
-//		return ResponseEntity.noContent().build();
-//	}
-//
-//	@Override
-//	@PutMapping("/ativo")
-//	@ResponseStatus(HttpStatus.NO_CONTENT)
-//	public ResponseEntity<Void> ativarUsuario(@RequestBody @Valid UsuarioAlteraStatusInput input,
-//											  Authentication authentication) {
-//
-//		usuarioService.mudaStatusUsuario(authentication.getName(),input.getEmail(),true);
-//		return ResponseEntity.noContent().build();
-//	}
-
 	@Override
 	@DeleteMapping("/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> inativarUsuario(@RequestBody @Valid UsuarioAlteraStatusInput input,
-												Authentication authentication) {
+			Authentication authentication) {
 		usuarioService.inativarUsuario(authentication.getName(), input.getEmail());
 		return ResponseEntity.noContent().build();
 	}
@@ -163,7 +142,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	@PutMapping("/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> ativarUsuario(@RequestBody @Valid UsuarioAlteraStatusInput input,
-											  Authentication authentication) {
+			Authentication authentication) {
 		usuarioService.ativarUsuario(authentication.getName(), input.getEmail());
 		return ResponseEntity.noContent().build();
 	}

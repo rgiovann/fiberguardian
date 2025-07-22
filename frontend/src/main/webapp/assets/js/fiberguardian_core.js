@@ -1,292 +1,287 @@
 (function () {
-  // Garante que o namespace FiberGuardian exista no escopo global
-  window.FiberGuardian = window.FiberGuardian || {};
+    // Garante que o namespace FiberGuardian exista no escopo global
+    window.FiberGuardian = window.FiberGuardian || {};
 
-  // Recupera os dados do usuário autenticado, se existirem
-  const dadosUsuario = sessionStorage.getItem("usuario");
+    // Define o submódulo CORE
+    FiberGuardian.Core = (function () {
+        'use strict';
 
-  if (dadosUsuario) {
-    try {
-      FiberGuardian.UsuarioLogado = JSON.parse(dadosUsuario);
-      console.log("Usuário logado recuperado:", FiberGuardian.UsuarioLogado);
-      /*
-      // Exemplo: mostrar itens de menu baseados no role
-      if (FiberGuardian.UsuarioLogado.role === "ADMIN") {
-        const menuAdmin = document.getElementById("menuAdmin");
-        if (menuAdmin) {
-          menuAdmin.classList.remove("d-none");
-        }
-      }
-    */
-      aplicarControleDeAcesso(FiberGuardian.UsuarioLogado.role);
-    } catch (erro) {
-      console.warn(
-        "Erro ao interpretar dados do usuário no sessionStorage:",
-        erro
-      );
-      sessionStorage.removeItem("usuario"); // fallback defensivo
-      window.location.href = "login.html"; // força nova autenticação
-    }
-  } else {
-    console.warn("Usuário não autenticado. Redirecionando para login.");
-    window.location.href = "login.html";
-  }
+        const scriptsCarregados = new Set();
 
-  // Define o submódulo CORE
-  FiberGuardian.Core = FiberGuardian.Core || {};
+        const pageToScriptMap = {
+            'tela_cadastro_recebimento.html': [
+                'assets/js/fiberguardian_utils.js',
+                'assets/js/tela_cadastro_recebimento.js',
+            ],
+            'tela_cadastro_usuario.html': [
+                'assets/js/fiberguardian_utils.js',
+                'assets/js/tela_cadastro_usuario.js',
+            ],
+            'tela_alteracao_cadastro_usuario.html': [
+                'assets/js/fiberguardian_utils.js',
+                'assets/js/tela_alteracao_cadastro_usuario.js',
+            ],
+            'tela_lista_cadastro_usuario.html': [
+                'assets/js/fiberguardian_utils.js',
+                'assets/js/tela_lista_cadastro_usuario.js',
+            ],
+        };
 
-  /**
-   * Mapeia páginas HTML para seus scripts JS correspondentes.
-   * Cada página pode ter múltiplas dependências que serão carregadas em ordem.
-   */
-  const pageToScriptMap = {
-    "tela_cadastro_recebimento.html": [
-      "assets/js/fiberguardian_utils.js",
-      "assets/js/tela_cadastro_recebimento.js",
-    ],
-    "tela_cadastro_usuario.html": [
-      "assets/js/fiberguardian_utils.js",
-      "assets/js/tela_cadastro_usuario.js",
-    ],
-    "tela_alteracao_cadastro_usuario.html": [
-      "assets/js/fiberguardian_utils.js",
-      "assets/js/tela_alteracao_cadastro_usuario.js",
-    ],
-    "tela_lista_cadastro_usuario.html": [
-      "assets/js/fiberguardian_utils.js",
-      "assets/js/tela_lista_cadastro_usuario.js",
-    ],
-    // Adicione outras páginas conforme necessário
-    // "tela_listagem_usuarios.html": [
-    //   "assets/js/fiberguardian_utils.js",
-    //   "assets/js/fiberguardian_api.js",
-    //   "assets/js/tela_listagem_usuarios.js"
-    // ]
-  };
-
-  /**
-   * Cache de scripts já carregados para evitar recarregamentos desnecessários.
-   */
-  const scriptsCarregados = new Set();
-
-  /**
-   * Carrega dinamicamente uma página HTML e seus scripts JS associados.
-   *
-   * @param {string} pagina - Caminho relativo do HTML a ser carregado.
-   */
-
-  FiberGuardian.Core.carregarPagina = function (pagina) {
-    console.log(`Carregando página: ${pagina}`);
-
-    fetch(pagina)
-      .then((resposta) => {
-        if (!resposta.ok) {
-          throw new Error(
-            `Erro HTTP ${resposta.status}: ${resposta.statusText}`
-          );
-        }
-        return resposta.text();
-      })
-      .then((html) => {
-        // Verificação defensiva contra scripts inline
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, "text/html");
-        const inlineScripts = doc.querySelectorAll("script:not([src])");
-
-        if (inlineScripts.length > 0) {
-          console.error(
-            "HTML rejeitado: contém scripts inline não permitidos."
-          );
-          document.getElementById("conteudo-principal").innerHTML = `
-          <div class="alert alert-danger">
-            <i class="fas fa-exclamation-triangle"></i>
-            Erro: Conteúdo rejeitado por conter scripts inline.
-          </div>`;
-          return;
+        /**
+         * Verifica se a sessão backend ainda é válida chamando /api/sessao/valida.
+         * Caso não seja válida, limpa o sessionStorage e redireciona para login.html.
+         * Retorna Promise<boolean> para ser usado em async/await.
+         */
+        async function validarSessao() {
+            try {
+                console.log('Realizando fetch [/api/sessao/valida]...');
+                const resposta = await fetch('/api/sessao/valida', {
+                    method: 'GET',
+                    credentials: 'include',
+                    cache: 'no-store',
+                });
+                if (resposta.ok) {
+                    return true;
+                } else {
+                    console.warn('Sessão inválida ou expirada.');
+                    sessionStorage.removeItem('usuario');
+                    window.location.href = 'login.html';
+                    return false;
+                }
+            } catch (e) {
+                console.error('Erro ao validar sessão:', e);
+                sessionStorage.removeItem('usuario');
+                window.location.href = 'login.html';
+                return false;
+            }
         }
 
-        // Injeta o conteúdo limpo (sem script inline) na DOM
-        const container = document.getElementById("conteudo-principal");
-        if (container) {
-          container.innerHTML = html;
-          console.info(
-            `[FiberGuardian] Página '${pagina}' carregada com sucesso.`
-          );
-        } else {
-          console.warn("Elemento #conteudo-principal não encontrado.");
+        /**
+         * Inicialização da aplicação na tela principal (index.html).
+         * Valida sessão no backend e recupera dados do usuário do sessionStorage.
+         */
+        async function inicializarApp() {
+            // Só executa se estivermos na página principal (evita rodar em outras)
+            if (!document.getElementById('conteudo-principal')) {
+                return;
+            }
+
+            // Valida a sessão no backend
+            const sessaoValida = await validarSessao();
+            if (!sessaoValida) {
+                return; // Já redirecionou para login
+            }
+
+            // Recupera dados do usuário no sessionStorage
+            const dadosUsuario = sessionStorage.getItem('usuario');
+            if (dadosUsuario) {
+                try {
+                    FiberGuardian.UsuarioLogado = JSON.parse(dadosUsuario);
+                    console.log(
+                        'Usuário logado recuperado:',
+                        FiberGuardian.UsuarioLogado
+                    );
+                    aplicarControleDeAcesso(FiberGuardian.UsuarioLogado.role);
+
+                    // VINCULAR o botão de logout dinamicamente
+                    const btnLogout = document.getElementById('btnLogout');
+                    if (btnLogout) {
+                        btnLogout.addEventListener('click', async (e) => {
+                            e.preventDefault();
+                            console.log('Fazendo logout do sistema...');
+                            await realizarLogout();
+                        });
+                    }
+                } catch (erro) {
+                    console.warn(
+                        'Erro ao interpretar dados do usuário no sessionStorage:',
+                        erro
+                    );
+                    sessionStorage.removeItem('usuario');
+                    window.location.href = 'login.html';
+                }
+            } else {
+                console.warn('Usuário não autenticado. Redirecionando para login.');
+                window.location.href = 'login.html';
+            }
         }
 
-        // Carrega os scripts externos associados à página
-        const scriptsAssociados = pageToScriptMap[pagina];
+        /*
+        // Redireciona para login caso não haja dados válidos de usuário
+        (function verificarAutenticacao() {
+            const dadosUsuario = sessionStorage.getItem('usuario');
+            if (dadosUsuario) {
+                try {
+                    FiberGuardian.UsuarioLogado = JSON.parse(dadosUsuario);
+                    console.log(
+                        'Usuário logado recuperado:',
+                        FiberGuardian.UsuarioLogado
+                    );
+                    aplicarControleDeAcesso(FiberGuardian.UsuarioLogado.role);
+                } catch (erro) {
+                    console.warn('Erro ao interpretar sessionStorage:', erro);
+                    sessionStorage.removeItem('usuario');
+                    window.location.href = 'login.html';
+                }
+            } else {
+                console.warn('Usuário não autenticado. Redirecionando...');
+                window.location.href = 'login.html';
+            }
+        })();
+        */
 
-        if (scriptsAssociados && scriptsAssociados.length > 0) {
-          //carregarScriptsSequencial(scriptsAssociados, pagina);
-          try {
-            carregarScriptsSequencial(scriptsAssociados, pagina);
-          } catch (e) {
-            console.error(`Erro ao carregar scripts da página ${pagina}:`, e);
-          }
-        } else {
-          console.warn(`Nenhum script associado encontrado para: ${pagina}`);
+        function aplicarControleDeAcesso(roleUsuario) {
+            const elementos = document.querySelectorAll('[data-role-allowed]');
+            elementos.forEach((el) => {
+                const roles = el
+                    .getAttribute('data-role-allowed')
+                    .split(',')
+                    .map((r) => r.trim().toUpperCase());
+                if (!roles.includes(roleUsuario.toUpperCase())) {
+                    el.classList.add('d-none');
+                }
+            });
         }
-      })
-      .catch((erro) => {
-        console.error("Falha ao carregar conteúdo:", erro);
-        document.getElementById("conteudo-principal").innerHTML = `
-        <div class="alert alert-danger">
-          <i class="fas fa-exclamation-triangle"></i>
-          Erro ao carregar conteúdo: ${erro.message}
-        </div>`;
-      });
-  };
 
-  /**
-   * Esconde elementos com base nos roles permitidos definidos em data-role-allowed
-   * @param {string} roleUsuario - Role do usuário logado (ex: ADMIN, USUARIO, etc)
-   */
-  function aplicarControleDeAcesso(roleUsuario) {
-    const elementosProtegidos = document.querySelectorAll(
-      "[data-role-allowed]"
-    );
+        function carregarScriptsSequencial(scripts, paginaOrigem) {
+            console.log(`Carregando ${scripts.length} script(s) para: ${paginaOrigem}`);
+            let i = 0;
 
-    elementosProtegidos.forEach((el) => {
-      const rolesPermitidos = el
-        .getAttribute("data-role-allowed")
-        .split(",")
-        .map((r) => r.trim().toUpperCase());
+            function carregarProximo() {
+                if (i >= scripts.length) {
+                    inicializarModuloPrincipal(paginaOrigem);
+                    return;
+                }
 
-      if (!rolesPermitidos.includes(roleUsuario.toUpperCase())) {
-        el.classList.add("d-none");
-      }
-    });
-  }
+                const src = scripts[i];
+                if (scriptsCarregados.has(src)) {
+                    console.log(`Script em cache: ${src}`);
+                    i++;
+                    carregarProximo();
+                    return;
+                }
 
-  /**
-   * Carrega scripts sequencialmente (um após o outro) para garantir dependências.
-   *
-   * @param {string[]} scripts - Array de caminhos dos scripts
-   * @param {string} paginaOrigem - Nome da página que originou o carregamento
-   */
-  function carregarScriptsSequencial(scripts, paginaOrigem) {
-    console.log(`Carregando ${scripts.length} script(s) para: ${paginaOrigem}`);
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = () => {
+                    scriptsCarregados.add(src);
+                    console.log(`Carregado: ${src}`);
+                    i++;
+                    carregarProximo();
+                };
+                script.onerror = () => {
+                    console.error(`Erro ao carregar: ${src}`);
+                    i++;
+                    carregarProximo();
+                };
+                document.head.appendChild(script);
+            }
 
-    let indiceAtual = 0;
+            carregarProximo();
+        }
 
-    function carregarProximoScript() {
-      if (indiceAtual >= scripts.length) {
-        // Todos os scripts foram carregados, inicializar módulo principal
-        inicializarModuloPrincipal(paginaOrigem);
-        return;
-      }
+        function inicializarModuloPrincipal(paginaOrigem) {
+            const nomeModulo = paginaOrigem
+                .replace('.html', '')
+                .replace(/_/g, ' ')
+                .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase())
+                .replace(/\s+/g, '');
 
-      const scriptPath = scripts[indiceAtual];
+            console.log(`Inicializando módulo: [${nomeModulo}]`);
 
-      // Verifica se o script já foi carregado
-      if (scriptsCarregados.has(scriptPath)) {
-        console.log(`Script já carregado (cache): ${scriptPath}`);
-        indiceAtual++;
-        carregarProximoScript();
-        return;
-      }
+            if (FiberGuardian[nomeModulo]?.init instanceof Function) {
+                FiberGuardian[nomeModulo].init();
+            } else {
+                console.warn(
+                    `Módulo [${nomeModulo}] não encontrado ou sem método init().`
+                );
+            }
+        }
 
-      console.log(`Carregando script: ${scriptPath}`);
+        function carregarPagina(pagina) {
+            console.log(`Carregando página: ${pagina}`);
 
-      const script = document.createElement("script");
-      script.src = scriptPath;
+            fetch(pagina)
+                .then((res) => {
+                    if (!res.ok)
+                        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                    return res.text();
+                })
+                .then((html) => {
+                    const doc = new DOMParser().parseFromString(html, 'text/html');
+                    if (doc.querySelectorAll('script:not([src])').length > 0) {
+                        console.error('HTML rejeitado por conter script inline.');
+                        document.getElementById('conteudo-principal').innerHTML = `
+                          <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Erro: Conteúdo rejeitado por conter scripts inline.
+                          </div>`;
+                        return;
+                    }
 
-      script.onload = function () {
-        console.log(`Script carregado com sucesso: ${scriptPath}`);
-        scriptsCarregados.add(scriptPath);
-        indiceAtual++;
-        carregarProximoScript();
-      };
+                    const container = document.getElementById('conteudo-principal');
+                    if (container) {
+                        container.innerHTML = html;
+                        console.info(`[FiberGuardian] Página '${pagina}' carregada.`);
+                    }
 
-      script.onerror = function () {
-        console.error(`Erro ao carregar script: ${scriptPath}`);
-        // Continua tentando carregar os próximos scripts mesmo com erro
-        indiceAtual++;
-        carregarProximoScript();
-      };
+                    const scripts = pageToScriptMap[pagina];
+                    if (scripts?.length) {
+                        carregarScriptsSequencial(scripts, pagina);
+                    } else {
+                        console.warn(`Nenhum script associado a ${pagina}`);
+                    }
+                })
+                .catch((erro) => {
+                    console.error('Falha ao carregar conteúdo:', erro);
+                    document.getElementById('conteudo-principal').innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Erro ao carregar conteúdo: ${erro.message}
+                        </div>`;
+                });
+        }
 
-      // Adiciona o script ao DOM
-      document.head.appendChild(script);
-    }
+        async function realizarLogout() {
+            try {
+                const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
+                const resp = await fetch('/api/fg-logout', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'X-XSRF-TOKEN': csrfToken,
+                    },
+                });
 
-    carregarProximoScript();
-  }
+                if (!resp.ok) throw new Error('Erro ao encerrar sessão');
 
-  /**
-   * Inicializa o módulo principal da página após todos os scripts serem carregados.
-   *
-   * @param {string} paginaOrigem - Nome da página para identificar o módulo
-   */
-  function inicializarModuloPrincipal(paginaOrigem) {
-    /**
-     * Transforma 'tela_cadastro_usuario.html' em 'TelaCadastroUsuario':
-     * - Remove extensão '.html'
-     * - Substitui underscores por espaço
-     * - Capitaliza palavras (camel-case)
-     * - Remove espaços
-     */
-    const nomeModulo = paginaOrigem
-      .replace(".html", "") // 'tela_cadastro_usuario'
-      .replace(/_/g, " ") // 'tela cadastro usuario'
-      .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase()) // 'Tela Cadastro Usuario'
-      .replace(/\s+/g, ""); // 'TelaCadastroUsuario'
+                sessionStorage.removeItem('usuario');
+                window.location.href = 'login.html';
+            } catch (e) {
+                FiberGuardian.Utils?.exibirMensagem?.(
+                    'Erro no logout: ' + e.message,
+                    'danger'
+                );
+            }
+        }
 
-    console.log(`Tentando inicializar módulo: [${nomeModulo}]`);
+        function limparCacheScripts() {
+            scriptsCarregados.clear();
+            console.log('Cache de scripts limpo');
+        }
 
-    // Verifica se o módulo existe e possui função init
-    if (
-      window.FiberGuardian &&
-      FiberGuardian[nomeModulo] &&
-      typeof FiberGuardian[nomeModulo].init === "function"
-    ) {
-      console.log(`Inicializando módulo: [${nomeModulo}]`);
-      FiberGuardian[nomeModulo].init();
-    } else {
-      console.warn(
-        `Módulo [${nomeModulo}] não encontrado ou não possui método init().`
-      );
-      console.log("Módulos disponíveis:", Object.keys(FiberGuardian));
-    }
-  }
+        function verificarCacheScripts() {
+            console.log('Scripts em cache:', Array.from(scriptsCarregados));
+            return Array.from(scriptsCarregados);
+        }
 
-  /**
-   * Função utilitária para limpar cache de scripts (útil para desenvolvimento).
-   */
-  FiberGuardian.Core.limparCacheScripts = function () {
-    scriptsCarregados.clear();
-    console.log("Cache de scripts limpo");
-  };
-
-  /**
-   * Função utilitária para verificar quais scripts estão em cache.
-   */
-  FiberGuardian.Core.verificarCacheScripts = function () {
-    console.log("Scripts em cache:", Array.from(scriptsCarregados));
-    return Array.from(scriptsCarregados);
-  };
-
-  FiberGuardian.Core.realizarLogout = async function () {
-    try {
-      const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
-      const resp = await fetch("/logout", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "X-XSRF-TOKEN": csrfToken,
-        },
-      });
-
-      if (!resp.ok) throw new Error("Erro ao encerrar sessão");
-
-      window.location.href = "login.html";
-    } catch (e) {
-      FiberGuardian.Utils?.exibirMensagem?.(
-        "Erro no logout: " + e.message,
-        "danger"
-      );
-    }
-  };
+        // Exporta somente o que for necessário
+        return {
+            carregarPagina,
+            realizarLogout,
+            limparCacheScripts,
+            verificarCacheScripts,
+            inicializarApp,
+        };
+    })();
 })();

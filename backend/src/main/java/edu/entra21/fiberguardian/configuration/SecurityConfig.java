@@ -24,7 +24,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import edu.entra21.fiberguardian.service.CustomUserDetailsService;
-import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -80,24 +79,23 @@ public class SecurityConfig {
 				// Força HTTPS
 				.requiresChannel(channel -> channel.anyRequest().requiresSecure())
 				// Configura autorização
-				.authorizeHttpRequests(authz -> authz.requestMatchers(HttpMethod.POST, "/login").permitAll()
-						.requestMatchers(HttpMethod.GET, "/csrf-token").permitAll()
-						.requestMatchers(HttpMethod.POST, "/usuarios").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.GET, "/usuarios").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.PUT, "/ativo").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.DELETE, "/ativo").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.POST, "/logout").authenticated()
-						.requestMatchers(HttpMethod.GET, "/usuarios/buscar-por-email").authenticated()
-						.anyRequest().authenticated())
+				.authorizeHttpRequests(authz -> authz.requestMatchers(HttpMethod.POST, "/api/fg-login").permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/csrf-token").permitAll()
+						.requestMatchers(HttpMethod.POST, "/api/usuarios").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.GET, "/api/usuarios").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.PUT, "/api/ativo").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.DELETE, "/api/ativo").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.POST, "/api/fg-logout").authenticated()
+						.requestMatchers(HttpMethod.GET, "/api/usuarios/buscar-por-email").authenticated().anyRequest()
+						.authenticated())
 				// Configura sessões
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
 						.sessionFixation().migrateSession().maximumSessions(1).maxSessionsPreventsLogin(false))
 				// Desativa form login
-				.formLogin(form -> form.disable())
-				.logout(logout -> logout.logoutUrl("/spring-logout"));
+				.formLogin(form -> form.disable()).logout(logout -> logout.logoutUrl("/spring-logout"));
 
 		// Desativa form logout
-				//.logout(form -> form.disable());
+		// .logout(form -> form.disable());
 
 		return http.build();
 	}
