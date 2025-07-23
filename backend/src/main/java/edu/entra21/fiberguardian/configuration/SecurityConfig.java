@@ -94,9 +94,6 @@ public class SecurityConfig {
 				// Desativa form login
 				.formLogin(form -> form.disable()).logout(logout -> logout.logoutUrl("/spring-logout"));
 
-		// Desativa form logout
-		// .logout(form -> form.disable());
-
 		return http.build();
 	}
 

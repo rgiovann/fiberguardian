@@ -4,10 +4,12 @@
   window.FiberGuardian = window.FiberGuardian || {};
   FiberGuardian.TelaAlteracaoCadastroUsuario = (function () {
     const URL_BASE = "/api/usuarios";
-    const URL_BUSCAR_ALTERAR_NOME = `${URL_BASE}/me/nome`;
+    const URL_BUSCAR_ALTERAR_NOME_TURNO_SETOR = `${URL_BASE}/me/nome`;
     const URL_ALTERAR_SENHA = `${URL_BASE}/me/senha`;
 
     let nomeOriginal = "";
+    let setorOriginal = "";
+    let turnoOriginal = "";
 
     async function configurarEventos() {
       await preencherCampos();
@@ -19,7 +21,7 @@
       try {
         const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
 
-        const resposta = await fetch(URL_BUSCAR_ALTERAR_NOME, {
+        const resposta = await fetch(URL_BUSCAR_ALTERAR_NOME_TURNO_SETOR, {
           method: "GET",
           headers: { "X-XSRF-TOKEN": csrfToken },
           credentials: "include",
@@ -35,9 +37,15 @@
         }
 
         const usuario = await resposta.json();
+
         nomeOriginal = usuario.nome || "";
-        document.getElementById("nome").value = usuario.nome || "";
+        setorOriginal = usuario.setor || "";
+        turnoOriginal = usuario.turno || "";
+
+        document.getElementById("nome").value = nomeOriginal;
         document.getElementById("email").value = usuario.email || "";
+        document.getElementById("setor").value = setorOriginal;
+        document.getElementById("turno").value = turnoOriginal;
       } catch (erro) {
         console.error(erro);
         FiberGuardian.Utils.exibirMensagem(
@@ -50,24 +58,33 @@
     function alterarFormularioNome() {
       const form = document.getElementById("formAlterarNome");
       const botaoSubmit = form.querySelector("button[type=submit]");
+
       const campoNome = document.getElementById("nome");
+      const campoSetor = document.getElementById("setor");
+      const campoTurno = document.getElementById("turno");
 
       form.addEventListener("submit", async function (e) {
         e.preventDefault();
 
         const nome = campoNome.value.trim();
-        if (!nome) {
+        const setor = campoSetor.value;
+        const turno = campoTurno.value;
+
+        if (!nome || !setor || !turno) {
           FiberGuardian.Utils.exibirMensagem(
-            "O nome não pode estar vazio.",
+            "Todos os campos devem ser preenchidos.",
             "danger"
           );
           return;
         }
 
-        // Verifica se o nome não mudou
-        if (nome === nomeOriginal) {
+        const nomeSemMudanca = nome === nomeOriginal;
+        const setorSemMudanca = setor === setorOriginal;
+        const turnoSemMudanca = turno === turnoOriginal;
+
+        if (nomeSemMudanca && setorSemMudanca && turnoSemMudanca) {
           FiberGuardian.Utils.exibirMensagem(
-            "O nome informado já é o mesmo cadastrado.",
+            "Nenhum dado foi alterado.",
             "info"
           );
           return;
@@ -78,26 +95,34 @@
         try {
           const csrf = await FiberGuardian.Utils.obterTokenCsrf();
 
-          const resposta = await fetch(URL_BUSCAR_ALTERAR_NOME, {
+          const resposta = await fetch(URL_BUSCAR_ALTERAR_NOME_TURNO_SETOR, {
             method: "PUT",
             credentials: "include",
             headers: {
               "Content-Type": "application/json",
               "X-XSRF-TOKEN": csrf,
             },
-            body: JSON.stringify({ nome }),
+            body: JSON.stringify({ nome, setor, turno }),
           });
 
           if (resposta.ok) {
             const dados = await resposta.json();
-            // Reflete o novo nome retornado no campo de input
-            campoNome.value = dados.nome || "";
+
             nomeOriginal = dados.nome || "";
+            setorOriginal = dados.setor || "";
+            turnoOriginal = dados.turno || "";
+
+            campoNome.value = nomeOriginal;
+            campoSetor.value = setorOriginal;
+            campoTurno.value = turnoOriginal;
 
             FiberGuardian.Utils.exibirMensagem(
-              "Nome alterado com sucesso.",
+              "Dados atualizados com sucesso.",
               "success"
             );
+
+            // Atualiza o formulário consultando o backend novamente
+            await preencherCampos();
           } else {
             const tipo = resposta.headers.get("Content-Type") || "";
             const mensagemErro = tipo.includes("application/json")
@@ -105,7 +130,7 @@
               : await resposta.text();
 
             FiberGuardian.Utils.exibirMensagem(
-              "Erro ao atualizar o nome: " + mensagemErro,
+              "Erro ao atualizar os dados: " + mensagemErro,
               "danger"
             );
           }

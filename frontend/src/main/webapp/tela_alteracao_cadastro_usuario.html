@@ -82,7 +82,7 @@
           <h4 class="m-0">ALTERAR MEUS DADOS</h4>
         </div>
 
-        <!-- Bloco: Alterar Nome -->
+        <!-- Bloco: Alterar Nome, Setor e Turno -->
         <form id="formAlterarNome">
           <div class="mb-2 text-start">
             <label class="form-label" for="nome">
@@ -95,6 +95,32 @@
               placeholder="Digite seu nome"
               required
             />
+          </div>
+
+          <div class="row mb-2">
+            <div class="col-6 text-start">
+              <label class="form-label" for="setor">
+                <i class="fas fa-industry me-2"></i>Setor
+              </label>
+              <select id="setor" class="form-select" required>
+                <option value="" disabled selected>Selecione</option>
+                <option value="FIACAO">Fiação</option>
+                <option value="TECELAGEM">Tecelagem</option>
+                <option value="PREPARACAO">Preparação</option>
+                <option value="BENEFICIAMENTO">Beneficiamento</option>
+              </select>
+            </div>
+            <div class="col-6 text-start">
+              <label class="form-label" for="turno">
+                <i class="fas fa-clock me-2"></i>Turno
+              </label>
+              <select id="turno" class="form-select" required>
+                <option value="" disabled selected>Selecione</option>
+                <option value="PRIMEIRO">1º Turno</option>
+                <option value="SEGUNDO">2º Turno</option>
+                <option value="GERAL">Geral</option>
+              </select>
+            </div>
           </div>
 
           <div class="mb-2 text-start">
@@ -111,9 +137,10 @@
           </div>
 
           <button type="submit" class="btn btn-primary w-100 mb-3">
-            <i class="fas fa-user-edit me-2"></i>Salvar Nome
+            <i class="fas fa-user-edit me-2"></i>Salvar Dados
           </button>
         </form>
+
         <div class="border-top mt-2 mb-3"></div>
 
         <!-- <hr /> -->

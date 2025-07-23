@@ -24,4 +24,12 @@ public class UsuarioCompletoSemSenhaInput {
 	@Enumerated(EnumType.STRING)
 	private String role;
 
+	@NotNull(message = "Turno é obrigatório")
+	@Enumerated(EnumType.STRING)
+	private String turno;
+
+	@NotNull(message = "Setor é obrigatório")
+	@Enumerated(EnumType.STRING)
+	private String setor;
+
 }

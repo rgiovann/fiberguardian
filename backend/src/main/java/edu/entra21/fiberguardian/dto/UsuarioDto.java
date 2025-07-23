@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import edu.entra21.fiberguardian.jacksonview.UsuarioView;
 import edu.entra21.fiberguardian.model.Role;
+import edu.entra21.fiberguardian.model.Setor;
+import edu.entra21.fiberguardian.model.Turno;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,5 +19,9 @@ public class UsuarioDto {
 	private String email;
 	@JsonView({ UsuarioView.Completo.class, UsuarioView.Autenticado.class })
 	private Role role;
+	@JsonView({ UsuarioView.Completo.class, UsuarioView.Autenticado.class })
+	private Setor setor;
+	@JsonView({ UsuarioView.Completo.class, UsuarioView.Autenticado.class })
+	private Turno turno;
 
 }

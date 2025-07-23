@@ -55,6 +55,14 @@ public class Usuario {
 	@Column(name = "role", nullable = false)
 	private Role role = Role.USUARIO;
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "turno", nullable = false)
+	private Turno turno = Turno.GERAL;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "setor", nullable = false)
+	private Setor setor = Setor.FIACAO;
+
 	@CreationTimestamp
 	@Column(nullable = false, columnDefinition = "datetime")
 	private OffsetDateTime dataCadastro;

@@ -114,7 +114,11 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 			Authentication authentication) {
 
 		String emailAutenticado = authentication.getName();
-		Usuario atualizado = usuarioService.alterarNomeUsuario(emailAutenticado, input.getNome());
+		Usuario atualizado = usuarioService.alterarDadosUsuario(emailAutenticado,
+				input.getNome(),
+				input.getSetor(),
+				input.getTurno());
+
 		UsuarioDto dto = usuarioDtoAssembler.toDto(atualizado);
 		return ResponseEntity.ok(dto);
 	}

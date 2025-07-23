@@ -14,6 +14,8 @@
     const emailInvalidError = document.getElementById("emailInvalidError");
     const emailUsedError = document.getElementById("emailUsedError");
     const senhaError = document.getElementById("senhaError");
+    const setorField = document.getElementById("setor");
+    const turnoField = document.getElementById("turno");
 
     function validarEmail(email) {
       return FiberGuardian.Utils.isEmailValido(email);
@@ -28,7 +30,7 @@
       senhaError.style.display = "none";
     }
 
-    async function cadastrarUsuario(nome, email, senha, perfil) {
+    async function cadastrarUsuario(nome, email, senha, perfil, setor, turno) {
       try {
         const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
 
@@ -44,6 +46,8 @@
             email: email.trim().toLowerCase(),
             senha: senha,
             role: perfil,
+            setor: setor,
+            turno: turno,
           }),
         });
 
@@ -79,6 +83,8 @@
         const senha = senhaField.value;
         const confirmarSenha = confirmarSenhaField.value;
         const perfil = perfilField.value;
+        const setor = setorField.value;
+        const turno = turnoField.value;
 
         let valido = true;
 
@@ -99,9 +105,19 @@
           valido = false;
         }
 
+        if (!setor) {
+          alert("Por favor, selecione um setor.");
+          valido = false;
+        }
+
+        if (!turno) {
+          alert("Por favor, selecione um turno.");
+          valido = false;
+        }
+
         if (!valido) return;
 
-        await cadastrarUsuario(nome, email, senha, perfil);
+        await cadastrarUsuario(nome, email, senha, perfil, setor, turno);
       });
 
       emailField.addEventListener("input", function () {

@@ -3,6 +3,8 @@ package edu.entra21.fiberguardian.service;
 import java.util.Optional;
 
 import edu.entra21.fiberguardian.exception.exception.*;
+import edu.entra21.fiberguardian.model.Setor;
+import edu.entra21.fiberguardian.model.Turno;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -115,9 +117,13 @@ public class UsuarioService {
 //	}
 
 	@Transactional
-	public Usuario alterarNomeUsuario(String emailUsuario, String novoNome) {
+	public Usuario alterarDadosUsuario(String emailUsuario, String novoNome, String novoSetor,String novoTurno) {
 		Usuario usuario = buscarPorEmailObrigatorio(emailUsuario);
+
 		usuario.setNome(novoNome);
+		usuario.setSetor(Setor.valueOf(novoSetor));
+		usuario.setTurno(Turno.valueOf(novoTurno));
+
 		return usuarioRepository.save(usuario);
 	}
 
@@ -131,19 +137,6 @@ public class UsuarioService {
 		}
 		return true;
 	}
-
-//	@Transactional
-//	public void mudaStatusUsuario(String emailAutenticado, String emailUsuario, Boolean status) {
-//		// Verifica se o usuário está tentando mudar o próprio status
-//		if (emailAutenticado.equalsIgnoreCase(emailUsuario)) {
-//			throw new UsuarioAutoMudancaStatusException("Usuário não pode alterar seu próprio status");
-//		}
-//
-//		// Verifica se o usuário de destino existe
-//		Usuario usuario = buscarPorEmailObrigatorio(emailUsuario);
-//		usuario.setAtivo(status);
-//		usuarioRepository.save(usuario);
-//	}
 
 	@Transactional
 	public void ativarUsuario(String emailAutenticado, String emailUsuario) {
