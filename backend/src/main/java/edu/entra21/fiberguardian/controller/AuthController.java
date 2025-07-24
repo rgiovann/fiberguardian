@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,19 +47,20 @@ public class AuthController {
 
 	public AuthController(AuthenticationManager authenticationManager, Mapper mapper,
 			UsuarioAutenticadoInputAssembler usuarioAutenticadoInputAssembler, UsuarioService usuarioService,
-			UsuarioDtoAssembler usuarioDtoAssembler) {
+			UsuarioDtoAssembler usuarioDtoAssembler ) {
 
 		this.authenticationManager = authenticationManager;
 		this.mapper = mapper;
 		this.usuarioAutenticadoInputAssembler = usuarioAutenticadoInputAssembler;
 		this.usuarioService = usuarioService;
 		this.usuarioDtoAssembler = usuarioDtoAssembler;
+
 	}
 
 	@PostMapping("/api/fg-login")
 	@JsonView(UsuarioView.Autenticado.class)
 	public ResponseEntity<?> login(@RequestBody @Validated UsuarioEmailSenhaInput loginRequest,
-			HttpServletRequest request) {
+			HttpServletRequest request, HttpServletResponse response) {
 
 		logger.debug("JSESSIONID recebido: " + request.getSession(false).getId()); // Log para depuração
 		logger.debug("Token CSRF esperado: " + request.getAttribute("_csrf")); // Log para depuração
@@ -91,7 +93,8 @@ public class AuthController {
 
 			// Salvar explicitamente o contexto na sessão HTTP
 			session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-					SecurityContextHolder.getContext());
+			 SecurityContextHolder.getContext());
+
 
 			logger.debug("Reutilizando sessão existente: " + session.getId());
 

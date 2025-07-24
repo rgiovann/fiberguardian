@@ -2,6 +2,10 @@ package edu.entra21.fiberguardian.controller;
 
 import java.util.List;
 
+import edu.entra21.fiberguardian.input.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,7 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,10 +36,6 @@ import edu.entra21.fiberguardian.assembler.UsuarioNovoInputDisassembler;
 import edu.entra21.fiberguardian.dto.PageDto;
 import edu.entra21.fiberguardian.dto.UsuarioDto;
 import edu.entra21.fiberguardian.dto.UsuarioListagemDto;
-import edu.entra21.fiberguardian.input.UsuarioAlteraNomeInput;
-import edu.entra21.fiberguardian.input.UsuarioAlteraSenhaInput;
-import edu.entra21.fiberguardian.input.UsuarioAlteraStatusInput;
-import edu.entra21.fiberguardian.input.UsuarioCompletoComSenhaInput;
 import edu.entra21.fiberguardian.jacksonview.UsuarioView;
 import edu.entra21.fiberguardian.model.Usuario;
 import edu.entra21.fiberguardian.openapi.UsuarioControllerOpenApi;
@@ -48,19 +50,20 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	private final UsuarioDtoAssembler usuarioDtoAssembler;
 	private final UsuarioListagemDtoAssembler usuarioListagemDtoAssembler;
 	private final UsuarioNovoInputDisassembler UsuarioCriarUsuarioInputDisassembler;
-	private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
+ 	private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
 	private static final int TAMANHO_PAGINA_PADRAO = 10;
 	private static final String CAMPO_ORDEM_PADRAO = "nome";
 
 	public UsuarioController(UsuarioService usuarioService, UsuarioDtoAssembler usuarioDtoAssembler,
 			UsuarioListagemDtoAssembler usuarioListagemDtoAssembler,
-			UsuarioNovoInputDisassembler UsuarioCriarUsuarioInputDisassembler) {
+			UsuarioNovoInputDisassembler UsuarioCriarUsuarioInputDisassembler ) {
 
 		this.usuarioService = usuarioService;
 		this.usuarioDtoAssembler = usuarioDtoAssembler;
 		this.usuarioListagemDtoAssembler = usuarioListagemDtoAssembler;
 		this.UsuarioCriarUsuarioInputDisassembler = UsuarioCriarUsuarioInputDisassembler;
+
 	}
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -149,6 +152,30 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 			Authentication authentication) {
 		usuarioService.ativarUsuario(authentication.getName(), input.getEmail());
 		return ResponseEntity.noContent().build();
+	}
+
+//	@PostMapping("/validar-admin")
+//	public ResponseEntity<Void> validarAdministrador(@RequestBody @Valid UsuarioEmailSenhaInput input) {
+//		usuarioService.validarAdmin(input.getEmail(), input.getSenha());
+//		return ResponseEntity.ok().build();
+//	}
+
+	@PostMapping("/validar-admin")
+	public ResponseEntity<Void> validarAdmin(
+			@RequestBody @Valid UsuarioEmailSenhaInput input,
+			HttpServletRequest request,
+			HttpServletResponse response
+	) {
+		Authentication auth = usuarioService.autenticarSupervisor(input.getEmail(), input.getSenha());
+
+		SecurityContext context = SecurityContextHolder.createEmptyContext();
+		context.setAuthentication(auth);
+
+		// Salva diretamente na sessão HTTP
+		HttpSession session = request.getSession(true); // true para criar se não existir
+		session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
+
+		return ResponseEntity.ok().build();
 	}
 
 }

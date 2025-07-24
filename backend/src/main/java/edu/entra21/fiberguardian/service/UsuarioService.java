@@ -7,23 +7,31 @@ import edu.entra21.fiberguardian.model.Setor;
 import edu.entra21.fiberguardian.model.Turno;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import edu.entra21.fiberguardian.model.Role;
 import edu.entra21.fiberguardian.model.Usuario;
 import edu.entra21.fiberguardian.repository.UsuarioRepository;
 
 @Service
 @Transactional(readOnly = true) // padrão: todos os métodos SÃO transacionais, mas SÓ de leitura
 public class UsuarioService {
-	//private static final String MSG_USUARIO_EM_USO = "Usuário de código %d não pode ser removido, pois está em uso.";
 	private final UsuarioRepository usuarioRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final AuthenticationManager authenticationManager;
+	private static final BadCredentialsException CREDENCIAIS_INVALIDAS =
+			new BadCredentialsException("Credenciais inválidas");
 
-	public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+	public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder,
+						  AuthenticationManager authenticationManager) {
 		this.usuarioRepository = usuarioRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.authenticationManager = authenticationManager;
 
 	}
 
@@ -73,23 +81,6 @@ public class UsuarioService {
 	public boolean senhaRepetida(String novaSenha, Usuario usuario) {
 		return (passwordEncoder.matches(novaSenha, usuario.getSenha()));
 	}
-
-//	@Transactional
-//	public void atualizarSenha(Usuario usuario, String novaSenha, String senhaAtual) {
-//
-//		// checa senha atual é diferente da nova senha...
-//		if (senhaRepetida(novaSenha, usuario)) {
-//			throw new NegocioException("A nova senha não pode ser igual à anterior.");
-//		}
-//		// problema na autenticacao...
-//		if (!senhaCorreta(senhaAtual, usuario)) {
-//			throw new UsuarioSenhaIncorretaException("Senha invalida!");
-//		}
-//
-//		String senhaCriptografada = passwordEncoder.encode(novaSenha);
-//		usuario.setSenha(senhaCriptografada);
-//		usuarioRepository.save(usuario);
-//	}
 
 	@Transactional
 	public void atualizarSenha(String email, String novaSenha, String senhaAtual) {
@@ -160,4 +151,31 @@ public class UsuarioService {
 		}
 	}
 
+//	public void validarAdmin(String email, String senha) {
+//		Usuario usuario = usuarioRepository.findByEmail(email)
+//				.orElseThrow(() -> CREDENCIAIS_INVALIDAS);
+//
+//		if (Role.ADMIN != usuario.getRole()) {
+//			throw CREDENCIAIS_INVALIDAS;
+//		}
+//
+//		if (!passwordEncoder.matches(senha, usuario.getSenha())) {
+//			throw CREDENCIAIS_INVALIDAS;
+//		}
+//	}
+
+	public Authentication autenticarSupervisor(String email, String senha) {
+		Authentication authentication = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(email, senha)
+		);
+
+		boolean ehSupervisor = authentication.getAuthorities().stream()
+				.anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPERVISOR"));
+
+		if (!ehSupervisor) {
+			throw CREDENCIAIS_INVALIDAS;
+		}
+
+		return authentication;
+	}
 }

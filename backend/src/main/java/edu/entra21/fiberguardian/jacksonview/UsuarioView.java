@@ -14,4 +14,8 @@ public interface UsuarioView {
 
 	}
 
+	public interface SomenteEmail {
+
+	}
+
 }

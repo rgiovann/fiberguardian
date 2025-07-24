@@ -74,18 +74,24 @@ public class SecurityConfig {
 
 				.csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository())
 						.csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
-						.ignoringRequestMatchers("/csrf-token", "/sessao/valida") // Ignora CSRF para obter token
+						.ignoringRequestMatchers(
+								"/csrf-token",         // Para obter o token CSRF inicial
+								"/sessao/valida",      // Verificação sem autenticação
+								"/api/usuarios/validar-admin" // Permitir acesso público sem CSRF (usuario ainda não logado)
+						)
 				)
 				// Força HTTPS
 				.requiresChannel(channel -> channel.anyRequest().requiresSecure())
 				// Configura autorização
 				.authorizeHttpRequests(authz -> authz.requestMatchers(HttpMethod.POST, "/api/fg-login").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/csrf-token").permitAll()
+						.requestMatchers(HttpMethod.POST, "/api/usuarios/validar-admin").permitAll() // checar sem token-csrf
 						.requestMatchers(HttpMethod.POST, "/api/usuarios").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.GET, "/api/usuarios").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.PUT, "/api/ativo").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.DELETE, "/api/ativo").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.POST, "/api/fg-logout").authenticated()
+						.requestMatchers(HttpMethod.POST, "/api/usuarios/alterar-senha").authenticated()
 						.requestMatchers(HttpMethod.GET, "/api/usuarios/buscar-por-email").authenticated().anyRequest()
 						.authenticated())
 				// Configura sessões
