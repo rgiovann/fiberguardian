@@ -60,6 +60,8 @@
             email = normalizarEmail(email); // usando função privada
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         }
+
+        
         function exibirMensagem(texto, tipo, elementId = 'mensagemSistema') {
             const alerta = document.getElementById(elementId);
             if (!alerta) return;

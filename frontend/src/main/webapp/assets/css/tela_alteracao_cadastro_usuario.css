@@ -1,0 +1,39 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #f8f9fa;
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  padding: 1.5rem;
+}
+
+h4 {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+label.form-label {
+  font-size: 0.9rem;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.8rem;
+  display: none;
+}
+
+.input-error {
+  border-color: red !important;
+}

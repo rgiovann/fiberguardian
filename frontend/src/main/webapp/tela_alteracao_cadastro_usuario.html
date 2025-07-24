@@ -12,67 +12,11 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
       rel="stylesheet"
     />
-    <style>
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        background-color: #f8f9fa;
-      }
-
-      .container {
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .card {
-        width: 100%;
-        max-width: 420px;
-        padding: 1.5rem;
-      }
-
-      h4 {
-        font-size: 1rem;
-        margin-bottom: 1rem;
-      }
-
-      label.form-label {
-        font-size: 0.9rem;
-      }
-
-      .error-message {
-        color: red;
-        font-size: 0.8rem;
-        display: none;
-      }
-
-      .input-error {
-        border-color: red !important;
-      }
-
-      #mensagemSistema {
-        font-size: 0.875rem;
-        min-height: 1.5rem;
-        /* ou ajuste visual desejado, ex: 24px */
-        transition: opacity 0.2s ease-in-out;
-      }
-
-      .text-success {
-        font-size: 0.85rem;
-      }
-
-      #mensagemSistema.alert {
-        padding: 0.25rem 0.75rem;
-        /* vertical 4px, horizontal 12px */
-        font-size: 0.8rem;
-        border-radius: 0.25rem;
-
-        /* reduz arredondamento */
-      }
-    </style>
+    <link href="assets/css/fiberguardian_utils.css" rel="stylesheet" />
+    <link
+      href="assets/css/tela_alteracao_cadastro_usuario.css"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
@@ -139,6 +83,12 @@
           <button type="submit" class="btn btn-primary w-100 mb-3">
             <i class="fas fa-user-edit me-2"></i>Salvar Dados
           </button>
+
+          <div
+            id="mensagemSalvarDados"
+            class="alert mensagem-feedback"
+            role="alert"
+          ></div>
         </form>
 
         <div class="border-top mt-2 mb-3"></div>
@@ -184,24 +134,25 @@
               required
               placeholder="Confirme a nova senha"
             />
+            <!--
             <div class="error-message" id="senhaMismatchError">
               As novas senhas não coincidem.
-            </div>
+            </div>            
+            -->
           </div>
 
           <button type="submit" class="btn btn-primary w-100">
             <i class="fas fa-key me-2"></i>Alterar Senha
           </button>
+          <div
+            id="mensagemAlteraSenha"
+            class="alert mensagem-feedback"
+            role="alert"
+          ></div>
         </form>
         <!-- 
       <div id="mensagemSistema" class="alert d-none mt-1" role="alert"></div>
       -->
-        <div
-          id="mensagemSistema"
-          class="alert mt-1 mb-2 invisible"
-          role="alert"
-        ></div>
-
         <div class="text-center mt-1">
           <a class="text-decoration-none text-success" href="index.html">
             <i class="fas fa-arrow-left me-2"></i>Voltar ao Menu Principal

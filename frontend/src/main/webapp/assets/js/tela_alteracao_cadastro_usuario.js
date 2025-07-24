@@ -50,7 +50,8 @@
         console.error(erro);
         FiberGuardian.Utils.exibirMensagem(
           "Erro ao carregar seus dados: " + erro.message,
-          "danger"
+          "danger",
+          "mensagemSalvarDados"
         );
       }
     }
@@ -73,7 +74,8 @@
         if (!nome || !setor || !turno) {
           FiberGuardian.Utils.exibirMensagem(
             "Todos os campos devem ser preenchidos.",
-            "danger"
+            "danger",
+            "mensagemSalvarDados"
           );
           return;
         }
@@ -85,7 +87,8 @@
         if (nomeSemMudanca && setorSemMudanca && turnoSemMudanca) {
           FiberGuardian.Utils.exibirMensagem(
             "Nenhum dado foi alterado.",
-            "info"
+            "info",
+            "mensagemSalvarDados"
           );
           return;
         }
@@ -118,7 +121,8 @@
 
             FiberGuardian.Utils.exibirMensagem(
               "Dados atualizados com sucesso.",
-              "success"
+              "success",
+              "mensagemSalvarDados"
             );
 
             // Atualiza o formulário consultando o backend novamente
@@ -131,14 +135,16 @@
 
             FiberGuardian.Utils.exibirMensagem(
               "Erro ao atualizar os dados: " + mensagemErro,
-              "danger"
+              "danger",
+              "mensagemSalvarDados"
             );
           }
         } catch (erro) {
           console.error(erro);
           FiberGuardian.Utils.exibirMensagem(
             "Erro ao enviar requisição: " + erro.message,
-            "danger"
+            "danger",
+            "mensagemSalvarDados"
           );
         } finally {
           botaoSubmit.disabled = false;
@@ -151,7 +157,6 @@
       const campoSenhaAtual = document.getElementById("senhaAtual");
       const campoNovaSenha = document.getElementById("novaSenha");
       const campoConfirmar = document.getElementById("confirmarSenha");
-      const erroMismatch = document.getElementById("senhaMismatchError");
 
       form.addEventListener("submit", async function (e) {
         e.preventDefault();
@@ -162,10 +167,11 @@
 
         // Verifica se nova senha e confirmação coincidem
         if (novaSenha !== confirmar) {
-          erroMismatch.style.display = "block";
-          return;
-        } else {
-          erroMismatch.style.display = "none";
+          FiberGuardian.Utils.exibirMensagem(
+            "As senhas não coincidem.",
+            "danger",
+            "mensagemAlteraSenha"
+          );
         }
 
         try {
@@ -187,11 +193,16 @@
           if (resposta.ok) {
             FiberGuardian.Utils.exibirMensagem(
               "Senha alterada com sucesso.",
-              "success"
+              "success",
+              "mensagemAlteraSenha"
             );
           } else if (resposta.status === 403) {
             const mensagemErro = (await resposta.text()).trim();
-            FiberGuardian.Utils.exibirMensagem(mensagemErro, "danger");
+            FiberGuardian.Utils.exibirMensagem(
+              mensagemErro,
+              "danger",
+              "mensagemAlteraSenha"
+            );
           } else if (resposta.status >= 400 && resposta.status < 600) {
             try {
               const problema = await resposta.json();
@@ -199,11 +210,16 @@
                 problema.userMessage ||
                 problema.detail ||
                 "Erro ao alterar senha.";
-              FiberGuardian.Utils.exibirMensagem(mensagem, "danger");
+              FiberGuardian.Utils.exibirMensagem(
+                mensagem,
+                "danger",
+                "mensagemAlteraSenha"
+              );
             } catch (e) {
               FiberGuardian.Utils.exibirMensagem(
                 "Erro inesperado ao processar resposta do servidor.",
-                "danger"
+                "danger",
+                "mensagemAlteraSenha"
               );
             }
           }
@@ -211,7 +227,8 @@
           console.error(erro);
           FiberGuardian.Utils.exibirMensagem(
             "Erro ao enviar requisição: " + erro.message,
-            "danger"
+            "danger",
+            "mensagemAlteraSenha"
           );
         }
         form.reset(); // limpa os campos por segurança
