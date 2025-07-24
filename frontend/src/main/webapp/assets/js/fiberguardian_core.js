@@ -106,30 +106,6 @@
             }
         }
 
-        /*
-        // Redireciona para login caso não haja dados válidos de usuário
-        (function verificarAutenticacao() {
-            const dadosUsuario = sessionStorage.getItem('usuario');
-            if (dadosUsuario) {
-                try {
-                    FiberGuardian.UsuarioLogado = JSON.parse(dadosUsuario);
-                    console.log(
-                        'Usuário logado recuperado:',
-                        FiberGuardian.UsuarioLogado
-                    );
-                    aplicarControleDeAcesso(FiberGuardian.UsuarioLogado.role);
-                } catch (erro) {
-                    console.warn('Erro ao interpretar sessionStorage:', erro);
-                    sessionStorage.removeItem('usuario');
-                    window.location.href = 'login.html';
-                }
-            } else {
-                console.warn('Usuário não autenticado. Redirecionando...');
-                window.location.href = 'login.html';
-            }
-        })();
-        */
-
         function aplicarControleDeAcesso(roleUsuario) {
             const elementos = document.querySelectorAll('[data-role-allowed]');
             elementos.forEach((el) => {
