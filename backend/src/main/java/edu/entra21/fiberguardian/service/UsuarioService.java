@@ -100,13 +100,6 @@ public class UsuarioService {
 		usuarioRepository.save(usuario);
 	}
 
-
-//	@Transactional
-//	public Usuario alterarNomeUsuario(String novoNome, Usuario usuario) {
-//		usuario.setNome(novoNome);
-//		return usuarioRepository.save(usuario);
-//	}
-
 	@Transactional
 	public Usuario alterarDadosUsuario(String emailUsuario, String novoNome, String novoSetor,String novoTurno) {
 		Usuario usuario = buscarPorEmailObrigatorio(emailUsuario);
@@ -151,31 +144,32 @@ public class UsuarioService {
 		}
 	}
 
-//	public void validarAdmin(String email, String senha) {
-//		Usuario usuario = usuarioRepository.findByEmail(email)
-//				.orElseThrow(() -> CREDENCIAIS_INVALIDAS);
-//
-//		if (Role.ADMIN != usuario.getRole()) {
-//			throw CREDENCIAIS_INVALIDAS;
-//		}
-//
-//		if (!passwordEncoder.matches(senha, usuario.getSenha())) {
-//			throw CREDENCIAIS_INVALIDAS;
-//		}
-//	}
-
 	public Authentication autenticarSupervisor(String email, String senha) {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(email, senha)
 		);
 
 		boolean ehSupervisor = authentication.getAuthorities().stream()
-				.anyMatch(auth -> auth.getAuthority().equals("ROLE_SUPERVISOR"));
+				.anyMatch(auth -> auth.getAuthority().equals(Role.ADMIN.getAuthority()));
 
 		if (!ehSupervisor) {
 			throw CREDENCIAIS_INVALIDAS;
 		}
 
 		return authentication;
+	}
+
+	@Transactional
+	public void resetarSenha(String email, String novaSenha, String repeteSenha) {
+
+		Usuario usuario = buscarPorEmailObrigatorio(email);
+
+		if (!novaSenha.equals(repeteSenha)) {
+			throw new NegocioException("As senhas não são iguais. Verifique.");
+		}
+
+		String senhaCriptografada = passwordEncoder.encode(novaSenha);
+		usuario.setSenha(senhaCriptografada);
+		usuarioRepository.save(usuario);
 	}
 }

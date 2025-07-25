@@ -2,6 +2,7 @@ package edu.entra21.fiberguardian.configuration;
 
 import java.util.List;
 
+import edu.entra21.fiberguardian.model.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -76,8 +77,7 @@ public class SecurityConfig {
 						.csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
 						.ignoringRequestMatchers(
 								"/csrf-token",         // Para obter o token CSRF inicial
-								"/sessao/valida",      // Verificação sem autenticação
-								"/api/usuarios/validar-admin" // Permitir acesso público sem CSRF (usuario ainda não logado)
+								"/sessao/valida"                // Verificação sem autenticação
 						)
 				)
 				// Força HTTPS
@@ -86,10 +86,11 @@ public class SecurityConfig {
 				.authorizeHttpRequests(authz -> authz.requestMatchers(HttpMethod.POST, "/api/fg-login").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/csrf-token").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/usuarios/validar-admin").permitAll() // checar sem token-csrf
-						.requestMatchers(HttpMethod.POST, "/api/usuarios").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.GET, "/api/usuarios").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.PUT, "/api/ativo").hasRole("ADMIN")
-						.requestMatchers(HttpMethod.DELETE, "/api/ativo").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.POST, "/api/usuarios/reset-senha").hasAuthority(Role.ADMIN.getAuthority())
+						.requestMatchers(HttpMethod.POST, "/api/usuarios").hasAuthority(Role.ADMIN.getAuthority())
+						.requestMatchers(HttpMethod.GET, "/api/usuarios").hasAuthority(Role.ADMIN.getAuthority())
+						.requestMatchers(HttpMethod.PUT, "/api/ativo").hasAuthority(Role.ADMIN.getAuthority())
+						.requestMatchers(HttpMethod.DELETE, "/api/ativo").hasAuthority(Role.ADMIN.getAuthority())
 						.requestMatchers(HttpMethod.POST, "/api/fg-logout").authenticated()
 						.requestMatchers(HttpMethod.POST, "/api/usuarios/alterar-senha").authenticated()
 						.requestMatchers(HttpMethod.GET, "/api/usuarios/buscar-por-email").authenticated().anyRequest()

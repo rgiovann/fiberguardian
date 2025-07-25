@@ -3,6 +3,7 @@ package edu.entra21.fiberguardian.controller;
 import java.util.List;
 
 import edu.entra21.fiberguardian.input.*;
+import edu.entra21.fiberguardian.model.Role;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -15,6 +16,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -154,12 +156,6 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 		return ResponseEntity.noContent().build();
 	}
 
-//	@PostMapping("/validar-admin")
-//	public ResponseEntity<Void> validarAdministrador(@RequestBody @Valid UsuarioEmailSenhaInput input) {
-//		usuarioService.validarAdmin(input.getEmail(), input.getSenha());
-//		return ResponseEntity.ok().build();
-//	}
-
 	@PostMapping("/validar-admin")
 	public ResponseEntity<Void> validarAdmin(
 			@RequestBody @Valid UsuarioEmailSenhaInput input,
@@ -176,6 +172,16 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 		session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
 
 		return ResponseEntity.ok().build();
+	}
+
+	// reforca que só usuario admin autenticado pode fazer reset de senha
+	@PostMapping("/reset-senha")
+	public ResponseEntity<Void> resetSenha(@RequestBody UsuarioResetSenhaInput input) {
+
+		// lógica para resetar a senha de outro usuário
+		usuarioService.resetarSenha(input.getEmail(),input.getSenha(),input.getRepeteSenha());
+		return ResponseEntity.ok().build();
+
 	}
 
 }
