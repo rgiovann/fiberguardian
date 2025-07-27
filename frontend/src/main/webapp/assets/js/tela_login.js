@@ -1,7 +1,4 @@
 (function () {
-    //const API_BASE_URL = "https://localhost:8443/fiberguardian";
-    //const API_BASE_URL = "/fiberguardian"; // caddy
-
     window.FiberGuardian = window.FiberGuardian || {};
     FiberGuardian.TelaLogin = (function () {
         'use strict';
@@ -22,10 +19,7 @@
 
                 if (resposta.ok) {
                     const usuario = await resposta.json();
-                    FiberGuardian.Utils.exibirMensagem(
-                        'Login realizado com sucesso!',
-                        'success'
-                    );
+
                     // Armazenar dados do usuário autenticado globalmente
                     FiberGuardian.UsuarioLogado = {
                         nome: usuario.nome,
@@ -37,7 +31,14 @@
                         'usuario',
                         JSON.stringify(FiberGuardian.UsuarioLogado)
                     );
-                    window.location.href = 'index.html';
+
+                    FiberGuardian.Utils.exibirMensagem(
+                        'Login realizado com sucesso!',
+                        'success'
+                    );
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 500);
                 } else if (resposta.status === 401) {
                     FiberGuardian.Utils.exibirMensagem(
                         'Credenciais inválidas.',

@@ -11,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,103 +36,90 @@ import jakarta.servlet.http.HttpSession;
 @RestController
 public class AuthController {
 
-	private final AuthenticationManager authenticationManager;
-	private final Mapper mapper;
-	private static final Logger logger = LoggerFactory.getLogger(CsrfController.class);
+    private final AuthenticationManager authenticationManager;
+    private final Mapper mapper;
+    private static final Logger logger = LoggerFactory.getLogger(CsrfController.class);
 
-	private final UsuarioAutenticadoInputAssembler usuarioAutenticadoInputAssembler;
-	private final UsuarioService usuarioService;
-	private final UsuarioDtoAssembler usuarioDtoAssembler;
+    private final UsuarioAutenticadoInputAssembler usuarioAutenticadoInputAssembler;
+    private final UsuarioService usuarioService;
+    private final UsuarioDtoAssembler usuarioDtoAssembler;
 
-	public AuthController(AuthenticationManager authenticationManager, Mapper mapper,
-			UsuarioAutenticadoInputAssembler usuarioAutenticadoInputAssembler, UsuarioService usuarioService,
-			UsuarioDtoAssembler usuarioDtoAssembler ) {
+    public AuthController(AuthenticationManager authenticationManager, Mapper mapper,
+                          UsuarioAutenticadoInputAssembler usuarioAutenticadoInputAssembler, UsuarioService usuarioService,
+                          UsuarioDtoAssembler usuarioDtoAssembler) {
 
-		this.authenticationManager = authenticationManager;
-		this.mapper = mapper;
-		this.usuarioAutenticadoInputAssembler = usuarioAutenticadoInputAssembler;
-		this.usuarioService = usuarioService;
-		this.usuarioDtoAssembler = usuarioDtoAssembler;
+        this.authenticationManager = authenticationManager;
+        this.mapper = mapper;
+        this.usuarioAutenticadoInputAssembler = usuarioAutenticadoInputAssembler;
+        this.usuarioService = usuarioService;
+        this.usuarioDtoAssembler = usuarioDtoAssembler;
 
-	}
+    }
 
-	@PostMapping("/api/fg-login")
-	@JsonView(UsuarioView.Autenticado.class)
-	public ResponseEntity<?> login(@RequestBody @Validated UsuarioEmailSenhaInput loginRequest,
-			HttpServletRequest request, HttpServletResponse response) {
+    @PostMapping("/api/fg-login")
+    @JsonView(UsuarioView.Autenticado.class)
+    public ResponseEntity<?> login(@RequestBody @Validated UsuarioEmailSenhaInput loginRequest,
+                                   HttpServletRequest request, HttpServletResponse response) {
 
-		logger.debug("JSESSIONID recebido: " + request.getSession(false).getId()); // Log para depuração
-		logger.debug("Token CSRF esperado: " + request.getAttribute("_csrf")); // Log para depuração
+        logger.debug("JSESSIONID recebido: " + request.getSession(false).getId()); // Log para depuração
+        logger.debug("Token CSRF esperado: " + request.getAttribute("_csrf")); // Log para depuração
 
-		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
-				loginRequest.getSenha());
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
+                loginRequest.getSenha());
 
-		try {
+        usuarioService.verificaSeUsuaurioEstaBloqueado(loginRequest.getEmail());
 
-			try {
-				if (usuarioService.estaBloqueado(loginRequest.getEmail())) {
-					logger.warn("Usuario com email " + loginRequest.getEmail() + " está inativo.");
+        Authentication authentication = authenticationManager.authenticate(authToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-					throw new BadCredentialsException("Credenciais inválidas");
-				}
-			} catch (UsuarioNaoEncontradoException e) {
-				logger.warn("Email não encontrado: " + loginRequest.getEmail());
-				throw new BadCredentialsException("Credenciais inválidas");
-			}
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            // Segurança extra: recusar login se não houver sessão válida (token CSRF foi
+            // inválido)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sessão inválida ou expirada");
+        }
 
-			Authentication authentication = authenticationManager.authenticate(authToken);
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-
-			HttpSession session = request.getSession(false);
-			if (session == null) {
-				// Segurança extra: recusar login se não houver sessão válida (token CSRF foi
-				// inválido)
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sessão inválida ou expirada");
-			}
-
-			// Salvar explicitamente o contexto na sessão HTTP
-			session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-			 SecurityContextHolder.getContext());
+        // Salvar explicitamente o contexto na sessão HTTP
+        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                SecurityContextHolder.getContext());
 
 
-			logger.debug("Reutilizando sessão existente: " + session.getId());
+        logger.debug("Reutilizando sessão existente: " + session.getId());
 
-			UsuarioAutenticado usuarioAutenticado = (UsuarioAutenticado) authentication.getPrincipal();
-			Usuario usuario = usuarioAutenticado.getUsuario();
+        UsuarioAutenticado usuarioAutenticado = (UsuarioAutenticado) authentication.getPrincipal();
+        Usuario usuario = usuarioAutenticado.getUsuario();
 
-			logger.info("Usuário [" + usuarioAutenticado.getUsuario().getNome() + "] autenticado com sucesso.");
+        logger.info("Usuário [" + usuarioAutenticado.getUsuario().getNome() + "] autenticado com sucesso.");
 
-			UsuarioDto responseDto = usuarioDtoAssembler.toDto(usuario);
+        UsuarioDto responseDto = usuarioDtoAssembler.toDto(usuario);
 
-			return ResponseEntity.ok(responseDto);
-		} catch (AuthenticationException ex) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");
-		}
-	}
+        return ResponseEntity.ok(responseDto);
 
-	@PostMapping("/api/fg-logout")
-	public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
-		HttpSession session = request.getSession(false);
+    }
 
-		if (session != null) {
-			String sessionId = session.getId();
-			session.invalidate(); // Invalida a sessão
-			logger.info("Sessão encerrada com sucesso. JSESSIONID: " + sessionId);
-		} else {
-			logger.info("Logout chamado sem sessão ativa.");
-		}
+    @PostMapping("/api/fg-logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession(false);
 
-		SecurityContextHolder.clearContext(); // Limpa o contexto de autenticação
+        if (session != null) {
+            String sessionId = session.getId();
+            session.invalidate(); // Invalida a sessão
+            logger.info("Sessão encerrada com sucesso. JSESSIONID: " + sessionId);
+        } else {
+            logger.info("Logout chamado sem sessão ativa.");
+        }
 
-		// Opcional: deletar cookie JSESSIONID (seguro, mas depende do client respeitar)
-		Cookie cookie = new Cookie("JSESSIONID", "");
-		cookie.setPath("/");
-		cookie.setMaxAge(0); // Expira imediatamente
-		cookie.setHttpOnly(true);
-		cookie.setSecure(true); // True se seu app está servindo via HTTPS
-		response.addCookie(cookie);
+        SecurityContextHolder.clearContext(); // Limpa o contexto de autenticação
 
-		return ResponseEntity.ok().body("Logout realizado com sucesso");
-	}
+        // Opcional: deletar cookie JSESSIONID (seguro, mas depende do client respeitar)
+        Cookie cookie = new Cookie("JSESSIONID", "");
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // Expira imediatamente
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true); // True se seu app está servindo via HTTPS
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok().body("Logout realizado com sucesso");
+    }
 
 }

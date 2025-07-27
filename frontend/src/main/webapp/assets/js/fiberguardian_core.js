@@ -89,7 +89,7 @@
                         btnLogout.addEventListener('click', async (e) => {
                             e.preventDefault();
                             console.log('Fazendo logout do sistema...');
-                            await realizarLogout();
+                            await FiberGuardian.Utils.realizarLogout();
                         });
                     }
                 } catch (erro) {
@@ -218,29 +218,6 @@
                 });
         }
 
-        async function realizarLogout() {
-            try {
-                const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
-                const resp = await fetch('/api/fg-logout', {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'X-XSRF-TOKEN': csrfToken,
-                    },
-                });
-
-                if (!resp.ok) throw new Error('Erro ao encerrar sessão');
-
-                sessionStorage.removeItem('usuario');
-                window.location.href = 'login.html';
-            } catch (e) {
-                FiberGuardian.Utils?.exibirMensagem?.(
-                    'Erro no logout: ' + e.message,
-                    'danger'
-                );
-            }
-        }
-
         function limparCacheScripts() {
             scriptsCarregados.clear();
             console.log('Cache de scripts limpo');
@@ -254,7 +231,6 @@
         // Exporta somente o que for necessário
         return {
             carregarPagina,
-            realizarLogout,
             limparCacheScripts,
             verificarCacheScripts,
             inicializarApp,

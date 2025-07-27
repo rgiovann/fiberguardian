@@ -174,7 +174,6 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 		return ResponseEntity.ok().build();
 	}
 
-	// reforca que só usuario admin autenticado pode fazer reset de senha
 	@PostMapping("/reset-senha")
 	public ResponseEntity<Void> resetSenha(@RequestBody UsuarioResetSenhaInput input) {
 

@@ -2,67 +2,16 @@
     window.FiberGuardian = window.FiberGuardian || {};
 
     FiberGuardian.Utils = (function () {
+        'use strict';
         console.log('FiberGuardian.Utils carregado com sucesso.');
 
-        // Função privada (não será exportada)
+        // === Funções Privadas ===
+
         function normalizarEmail(email) {
             return email.trim().toLowerCase();
         }
 
-        // Função pública (exportada)
-        function getCookie(nome) {
-            const cookies = document.cookie.split('; ');
-            for (const cookie of cookies) {
-                const [chave, valor] = cookie.split('=');
-                if (chave === nome) {
-                    return decodeURIComponent(valor);
-                }
-            }
-            return null;
-        }
-
-        async function obterNovoToken() {
-            try {
-                const resposta = await fetch('/api/csrf-token', {
-                    method: 'GET',
-                    credentials: 'include',
-                });
-
-                if (!resposta.ok) {
-                    throw new Error(`Erro ao obter token CSRF: ${resposta.statusText}`);
-                }
-
-                const dados = await resposta.json();
-                if (!dados.token) {
-                    throw new Error('Token CSRF não retornado pelo servidor.');
-                }
-
-                return dados.token;
-            } catch (erro) {
-                console.error('Falha ao obter novo token CSRF:', erro);
-                throw erro;
-            }
-        }
-
-        async function obterTokenCsrf() {
-            const tokenExistente = getCookie('XSRF-TOKEN');
-
-            if (tokenExistente) {
-                return tokenExistente;
-            }
-
-            // Fallback defensivo
-            return await obterNovoToken();
-        }
-
-        // Outra função pública
-        function isEmailValido(email) {
-            email = normalizarEmail(email); // usando função privada
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-        }
-
-        
-        function exibirMensagem(texto, tipo, elementId = 'mensagemSistema') {
+        function exibirMensagemInterna(texto, tipo, elementId = 'mensagemSistema') {
             const alerta = document.getElementById(elementId);
             if (!alerta) return;
 
@@ -75,21 +24,13 @@
             }, 1500);
         }
 
-        /*
-        function exibirMensagem(texto, tipo, elementId = 'mensagemSistema') {
-            const alerta = document.getElementById(elementId);
-            if (!alerta) return;
-
-            alerta.textContent = texto;
-            alerta.className = `alert alert-${tipo} mt-1 visible`;
-
-            setTimeout(() => {
-                alerta.classList.replace('visible', 'invisible');
-            }, 1500);
+        function desabilitarEntradas(formulario, desabilitar) {
+            if (!formulario) return;
+            formulario.querySelectorAll('input, button').forEach((el) => {
+                el.disabled = desabilitar;
+            });
         }
-            */
 
-        // Função privada: verifica se a sessão ainda está ativa
         async function verificarSessao() {
             try {
                 const resposta = await fetch('/api/sessao/valida', {
@@ -98,7 +39,7 @@
                 });
 
                 if (resposta.status === 401 || resposta.status === 403) {
-                    exibirMensagem(
+                    exibirMensagemInterna(
                         'Sua sessão expirou. Você será redirecionado para o login.',
                         'danger'
                     );
@@ -109,24 +50,171 @@
             }
         }
 
-        // Função privada: inicia verificação periódica
         function iniciarMonitoramentoSessao() {
-            setInterval(verificarSessao, 5 * 60 * 1000); // a cada 5 minutos
+            setInterval(verificarSessao, 5 * 60 * 1000);
         }
 
-        // Função pública para inicializar o watcher
+        // === Funções Públicas ===
+
+        function isEmailValido(email) {
+            const emailNormalizado = normalizarEmail(email);
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailNormalizado);
+        }
+
+        function getCookie(nome) {
+            const cookies = document.cookie.split('; ');
+            for (const cookie of cookies) {
+                const [chave, valor] = cookie.split('=');
+                if (chave === nome) {
+                    return decodeURIComponent(valor);
+                }
+            }
+            return null;
+        }
+
+        async function obterNovoToken() {
+            const resposta = await fetch('/api/csrf-token', {
+                method: 'GET',
+                credentials: 'include',
+            });
+
+            if (!resposta.ok) {
+                throw new Error(`Erro ao obter token CSRF: ${resposta.statusText}`);
+            }
+
+            const dados = await resposta.json();
+            if (!dados.token) {
+                throw new Error('Token CSRF não retornado pelo servidor.');
+            }
+
+            return dados.token;
+        }
+
+        async function obterTokenCsrf() {
+            const tokenExistente = getCookie('XSRF-TOKEN');
+            return tokenExistente || (await obterNovoToken());
+        }
+
+        function exibirMensagemModal(mensagem, tipo = 'info', titulo = 'Aviso') {
+            const modalEl = document.getElementById('modalMensagemSistema');
+            if (!modalEl) return;
+
+            const tituloEl = modalEl.querySelector('.modal-title');
+            const corpoEl = modalEl.querySelector('.modal-body');
+
+            if (tituloEl) tituloEl.textContent = titulo;
+            if (corpoEl) corpoEl.textContent = mensagem;
+
+            const headerEl = modalEl.querySelector('.modal-header');
+            if (headerEl) {
+                headerEl.className = 'modal-header';
+                const tipoCor = {
+                    danger: 'bg-danger text-white',
+                    warning: 'bg-warning text-dark',
+                    success: 'bg-success text-white',
+                    info: 'bg-info text-white',
+                    primary: 'bg-primary text-white',
+                };
+                headerEl.className += ' ' + (tipoCor[tipo] || 'bg-warning text-dark');
+            }
+
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        }
+
+        async function tratarErroFetch(resposta, titulo = 'Erro') {
+            let mensagem = 'Erro inesperado ao processar a requisição.';
+            console.groupCollapsed(`↪️ tratarErroFetch: status ${resposta.status}`);
+
+            try {
+                const contentType = resposta.headers.get('Content-Type') || '';
+                console.log('📦 Content-Type:', contentType);
+
+                if (contentType.includes('application/json')) {
+                    console.log('📥 Tentando parsear JSON da resposta...');
+                    const json = await resposta.json();
+                    console.log('✅ JSON recebido:', json);
+
+                    if (json?.userMessage) {
+                        mensagem = json.userMessage;
+                        console.log('🟢 Mensagem principal extraída:', mensagem);
+
+                        if (Array.isArray(json.errorObjects)) {
+                            const detalhes = json.errorObjects
+                                .map(
+                                    (err) =>
+                                        `Campo: ${err.name} - Problema: ${err.userMessage}`
+                                )
+                                .join('\n');
+                            mensagem += '\n' + detalhes;
+                            console.log('🔍 Detalhes dos erros de campo:', detalhes);
+                        }
+                    } else if (resposta.status === 403) {
+                        mensagem =
+                            'Acesso negado. Sua sessão expirou ou você não tem permissão.';
+                        console.warn('⚠️ Erro 403 sem userMessage.');
+                    } else {
+                        console.warn('ℹ️ JSON válido mas sem userMessage.');
+                    }
+                } else {
+                    console.warn(
+                        '⚠️ Resposta não é JSON. Tentando exibir texto bruto...'
+                    );
+                    const texto = await resposta.text();
+                    console.log('📄 Conteúdo da resposta:', texto);
+                    mensagem = `Erro ${resposta.status} - ${resposta.statusText}`;
+                }
+            } catch (e) {
+                console.error('❌ Erro ao interpretar a resposta:', e);
+
+                if (resposta.status === 403) {
+                    mensagem =
+                        'Acesso negado. Sua sessão expirou ou você não tem permissão.';
+                    console.warn('⚠️ Erro 403 capturado no catch.');
+                }
+            }
+
+            console.log('📢 Mensagem final ao usuário:', mensagem);
+            console.groupEnd();
+
+            exibirMensagemModal(mensagem, 'danger', titulo);
+        }
+
         function iniciarWatcherDeSessao() {
             iniciarMonitoramentoSessao();
         }
 
-        // Exporta apenas as funções públicas necessárias
+        async function realizarLogout() {
+            try {
+                const csrfToken = await obterTokenCsrf();
+                const resp = await fetch('/api/fg-logout', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'X-XSRF-TOKEN': csrfToken,
+                    },
+                });
+
+                if (!resp.ok) throw new Error('Erro ao encerrar sessão');
+
+                sessionStorage.removeItem('usuario');
+                window.location.href = 'login.html';
+            } catch (e) {
+                exibirMensagemModal('Erro no logout: ' + e.message, 'danger');
+            }
+        }
+
+        // Exporta apenas o necessário
         return {
-            getCookie: getCookie,
-            isEmailValido: isEmailValido,
-            obterTokenCsrf: obterTokenCsrf,
-            obterNovoToken: obterNovoToken,
+            isEmailValido,
+            obterTokenCsrf,
+            obterNovoToken,
             iniciarWatcherDeSessao,
-            exibirMensagem,
+            exibirMensagem: exibirMensagemInterna,
+            exibirMensagemModal,
+            tratarErroFetch,
+            realizarLogout,
+            desabilitarEntradas,
         };
     })();
 })();
