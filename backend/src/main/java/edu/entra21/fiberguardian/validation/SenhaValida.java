@@ -16,7 +16,8 @@ import jakarta.validation.constraints.Size;
 @Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 @NotBlank(message = "A senha é obrigatória")
-@Size(max = 20, message = "Senha deve ter até 20 caracteres")
+@Size(min = 6, max = 20, message = "A senha deve ter entre {min} e {max} caracteres")
+
 public @interface SenhaValida {
 
 	String message() default "Senha inválida";

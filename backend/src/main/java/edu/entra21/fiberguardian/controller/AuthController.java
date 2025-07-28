@@ -56,9 +56,10 @@ public class AuthController {
 
     }
 
+    // não faz validacao alguma, é autenticacao
     @PostMapping("/api/fg-login")
     @JsonView(UsuarioView.Autenticado.class)
-    public ResponseEntity<?> login(@RequestBody @Validated UsuarioEmailSenhaInput loginRequest,
+    public ResponseEntity<?> login(@RequestBody UsuarioEmailSenhaInput loginRequest,
                                    HttpServletRequest request, HttpServletResponse response) {
 
         logger.debug("JSESSIONID recebido: " + request.getSession(false).getId()); // Log para depuração

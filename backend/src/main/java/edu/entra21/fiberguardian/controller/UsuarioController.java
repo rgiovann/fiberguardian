@@ -156,9 +156,10 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 		return ResponseEntity.noContent().build();
 	}
 
+	// não faz validacao @Valid alguma, é autenticacao
 	@PostMapping("/validar-admin")
 	public ResponseEntity<Void> validarAdmin(
-			@RequestBody @Valid UsuarioEmailSenhaInput input,
+			@RequestBody UsuarioEmailSenhaInput input,
 			HttpServletRequest request,
 			HttpServletResponse response
 	) {
@@ -175,7 +176,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	}
 
 	@PostMapping("/reset-senha")
-	public ResponseEntity<Void> resetSenha(@RequestBody UsuarioResetSenhaInput input) {
+	public ResponseEntity<Void> resetSenha(@RequestBody @Valid  UsuarioResetSenhaInput input) {
 
 		// lógica para resetar a senha de outro usuário
 		usuarioService.resetarSenha(input.getEmail(),input.getSenha(),input.getRepeteSenha());

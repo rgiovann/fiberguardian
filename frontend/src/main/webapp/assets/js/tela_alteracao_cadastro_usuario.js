@@ -28,12 +28,10 @@
         });
 
         if (!resposta.ok) {
-          const tipo = resposta.headers.get("Content-Type") || "";
-          const mensagemErro = tipo.includes("application/json")
-            ? (await resposta.json()).erro || "Erro inesperado."
-            : await resposta.text();
-
-          throw new Error(mensagemErro);
+          await FiberGuardian.Utils.tratarErroFetch(
+            resposta,
+            "Erro ao alterar cadastro usuário."
+          );
         }
 
         const usuario = await resposta.json();
@@ -48,11 +46,14 @@
         document.getElementById("turno").value = turnoOriginal;
       } catch (erro) {
         console.error(erro);
-        FiberGuardian.Utils.exibirMensagem(
+        FiberGuardian.Utils.exibirMensagemModal(
           "Erro ao carregar seus dados: " + erro.message,
-          "danger",
-          "mensagemSalvarDados"
+          "danger"
         );
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 100);
+        return;
       }
     }
 
@@ -72,10 +73,9 @@
         const turno = campoTurno.value;
 
         if (!nome || !setor || !turno) {
-          FiberGuardian.Utils.exibirMensagem(
+          FiberGuardian.Utils.exibirMensagemModal(
             "Todos os campos devem ser preenchidos.",
-            "danger",
-            "mensagemSalvarDados"
+            "danger"
           );
           return;
         }
@@ -85,10 +85,9 @@
         const turnoSemMudanca = turno === turnoOriginal;
 
         if (nomeSemMudanca && setorSemMudanca && turnoSemMudanca) {
-          FiberGuardian.Utils.exibirMensagem(
+          FiberGuardian.Utils.exibirMensagemModal(
             "Nenhum dado foi alterado.",
-            "info",
-            "mensagemSalvarDados"
+            "info"
           );
           return;
         }
@@ -119,32 +118,28 @@
             campoSetor.value = setorOriginal;
             campoTurno.value = turnoOriginal;
 
-            FiberGuardian.Utils.exibirMensagem(
+            FiberGuardian.Utils.exibirMensagemModal(
               "Dados atualizados com sucesso.",
-              "success",
-              "mensagemSalvarDados"
+              "success"
             );
 
             // Atualiza o formulário consultando o backend novamente
             await preencherCampos();
           } else {
-            const tipo = resposta.headers.get("Content-Type") || "";
-            const mensagemErro = tipo.includes("application/json")
-              ? (await resposta.json()).erro || "Erro inesperado."
-              : await resposta.text();
-
-            FiberGuardian.Utils.exibirMensagem(
-              "Erro ao atualizar os dados: " + mensagemErro,
-              "danger",
-              "mensagemSalvarDados"
+            console.error(
+              "Erro ao alterar dados do usuario:",
+              await resposta.text()
+            );
+            await FiberGuardian.Utils.tratarErroFetch(
+              resposta,
+              "Erro ao alterar cadastro usuário."
             );
           }
         } catch (erro) {
           console.error(erro);
-          FiberGuardian.Utils.exibirMensagem(
+          FiberGuardian.Utils.exibirMensagemModal(
             "Erro ao enviar requisição: " + erro.message,
-            "danger",
-            "mensagemSalvarDados"
+            "danger"
           );
         } finally {
           botaoSubmit.disabled = false;
@@ -167,10 +162,9 @@
 
         // Verifica se nova senha e confirmação coincidem
         if (novaSenha !== confirmar) {
-          FiberGuardian.Utils.exibirMensagem(
+          FiberGuardian.Utils.exibirMensagemModal(
             "As senhas não coincidem.",
-            "danger",
-            "mensagemAlteraSenha"
+            "danger"
           );
         }
 
@@ -191,47 +185,24 @@
           });
 
           if (resposta.ok) {
-            FiberGuardian.Utils.exibirMensagem(
+            FiberGuardian.Utils.exibirMensagemModal(
               "Senha alterada com sucesso.",
-              "success",
-              "mensagemAlteraSenha"
+              "success"
             );
-          } else if (resposta.status === 403) {
-            const mensagemErro = (await resposta.text()).trim();
-            FiberGuardian.Utils.exibirMensagem(
-              mensagemErro,
-              "danger",
-              "mensagemAlteraSenha"
+          } else {
+            await FiberGuardian.Utils.tratarErroFetch(
+              resposta,
+              "Erro ao alterar cadastro usuário."
             );
-          } else if (resposta.status >= 400 && resposta.status < 600) {
-            try {
-              const problema = await resposta.json();
-              const mensagem =
-                problema.userMessage ||
-                problema.detail ||
-                "Erro ao alterar senha.";
-              FiberGuardian.Utils.exibirMensagem(
-                mensagem,
-                "danger",
-                "mensagemAlteraSenha"
-              );
-            } catch (e) {
-              FiberGuardian.Utils.exibirMensagem(
-                "Erro inesperado ao processar resposta do servidor.",
-                "danger",
-                "mensagemAlteraSenha"
-              );
-            }
           }
         } catch (erro) {
           console.error(erro);
-          FiberGuardian.Utils.exibirMensagem(
+          FiberGuardian.Utils.exibirMensagemModal(
             "Erro ao enviar requisição: " + erro.message,
-            "danger",
-            "mensagemAlteraSenha"
+            "danger"
           );
         }
-        form.reset(); // limpa os campos por segurança
+        form.reset();
       });
     }
 
