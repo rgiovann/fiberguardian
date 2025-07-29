@@ -17,4 +17,8 @@ public class UsuarioAlteraSenhaInput {
 	@ToString.Exclude
 	private String novaSenha;
 
+	@SenhaValida
+	@ToString.Exclude
+	private String repeteNovaSenha;
+
 }

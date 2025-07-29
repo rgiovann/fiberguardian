@@ -28,8 +28,16 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private static final BadCredentialsException CREDENCIAIS_INVALIDAS =
-            new BadCredentialsException("Credenciais inválidas");
-    private static final Logger logger = LoggerFactory.getLogger(CsrfController.class);
+            new BadCredentialsException("Credenciais inválidas.");
+    private final String SENHA_INVALIDA = "Senha inválida.";
+    private final String SENHA_NOVA_IGUAL_SENHA_VELHA = "Essa senha já foi usada recentemente. Por segurança, escolha uma diferente.";
+    private final String SENHA_NOVA_REPETE_SENHA_NOVA_DIFERENTES = "As nova senha e a repetição da nova senha não são iguais. Verifique.";
+    private final String USUARIO_JA_EXISTE ="Já existe um usuário com email informado.";
+    private final String USUARIO_NAO_ALTERA_PROPRIO_STATUS ="Usuário não pode alterar seu proprio status.";
+    private final String EMAIL_EH_OBRIGATORIO = "Informar email é obrigatório.";
+    private final String CREDENCIAS_INVALIDAS = "Credenciais inválidas.";
+
+    private static final Logger logger = LoggerFactory.getLogger(UsuarioService.class);
 
     public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder,
                           AuthenticationManager authenticationManager) {
@@ -47,11 +55,11 @@ public class UsuarioService {
         try {
             Usuario usuario = buscarPorEmailObrigatorio(email);
             if (!usuario.getAtivo()) {
-                throw new BadCredentialsException("Credenciais inválidas");
+                throw CREDENCIAIS_INVALIDAS;
             }
         } catch (UsuarioNaoEncontradoException e) {
             logger.warn("Email não encontrado: " + email);
-            throw new BadCredentialsException("Credenciais inválidas");
+            throw CREDENCIAIS_INVALIDAS;
         }
     }
 
@@ -63,7 +71,7 @@ public class UsuarioService {
         String email = usuario.getEmail();
 
         if (email == null || email.trim().isEmpty()) {
-            throw new NegocioException("E-mail do usuário é obrigatório.");
+            throw new NegocioException(EMAIL_EH_OBRIGATORIO);
         }
 
         Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(email);
@@ -76,7 +84,7 @@ public class UsuarioService {
                 && (usuario.getId() == null || !usuarioExistente.get().getId().equals(usuario.getId()));
 
         if (emailCadastradoPorOutro) {
-            throw new NegocioException(String.format("Já existe usuário cadastrado com o e-mail %s", email));
+            throw new NegocioException(USUARIO_JA_EXISTE);
         }
 
         String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
@@ -94,16 +102,20 @@ public class UsuarioService {
     }
 
     @Transactional
-    public void atualizarSenha(String email, String novaSenha, String senhaAtual) {
+    public void atualizarSenha(String email, String novaSenha, String senhaAtual, String repeteNovaSenha) {
 
         Usuario usuario = buscarPorEmailObrigatorio(email);
 
         if (senhaRepetida(novaSenha, usuario)) {
-            throw new NegocioException("A nova senha não pode ser igual à anterior.");
+            throw new NegocioException(SENHA_NOVA_IGUAL_SENHA_VELHA);
         }
 
         if (!senhaCorreta(senhaAtual, usuario)) {
-            throw new UsuarioSenhaIncorretaException("Senha inválida!");
+            throw new UsuarioSenhaIncorretaException(SENHA_INVALIDA);
+        }
+
+        if ( !(repeteNovaSenha.equals(novaSenha)) ) {
+            throw new NegocioException(SENHA_NOVA_REPETE_SENHA_NOVA_DIFERENTES);
         }
 
         String senhaCriptografada = passwordEncoder.encode(novaSenha);
@@ -128,7 +140,7 @@ public class UsuarioService {
 
     public boolean existeEmailCadastrado(String email) {
         if (usuarioRepository.existsByEmail(email)) {
-            throw new EntidadeEmUsoException("Já existe um usuário com o e-mail informado.");
+            throw new EntidadeEmUsoException(USUARIO_JA_EXISTE);
         }
         return true;
     }
@@ -151,7 +163,7 @@ public class UsuarioService {
 
     private void validarMudancaStatus(String emailAutenticado, String emailUsuario) {
         if (emailAutenticado.equalsIgnoreCase(emailUsuario)) {
-            throw new UsuarioAutoMudancaStatusException("Usuário não pode alterar seu próprio status");
+            throw new UsuarioAutoMudancaStatusException(USUARIO_NAO_ALTERA_PROPRIO_STATUS);
         }
     }
 
@@ -174,13 +186,18 @@ public class UsuarioService {
     public void resetarSenha(String email, String novaSenha, String repeteSenha) {
 
         Usuario usuario = buscarPorEmailObrigatorio(email);
+
         verificaSeUsuaurioEstaBloqueado(email);
 
         if (!novaSenha.equals(repeteSenha)) {
-            throw new NegocioException("As senhas não são iguais. Verifique.");
+            throw new NegocioException(SENHA_NOVA_REPETE_SENHA_NOVA_DIFERENTES);
         }
-        String senhaCriptografada = passwordEncoder.encode(novaSenha);
-        usuario.setSenha(senhaCriptografada);
+
+        if ( passwordEncoder.matches(novaSenha, usuario.getSenha())) {
+            throw new NegocioException(SENHA_NOVA_IGUAL_SENHA_VELHA);
+        }
+
+        usuario.setSenha(passwordEncoder.encode(novaSenha));
         usuarioRepository.save(usuario);
     }
 }

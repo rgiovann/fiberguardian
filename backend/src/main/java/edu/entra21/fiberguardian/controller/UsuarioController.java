@@ -134,7 +134,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 			Authentication authentication) {
 
 		String emailAutenticado = authentication.getName();
-		usuarioService.atualizarSenha(emailAutenticado, input.getNovaSenha(), input.getSenhaAtual());
+		usuarioService.atualizarSenha(emailAutenticado, input.getNovaSenha(), input.getSenhaAtual(),input.getRepeteNovaSenha());
 		return ResponseEntity.noContent().build();
 	}
 
