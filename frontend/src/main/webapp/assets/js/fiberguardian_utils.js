@@ -100,15 +100,18 @@
       return tokenExistente || (await obterNovoToken());
     }
 
-    function exibirMensagemModal(mensagem, tipo = "info", titulo = "Aviso") {
+    function exibirMensagemModal(mensagem, tipo = "info") {
       const modalEl = document.getElementById("modalMensagemSistema");
       if (!modalEl) return;
 
       const tituloEl = modalEl.querySelector(".modal-title");
       const corpoEl = modalEl.querySelector(".modal-body");
 
-      if (tituloEl) tituloEl.textContent = titulo;
-      if (corpoEl) corpoEl.textContent = mensagem;
+      if (tituloEl) tituloEl.textContent = "Aviso";
+      //if (corpoEl) corpoEl.textContent = mensagem;  //corpoEl.innerHTML = mensagem;
+      // insiro mensagem com tag html para quebra de linha <br> por isso
+      // preciso usar innerHTML
+      if (corpoEl) corpoEl.innerHTML = mensagem;
 
       const headerEl = modalEl.querySelector(".modal-header");
       if (headerEl) {
@@ -127,7 +130,32 @@
       modal.show();
     }
 
-    async function tratarErroFetch(resposta, titulo = "Erro") {
+    function escapeHTML(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function exibirMensagemModalComFoco(mensagem, tipo, campoAlvo) {
+      if (!mensagem || !campoAlvo) return;
+
+      const modalEl = document.getElementById("modalMensagemSistema");
+      if (!modalEl) {
+        console.warn("Modal de mensagem não encontrado.");
+        return;
+      }
+
+      function handler() {
+        campoAlvo.focus();
+        modalEl.removeEventListener("hidden.bs.modal", handler);
+      }
+
+      modalEl.addEventListener("hidden.bs.modal", handler);
+
+      FiberGuardian.Utils.exibirMensagemModal(mensagem, tipo);
+    }
+
+    async function tratarErroFetch(resposta, titulo = "Erro", campoAlvo) {
       let mensagem = "Erro inesperado ao processar a requisição.";
       console.groupCollapsed(`↪️ tratarErroFetch: status ${resposta.status}`);
 
@@ -147,18 +175,20 @@
             if (Array.isArray(json.errorObjects)) {
               const detalhes = json.errorObjects
                 .map(
-                  (err) => `Campo: ${err.name} - Problema: ${err.userMessage}`
+                  (err) =>
+                    `Campo: ${escapeHTML(err.name)} - Problema: ${escapeHTML(
+                      err.userMessage
+                    )}`
                 )
-                .join("\n");
-              mensagem += "\n" + detalhes;
-              console.log("🔍 Detalhes dos erros de campo:", detalhes);
+                .join("<br>");
+              mensagem += "<br>" + detalhes;
             }
           } else if (resposta.status === 403) {
             mensagem =
               "Acesso negado. Sua sessão expirou ou você não tem permissão.";
             console.warn("⚠️ Erro 403 sem userMessage.");
           } else {
-            console.warn("ℹ️ JSON válido mas sem userMessage.");
+            console.warn("JSON válido mas sem userMessage.");
           }
         } else {
           console.warn(
@@ -181,7 +211,11 @@
       console.log("📢 Mensagem final ao usuário:", mensagem);
       console.groupEnd();
 
-      exibirMensagemModal(mensagem, "danger", titulo);
+      FiberGuardian.Utils.exibirMensagemModalComFoco(
+        mensagem,
+        "danger",
+        campoAlvo
+      );
     }
 
     function iniciarWatcherDeSessao() {
@@ -219,6 +253,7 @@
       tratarErroFetch,
       realizarLogout,
       desabilitarEntradas,
+      exibirMensagemModalComFoco,
     };
   })();
 })();

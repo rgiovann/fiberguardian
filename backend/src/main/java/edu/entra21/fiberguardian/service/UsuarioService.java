@@ -2,7 +2,6 @@ package edu.entra21.fiberguardian.service;
 
 import java.util.Optional;
 
-import edu.entra21.fiberguardian.controller.CsrfController;
 import edu.entra21.fiberguardian.exception.exception.*;
 import edu.entra21.fiberguardian.model.Setor;
 import edu.entra21.fiberguardian.model.Turno;
@@ -57,7 +56,7 @@ public class UsuarioService {
             if (!usuario.getAtivo()) {
                 throw CREDENCIAIS_INVALIDAS;
             }
-        } catch (UsuarioNaoEncontradoException e) {
+        } catch (EmailUsuarioNaoEncontradoException e) {
             logger.warn("Email não encontrado: " + email);
             throw CREDENCIAIS_INVALIDAS;
         }
@@ -135,7 +134,7 @@ public class UsuarioService {
     }
 
     public Usuario buscarPorEmailObrigatorio(String email) {
-        return usuarioRepository.findByEmail(email).orElseThrow(() -> new UsuarioNaoEncontradoException(email));
+        return usuarioRepository.findByEmail(email).orElseThrow(() -> new EmailUsuarioNaoEncontradoException(email));
     }
 
     public boolean existeEmailCadastrado(String email) {
