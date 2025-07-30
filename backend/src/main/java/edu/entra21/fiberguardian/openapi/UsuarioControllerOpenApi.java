@@ -1,6 +1,7 @@
 package edu.entra21.fiberguardian.openapi;
 
 import edu.entra21.fiberguardian.input.UsuarioAlteraStatusInput;
+import edu.entra21.fiberguardian.input.UsuarioaAdicionaNovoUsuarioInput;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -10,8 +11,6 @@ import edu.entra21.fiberguardian.dto.UsuarioDto;
 import edu.entra21.fiberguardian.dto.UsuarioListagemDto;
 import edu.entra21.fiberguardian.exception.handler.Problem;
 import edu.entra21.fiberguardian.input.UsuarioAlteraSenhaInput;
-import edu.entra21.fiberguardian.input.UsuarioCompletoComSenhaInput;
-import edu.entra21.fiberguardian.input.UsuarioCompletoSemSenhaInput;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -49,7 +48,7 @@ public interface UsuarioControllerOpenApi {
 	@SecurityRequirement(name = "csrfToken")
 
 	UsuarioDto adicionar(
-			@Parameter(description = "Dados para criação de um novo usuário", required = true) UsuarioCompletoComSenhaInput usuarioInput);
+			@Parameter(description = "Dados para criação de um novo usuário", required = true) UsuarioaAdicionaNovoUsuarioInput usuarioInput);
 
 	@Operation(summary = "Atualiza um usuário por ID", description = "Atualiza os dados de um usuário existente, exceto o email. Requer autenticação via cookie JSESSIONID e token CSRF no header X-XSRF-TOKEN.")
 	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso"),

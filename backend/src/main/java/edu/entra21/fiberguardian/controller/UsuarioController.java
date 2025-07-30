@@ -3,7 +3,6 @@ package edu.entra21.fiberguardian.controller;
 import java.util.List;
 
 import edu.entra21.fiberguardian.input.*;
-import edu.entra21.fiberguardian.model.Role;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -16,7 +15,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -89,16 +87,14 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 	@Override
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
-	public UsuarioDto adicionar(@RequestBody @Valid UsuarioCompletoComSenhaInput usuarioNomeInput) {
+	public UsuarioDto adicionar(@RequestBody @Valid UsuarioaAdicionaNovoUsuarioInput usuarioNomeInput) {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		logger.debug("Usuário autenticado: " + auth.getName());
 		logger.debug("Authorities: " + auth.getAuthorities());
 
-		usuarioService.existeEmailCadastrado(usuarioNomeInput.getEmail());
-
 		return usuarioDtoAssembler.toDto(
-				usuarioService.cadastrarNovoUsuario(UsuarioCriarUsuarioInputDisassembler.toEntity(usuarioNomeInput)));
+				usuarioService.cadastrarNovoUsuario(UsuarioCriarUsuarioInputDisassembler.toEntity(usuarioNomeInput),usuarioNomeInput.getRepeteSenha()));
 
 	}
 
@@ -115,7 +111,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 
 	@PutMapping(path = "/me/nome", produces = MediaType.APPLICATION_JSON_VALUE)
 	@JsonView(UsuarioView.SomenteNome.class)
-	public ResponseEntity<UsuarioDto> alterarNome(@RequestBody @Valid UsuarioAlteraNomeInput input,
+	public ResponseEntity<UsuarioDto> alterarNome(@RequestBody @Valid UsuarioAlteraSeusDadosInput input,
 			Authentication authentication) {
 
 		String emailAutenticado = authentication.getName();

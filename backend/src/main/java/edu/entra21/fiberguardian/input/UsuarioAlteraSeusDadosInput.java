@@ -1,6 +1,5 @@
 package edu.entra21.fiberguardian.input;
 
-import edu.entra21.fiberguardian.validation.EmailValido;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
@@ -11,18 +10,11 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class UsuarioCompletoSemSenhaInput {
+public class UsuarioAlteraSeusDadosInput {
 
 	@NotBlank(message = "Nome é obrigatório")
 	@Size(max = 100, message = "Nome deve ter até 100 caracteres")
 	private String nome;
-
-	@EmailValido
-	private String email;
-
-	@NotNull(message = "Role é obrigatória")
-	@Enumerated(EnumType.STRING)
-	private String role;
 
 	@NotNull(message = "Turno é obrigatório")
 	@Enumerated(EnumType.STRING)

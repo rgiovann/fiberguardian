@@ -2,7 +2,6 @@ package edu.entra21.fiberguardian.assembler;
 
 import edu.entra21.fiberguardian.configuration.Mapper;
 import edu.entra21.fiberguardian.input.UsuarioAlteraStatusInput;
-import edu.entra21.fiberguardian.input.UsuarioCompletoComSenhaInput;
 import edu.entra21.fiberguardian.model.Usuario;
 import org.springframework.stereotype.Component;
 

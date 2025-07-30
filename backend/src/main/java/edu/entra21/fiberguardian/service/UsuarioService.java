@@ -63,7 +63,7 @@ public class UsuarioService {
     }
 
     @Transactional
-    public Usuario cadastrarNovoUsuario(Usuario usuario) {
+    public Usuario cadastrarNovoUsuario(Usuario usuario, String repeteSenha) {
 
         // codigo defensivo, validation no controller já
         // barra email vazio.
@@ -84,6 +84,10 @@ public class UsuarioService {
 
         if (emailCadastradoPorOutro) {
             throw new NegocioException(USUARIO_JA_EXISTE);
+        }
+
+        if ( !(usuario.getSenha().equals(repeteSenha)) ) {
+            throw new NegocioException(SENHA_NOVA_REPETE_SENHA_NOVA_DIFERENTES);
         }
 
         String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());

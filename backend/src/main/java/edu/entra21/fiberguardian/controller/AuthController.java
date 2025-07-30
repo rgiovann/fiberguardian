@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import edu.entra21.fiberguardian.assembler.UsuarioAutenticadoInputAssembler;
 import edu.entra21.fiberguardian.assembler.UsuarioDtoAssembler;
 import edu.entra21.fiberguardian.configuration.Mapper;
 import edu.entra21.fiberguardian.dto.UsuarioDto;
@@ -36,17 +35,17 @@ public class AuthController {
     private final Mapper mapper;
     private static final Logger logger = LoggerFactory.getLogger(CsrfController.class);
 
-    private final UsuarioAutenticadoInputAssembler usuarioAutenticadoInputAssembler;
+    //private final UsuarioAutenticadoInputAssembler usuarioAutenticadoInputAssembler;
     private final UsuarioService usuarioService;
     private final UsuarioDtoAssembler usuarioDtoAssembler;
 
     public AuthController(AuthenticationManager authenticationManager, Mapper mapper,
-                          UsuarioAutenticadoInputAssembler usuarioAutenticadoInputAssembler, UsuarioService usuarioService,
+                          UsuarioService usuarioService,
                           UsuarioDtoAssembler usuarioDtoAssembler) {
 
         this.authenticationManager = authenticationManager;
         this.mapper = mapper;
-        this.usuarioAutenticadoInputAssembler = usuarioAutenticadoInputAssembler;
+        //this.usuarioAutenticadoInputAssembler = usuarioAutenticadoInputAssembler;
         this.usuarioService = usuarioService;
         this.usuarioDtoAssembler = usuarioDtoAssembler;
 
