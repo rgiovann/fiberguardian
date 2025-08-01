@@ -6,60 +6,26 @@
         console.log('FiberGuardian.Utils carregado com sucesso.');
 
         // === Funções Privadas ===
-
+        /*
         function normalizarEmail(email) {
             return email.trim().toLowerCase();
         }
+*/
         /*
-        function exibirMensagemInterna(texto, tipo, elementId = 'mensagemSistema') {
-            const alerta = document.getElementById(elementId);
-            if (!alerta) return;
-
-            alerta.textContent = texto;
-            alerta.classList.add(`alert-${tipo}`, 'visivel');
-
-            setTimeout(() => {
-                alerta.classList.remove(`alert-${tipo}`, 'visivel');
-                alerta.textContent = '';
-            }, 1500);
-        }
-        */
         function desabilitarEntradas(formulario, desabilitar) {
             if (!formulario) return;
             formulario.querySelectorAll('input, button').forEach((el) => {
                 el.disabled = desabilitar;
             });
         }
-        /*
-        async function verificarSessao() {
-            try {
-                const resposta = await fetch('/api/sessao/valida', {
-                    method: 'GET',
-                    credentials: 'include',
-                });
-
-                if (resposta.status === 401 || resposta.status === 403) {
-                    exibirMensagemInterna(
-                        'Sua sessão expirou. Você será redirecionado para o login.',
-                        'danger'
-                    );
-                    window.location.href = 'tela_login.html';
-                }
-            } catch (erro) {
-                console.warn('Erro ao verificar sessão:', erro);
-            }
-        }
-
-        function iniciarMonitoramentoSessao() {
-            setInterval(verificarSessao, 5 * 60 * 1000);
-        }
 */
         // === Funções Públicas ===
-
+        /*
         function isEmailValido(email) {
             const emailNormalizado = normalizarEmail(email);
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailNormalizado);
         }
+*/
 
         function getCookie(nome) {
             const cookies = document.cookie.split('; ');
@@ -182,7 +148,8 @@
             FiberGuardian.Utils.exibirMensagemModal(mensagem, tipo);
         }
 
-        async function tratarErroFetch(resposta, titulo = 'Erro', campoAlvo) {
+        // async function tratarErroFetch(resposta, titulo = 'Erro', campoAlvo = null) {
+        async function tratarErroFetch(resposta, campoAlvo = null) {
             let mensagem = 'Erro inesperado ao processar a requisição.';
             console.groupCollapsed(`↪️ tratarErroFetch: status ${resposta.status}`);
 
@@ -237,12 +204,15 @@
 
             console.log('📢 Mensagem final ao usuário:', mensagem);
             console.groupEnd();
-
-            FiberGuardian.Utils.exibirMensagemModalComFoco(
-                mensagem,
-                'danger',
-                campoAlvo
-            );
+            if (campoAlvo !== null) {
+                FiberGuardian.Utils.exibirMensagemModalComFoco(
+                    mensagem,
+                    'danger',
+                    campoAlvo
+                );
+            } else {
+                FiberGuardian.Utils.exibirMensagemModal(mensagem, 'danger');
+            }
         }
 
         function iniciarWatcherDeSessao() {
@@ -271,14 +241,12 @@
 
         // Exporta apenas o necessário
         return {
-            isEmailValido,
             obterTokenCsrf,
             obterNovoToken,
             iniciarWatcherDeSessao,
             exibirMensagemModal,
             tratarErroFetch,
             realizarLogout,
-            desabilitarEntradas,
             exibirMensagemModalComFoco,
             obterCampo,
             exibirMensagemSessaoExpirada,

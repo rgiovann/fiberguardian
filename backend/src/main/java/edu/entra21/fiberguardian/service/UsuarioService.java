@@ -28,13 +28,13 @@ public class UsuarioService {
     private final AuthenticationManager authenticationManager;
     private static final BadCredentialsException CREDENCIAIS_INVALIDAS =
             new BadCredentialsException("Credenciais inválidas.");
-    private final String SENHA_INVALIDA = "Senha inválida.";
+    private final String SENHA_INVALIDA = "A senha é inválida.";
     private final String SENHA_NOVA_IGUAL_SENHA_VELHA = "Essa senha já foi usada recentemente. Por segurança, escolha uma diferente.";
     private final String SENHA_NOVA_REPETE_SENHA_NOVA_DIFERENTES = "As nova senha e a repetição da nova senha não são iguais. Verifique.";
     private final String USUARIO_JA_EXISTE ="Já existe um usuário com email informado.";
     private final String USUARIO_NAO_ALTERA_PROPRIO_STATUS ="Usuário não pode alterar seu proprio status.";
     private final String EMAIL_EH_OBRIGATORIO = "Informar email é obrigatório.";
-    private final String CREDENCIAS_INVALIDAS = "Credenciais inválidas.";
+    //private final String CREDENCIAS_INVALIDAS = "Credenciais inválidas.";
 
     private static final Logger logger = LoggerFactory.getLogger(UsuarioService.class);
 
@@ -109,12 +109,13 @@ public class UsuarioService {
 
         Usuario usuario = buscarPorEmailObrigatorio(email);
 
-        if (senhaRepetida(novaSenha, usuario)) {
-            throw new NegocioException(SENHA_NOVA_IGUAL_SENHA_VELHA);
-        }
-
         if (!senhaCorreta(senhaAtual, usuario)) {
             throw new UsuarioSenhaIncorretaException(SENHA_INVALIDA);
+        }
+        logger.debug("Usuário passou check senha : " + senhaAtual);
+
+        if (senhaRepetida(novaSenha, usuario)) {
+            throw new NegocioException(SENHA_NOVA_IGUAL_SENHA_VELHA);
         }
 
         if ( !(repeteNovaSenha.equals(novaSenha)) ) {

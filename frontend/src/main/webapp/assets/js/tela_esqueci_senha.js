@@ -61,7 +61,7 @@
                     } else {
                         await FiberGuardian.Utils.tratarErroFetch(
                             resposta,
-                            'Erro ao validar supervisor',
+                            //'Erro ao validar supervisor',
                             campoEmail
                         );
                         campoEmail.value = '';
@@ -151,13 +151,13 @@
                             campoEmailUsuario.value = '';
                             await FiberGuardian.Utils.tratarErroFetch(
                                 resposta,
-                                'Erro ao redefinir senha. Tente novamente.',
+                                //'Erro ao redefinir senha. Tente novamente.',
                                 campoEmailUsuario
                             );
                         } else {
                             await FiberGuardian.Utils.tratarErroFetch(
                                 resposta,
-                                'Erro ao redefinir senha. Tente novamente.',
+                                //'Erro ao redefinir senha. Tente novamente.',
                                 campoNova
                             );
                         }

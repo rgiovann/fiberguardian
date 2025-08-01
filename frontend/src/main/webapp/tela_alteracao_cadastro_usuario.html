@@ -22,12 +22,12 @@
       </div>
 
       <!-- Bloco: Alterar Nome, Setor e Turno -->
-      <form id="formAlterarNome">
+      <form id="formAlterarDados">
         <div class="mb-2 text-start">
           <label class="form-label" for="nome">
             <i class="fas fa-user me-2"></i>Nome
           </label>
-          <input class="form-control" id="nome" type="text" placeholder="Digite seu nome" required />
+          <input class="form-control" id="nome" name="nome" type="text" placeholder="Digite seu nome" required />
         </div>
 
         <div class="row mb-2">
@@ -76,7 +76,8 @@
           <label class="form-label" for="senhaAtual">
             <i class="fas fa-lock me-2"></i>Senha Atual
           </label>
-          <input class="form-control" id="senhaAtual" type="password" required placeholder="Digite sua senha atual" />
+          <input class="form-control" id="senhaAtual" name="senhaAtual" type="password" required
+            placeholder="Digite sua senha atual" />
         </div>
 
         <div class="mb-2 text-start">

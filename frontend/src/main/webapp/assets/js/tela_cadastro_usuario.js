@@ -65,7 +65,7 @@
                     } else {
                         await FiberGuardian.Utils.tratarErroFetch(
                             resposta,
-                            'Erro ao cadastrar usuario',
+                            //'Erro ao cadastrar usuario',
                             campoNome
                         );
                     }
