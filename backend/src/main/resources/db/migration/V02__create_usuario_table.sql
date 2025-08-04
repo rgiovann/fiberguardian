@@ -1,4 +1,4 @@
--- V1__create_usuario_table.sql
+-- V02__create_usuario_table.sql
 -- DEFAULT CHARSET=utf8mb4: Suporta caracteres Unicode, ideal para nomes e emails com acentos ou caracteres especiais.
 -- COLLATE=utf8mb4_unicode_ci: Garante ordenação e comparação case-insensitive.
 -- SENHA VARCHAR(100) porque é criptografada (hash BCrypt)

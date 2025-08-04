@@ -3,12 +3,16 @@ set foreign_key_checks = 0;
 delete from usuario;
 delete from fornecedor;
 delete from produto;
+delete from nota_fiscal;
+delete from nota_item;
 
 set foreign_key_checks = 1;
 
 alter table usuario auto_increment = 1;
 alter table fornecedor auto_increment = 1;
 alter table produto auto_increment =1;
+alter table nota_fiscal auto_increment=1;
+alter table nota_item   auto_increment=1;
 
 -- afterMigrate.sql
 -- Insere usuários com diferentes valores paras os campos (testes de desenvolvimento)
@@ -145,6 +149,7 @@ INSERT INTO produto (codigo_produto, descricao_produto, fornecedor_id,data_cadas
 -- CooperFibra Paraná
 ('CFP21008761', '14/1 OE 50% CO + 50% PES', 9,utc_timestamp),
 ('CFP33004520', '12/1 PENTEADO 100%ALG', 9,utc_timestamp),
+('FCT89004811', '2/40 SOFT PENT 100% CO', 9,utc_timestamp),
 
 -- Fios Catarinenses
 ('FCT71001194', '14/1 OE 100% CO', 10,utc_timestamp),
@@ -189,6 +194,7 @@ INSERT INTO produto (codigo_produto, descricao_produto, fornecedor_id,data_cadas
 -- Fiação Imperial
 ('FIP91004573', '24/2 PENT.A.T.100%CO-TG', 20,utc_timestamp),
 ('FIP82006741', '24/2 PENT.A.T. 100%CO', 20,utc_timestamp),
+('FIP82006941', '13/1 PENTZTWIST SOLUCELL', 20,utc_timestamp),
 
 -- Corantes Delta
 ('CDL33004591', '49,2 TEX PENT EGIPZTWIST', 21,utc_timestamp),
@@ -201,6 +207,7 @@ INSERT INTO produto (codigo_produto, descricao_produto, fornecedor_id,data_cadas
 -- Fios & Tramas
 ('FET45009871', '12/1 100% CO - TG', 23,utc_timestamp),
 ('FET69007621', '12/1 PENT 100%CO-TG', 23,utc_timestamp),
+('FET69007621', '20/1 100% CO - TG', 23,utc_timestamp),
 
 -- Algodoeira do Cerrado
 ('ADC21005431', '14/1 CARD 100%CO TG', 24,utc_timestamp),
@@ -217,6 +224,7 @@ INSERT INTO produto (codigo_produto, descricao_produto, fornecedor_id,data_cadas
 -- Trama Forte Ltda
 ('TFL52001139', '36/1 OE 100%CO', 27,utc_timestamp),
 ('TFL67003241', '14/1 OE 100%CO', 27,utc_timestamp),
+('TFL67009241', '20/1 OE 100%A T.MALHARIA', 27,utc_timestamp),
 
 -- ColorFibra
 ('CLF22009813', '40/1 PENTEADO 100%ALG', 28,utc_timestamp),
@@ -229,3 +237,146 @@ INSERT INTO produto (codigo_produto, descricao_produto, fornecedor_id,data_cadas
 -- Fiação Modelo
 ('FMD12004581', '2/34 CARD.MERC. 100%CO', 30,utc_timestamp),
 ('FMD23006711', '16/1 OPEN END 100%ALG', 30,utc_timestamp);
+
+-- Inserção de 10 notas fiscais e seus itens
+
+-- Nota Fiscal 1
+INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
+VALUES ('35764', 1, 52, 13750.00, utc_timestamp(), NULL, utc_timestamp(), NULL, NULL);
+
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao)
+VALUES (1, 1, 3000.00, 100, 7500.00, 25.00, NULL),
+       (1, 2, 2500.00, 80, 6250.00, 25.00, NULL);
+
+-- Nota Fiscal 2
+INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
+VALUES ('45934', 3, 48, 22800.00, utc_timestamp(), NULL, utc_timestamp(), NULL, NULL);
+
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao)
+VALUES (2, 5, 6000.00, 200, 15000.00, 25.00, NULL),
+       (2, 6, 3200.00, 100, 7800.00, 24.38, NULL);
+
+-- Nota Fiscal 3
+INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
+VALUES ('55231', 5, 37, 9100.00, utc_timestamp(), NULL, utc_timestamp(), NULL, NULL);
+
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao)
+VALUES (3, 9, 300.00, 10, 9100.00, 30.33, NULL);
+
+-- Nota Fiscal 4
+INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
+VALUES ('65343', 7, 52, 25650.00, utc_timestamp(), NULL, utc_timestamp(), NULL, NULL);
+
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao)
+VALUES (4, 13, 4500.00, 150, 11250.00, 25.00, NULL),
+       (4, 14, 4500.00, 150, 14400.00, 32.00, NULL);
+
+-- Nota Fiscal 5
+INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
+VALUES ('75667', 9, 37, 46200.00, utc_timestamp(), NULL, utc_timestamp(), NULL, NULL);
+
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao)
+VALUES (5, 17, 6000.00, 200, 18000.00, 30.00, NULL),
+       (5, 18, 6000.00, 200, 21000.00, 35.00, NULL),
+       (5, 19, 3000.00, 100, 7200.00, 24.00, NULL);
+
+-- Nota Fiscal 6
+INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
+VALUES ('85871', 11, 48, 15200.00, utc_timestamp(), NULL, utc_timestamp(), NULL, NULL);
+
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao)
+VALUES (6, 21, 4000.00, 125, 10000.00, 25.00, NULL),
+       (6, 22, 2000.00, 65, 5200.00, 26.00, NULL);
+
+-- Nota Fiscal 7
+INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
+VALUES ('95000', 13, 52, 8400.00, utc_timestamp(), NULL, utc_timestamp(), NULL, NULL);
+
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao)
+VALUES (7, 25, 3000.00, 100, 8400.00, 28.00, NULL);
+
+-- Nota Fiscal 8
+INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
+VALUES ('105000', 15, 52, 31500.00, utc_timestamp(), NULL, utc_timestamp(), NULL, NULL);
+
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao)
+VALUES (8, 29, 6000.00, 200, 18000.00, 30.00, NULL),
+       (8, 30, 4500.00, 150, 13500.00, 30.00, NULL);
+
+-- Nota Fiscal 9
+INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
+VALUES ('115435', 17, 37, 39600.00, utc_timestamp(), NULL, utc_timestamp(), NULL, NULL);
+
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao)
+VALUES (9, 33, 6000.00, 200, 18000.00, 30.00, NULL),
+       (9, 34, 6000.00, 200, 21600.00, 36.00, NULL);
+
+-- Nota Fiscal 10
+INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
+VALUES ('125675', 19, 48, 31200.00, utc_timestamp(), NULL, utc_timestamp(), NULL, NULL);
+
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao)
+VALUES (10, 37, 4500.00, 150, 13500.00, 30.00, NULL),
+       (10, 38, 6000.00, 200, 17700.00, 29.50, NULL);
+
+-- insercao de registros cadastro laborario
+
+INSERT INTO laboratorio (cod_nota_fiscal, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro,data_realizacao)
+VALUES (1, '9TK', 12.50, 45, 30, 120, 5.75, 15.20, 8.50, 6.25, 450, 'APROVADO', 17, utc_timestamp());
+
+INSERT INTO laboratorio (cod_nota_fiscal, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro)
+VALUES (2, '202100', 18.75, 60, 80, 250, 3.20, 12.90, 4.30, 15.80, 780, 'REPROVADO', 13, utc_timestamp());
+
+INSERT INTO laboratorio (cod_nota_fiscal, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro)
+VALUES (3, '8', 10.25, 20, 15, 300, 7.80, 19.50, 12.10, 8.40, 120, 'APROVADO', 10, utc_timestamp());
+
+INSERT INTO laboratorio (cod_nota_fiscal, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro)
+VALUES (4, '225', 15.90, 70, 90, 400, 2.15, 11.75, 3.90, 12.60, 950, 'REPROVADO', 31, utc_timestamp());
+
+INSERT INTO laboratorio (cod_nota_fiscal, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro)
+VALUES (5, '10TK5', 13.40, 30, 40, 150, 6.50, 16.80, 9.20, 10.05, 300, 'APROVADO', 17, utc_timestamp());
+
+INSERT INTO laboratorio (cod_nota_fiscal, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro)
+VALUES (6, '18J600', 17.10, 55, 60, 350, 4.90, 14.30, 6.70, 7.35, 600, 'REPROVADO', 13, utc_timestamp());
+
+INSERT INTO laboratorio (cod_nota_fiscal, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro)
+VALUES (7, '5KL', 11.80, 25, 20, 200, 8.30, 18.60, 11.50, 14.70, 150, 'APROVADO', 10, utc_timestamp());
+
+INSERT INTO laboratorio (cod_nota_fiscal, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro)
+VALUES (8, '300200', 19.60, 80, 110, 450, 1.95, 10.40, 2.80, 18.90, 850, 'REPROVADO', 31, utc_timestamp());
+
+INSERT INTO laboratorio (cod_nota_fiscal, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro)
+VALUES (9, '12XY', 14.30, 40, 50, 180, 5.10, 13.70, 7.90, 9.15, 400, 'APROVADO', 17, utc_timestamp());
+
+INSERT INTO laboratorio (cod_nota_fiscal, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro)
+VALUES (10, '7PZ', 16.90, 65, 70, 320, 3.70, 17.20, 10.30, 5.85, 720, 'REPROVADO', 13, utc_timestamp());
+
+INSERT INTO laboratorio (cod_nota_fiscal, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro)
+VALUES (1, '15AB', 12.70, 15, 10, 100, 6.25, 15.50, 8.70, 11.20, 200, 'APROVADO', 10, utc_timestamp());
+
+INSERT INTO laboratorio (cod_nota_fiscal, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro)
+VALUES (2, '400300', 18.20, 90, 120, 280, 2.80, 12.10, 4.50, 16.40, 900, 'REPROVADO', 31, utc_timestamp());
+
+INSERT INTO laboratorio (cod_nota_fiscal, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro)
+VALUES (3, '20CD', 10.90, 35, 45, 130, 7.60, 19.80, 12.90, 7.80, 350, 'APROVADO', 17, utc_timestamp());
+
+INSERT INTO laboratorio (cod_nota_fiscal, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro)
+VALUES (4, '50EF', 15.50, 75, 85, 370, 4.30, 11.30, 3.10, 13.70, 650, 'REPROVADO', 13, utc_timestamp());
+
+INSERT INTO laboratorio (cod_nota_fiscal, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro)
+VALUES (5, '8GH', 13.10, 10, 25, 160, 6.90, 16.40, 9.80, 17.10, 100, 'APROVADO', 10, utc_timestamp());
+
+INSERT INTO laboratorio (cod_nota_fiscal, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro)
+VALUES (6, '25IJ', 17.80, 85, 95, 410, 3.50, 14.90, 6.20, 6.50, 800, 'REPROVADO', 31, utc_timestamp());
+
+INSERT INTO laboratorio (cod_nota_fiscal, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro)
+VALUES (7, '30KL', 11.30, 50, 60, 220, 8.10, 18.10, 11.30, 19.20, 250, 'REPROVADO', 17, utc_timestamp());
+
+INSERT INTO laboratorio (cod_nota_fiscal, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro)
+VALUES (8, '40MN', 19.40, 30, 40, 190, 5.70, 10.80, 2.90, 9.90, 500, 'APROVADO', 13, utc_timestamp());
+
+INSERT INTO laboratorio (cod_nota_fiscal, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro)
+VALUES (9, '60OP', 14.70, 45, 55, 340, 4.20, 13.20, 7.50, 12.30, 750, 'REPROVADO', 10, utc_timestamp());
+
+INSERT INTO laboratorio (cod_nota_fiscal, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro)
+VALUES (10, '70PQ', 16.20, 20, 15, 270, 6.80, 17.70, 10.70, 5.20, 300, 'APROVADO', 31, utc_timestamp());
