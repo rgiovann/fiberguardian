@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Usuários", description = "Gerenciamento de usuários do sistema")
 public interface UsuarioControllerOpenApi {
 
-	public PageDto<UsuarioListagemDto> listarPaginado(Pageable listarPaginado);
+	public PageDto<UsuarioListagemDto> listarPaginado(int page,int size);
 
 	@Operation(summary = "Lista Usuarios", description = "Retorna Retorna uma lista paginada de usuarios. Requer autenticação via cookie JSESSIONID.")
 	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Usuário encontrado"),

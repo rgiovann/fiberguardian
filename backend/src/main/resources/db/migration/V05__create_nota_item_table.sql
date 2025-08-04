@@ -2,7 +2,7 @@ CREATE TABLE nota_item (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nota_fiscal_id BIGINT NOT NULL,
     produto_id BIGINT NOT NULL,
-    quantidade_recebida DECIMAL(15,2) NULL CHECK (preco_unitario >= 0),
+    quantidade_recebida DECIMAL(15,2) NULL CHECK (quantidade_recebida > 0),
     numero_caixas INT NOT NULL CHECK (numero_caixas >= 0),
     valor_item DECIMAL(15,2) NOT NULL CHECK (valor_item >= 0),
     preco_unitario DECIMAL(15,2) NULL CHECK (preco_unitario >= 0),

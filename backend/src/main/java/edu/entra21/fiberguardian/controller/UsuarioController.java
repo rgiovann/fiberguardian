@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -19,14 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -53,7 +47,8 @@ public class UsuarioController implements UsuarioControllerOpenApi {
  	private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
 	private static final int TAMANHO_PAGINA_PADRAO = 10;
-	private static final String CAMPO_ORDEM_PADRAO = "nome";
+ 	private static final Sort ORDENACAO_PADRAO =
+			Sort.by(Sort.Order.desc("ativo"), Sort.Order.asc("nome"));
 
 	public UsuarioController(UsuarioService usuarioService, UsuarioDtoAssembler usuarioDtoAssembler,
 			UsuarioListagemDtoAssembler usuarioListagemDtoAssembler,
@@ -68,12 +63,15 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public PageDto<UsuarioListagemDto> listarPaginado(
-			@PageableDefault(size = TAMANHO_PAGINA_PADRAO, sort = CAMPO_ORDEM_PADRAO, direction = Sort.Direction.ASC) Pageable pageable) {
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "20") int size
+	) {
+		Pageable pageable = PageRequest.of(page, size, ORDENACAO_PADRAO);
 
 		Page<Usuario> pagina = usuarioService.listarPaginado(pageable);
 		List<UsuarioListagemDto> dtos = usuarioListagemDtoAssembler.toCollectionDto(pagina.getContent());
 
-		PageDto<UsuarioListagemDto> dtoPaged = new PageDto<UsuarioListagemDto>();
+		PageDto<UsuarioListagemDto> dtoPaged = new PageDto<>();
 		dtoPaged.setContent(dtos);
 		dtoPaged.setPageNumber(pagina.getNumber());
 		dtoPaged.setPageSize(pagina.getSize());
