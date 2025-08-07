@@ -64,7 +64,7 @@ public class Usuario {
 	private Setor setor = Setor.FIACAO;
 
 	@CreationTimestamp
-	@Column(nullable = false, columnDefinition = "datetime")
+	@Column(name = "data_cadastro",nullable = false, columnDefinition = "datetime")
 	private OffsetDateTime dataCadastro;
 
 	@UpdateTimestamp

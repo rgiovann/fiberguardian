@@ -5,14 +5,20 @@ delete from fornecedor;
 delete from produto;
 delete from nota_fiscal;
 delete from nota_item;
+delete from laboratorio;
+delete from engenharia;
+delete from pdf_nota_fiscal;
 
 set foreign_key_checks = 1;
 
-alter table usuario auto_increment = 1;
-alter table fornecedor auto_increment = 1;
-alter table produto auto_increment =1;
-alter table nota_fiscal auto_increment=1;
-alter table nota_item   auto_increment=1;
+alter table usuario           auto_increment=1;
+alter table fornecedor        auto_increment=1;
+alter table produto           auto_increment=1;
+alter table nota_fiscal       auto_increment=1;
+alter table nota_item         auto_increment=1;
+alter table laboratorio         auto_increment=1;
+alter table engenharia        auto_increment=1;
+alter table pdf_nota_fiscal   auto_increment=1;
 
 -- afterMigrate.sql
 -- Insere usuários com diferentes valores paras os campos (testes de desenvolvimento)

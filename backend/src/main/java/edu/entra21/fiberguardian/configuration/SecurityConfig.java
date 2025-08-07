@@ -77,7 +77,8 @@ public class SecurityConfig {
 						.csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
 						.ignoringRequestMatchers(
 								"/csrf-token",         // Para obter o token CSRF inicial
-								"/sessao/valida"                // Verificação sem autenticação
+								"/sessao/valida",
+								"/api/notasfiscais/**"// Verificação sem autenticação
 						)
 				)
 				// Força HTTPS

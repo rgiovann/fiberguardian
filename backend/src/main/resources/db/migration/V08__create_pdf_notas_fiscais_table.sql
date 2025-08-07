@@ -3,7 +3,7 @@ create table pdf_nota_fiscal (
   nome_arquivo VARCHAR(150) NOT NULL,
   descricao VARCHAR(150),
   content_type VARCHAR(80) NOT NULL,
-  tamanho INT NOT NULL,
+  tamanho BIGINT NOT NULL,
   data_cadastro DATETIME NOT NULL,
   data_alteracao DATETIME NULL,
   criado_por BIGINT NULL,
