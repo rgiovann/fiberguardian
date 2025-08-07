@@ -32,13 +32,13 @@ import edu.entra21.fiberguardian.dto.UsuarioDto;
 import edu.entra21.fiberguardian.dto.UsuarioListagemDto;
 import edu.entra21.fiberguardian.jacksonview.UsuarioView;
 import edu.entra21.fiberguardian.model.Usuario;
-import edu.entra21.fiberguardian.openapi.UsuarioControllerOpenApi;
+//import edu.entra21.fiberguardian.openapi.UsuarioControllerOpenApi;
 import edu.entra21.fiberguardian.service.UsuarioService;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/api/usuarios")
-public class UsuarioController implements UsuarioControllerOpenApi {
+public class UsuarioController /*implements UsuarioControllerOpenApi */{
 
 	private final UsuarioService usuarioService;
 	private final UsuarioDtoAssembler usuarioDtoAssembler;
@@ -82,7 +82,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 		return dtoPaged;
 	}
 
-	@Override
+	///@Override
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
 	public UsuarioDto adicionar(@RequestBody @Valid UsuarioaAdicionaNovoUsuarioInput usuarioNomeInput) {
@@ -122,7 +122,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 		return ResponseEntity.ok(dto);
 	}
 
-	@Override
+	//@Override
 	@PutMapping(path = "/me/senha", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> alterarSenha(@RequestBody @Valid UsuarioAlteraSenhaInput input,
 			Authentication authentication) {
@@ -132,7 +132,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 		return ResponseEntity.noContent().build();
 	}
 
-	@Override
+	//@Override
 	@DeleteMapping("/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> inativarUsuario(@RequestBody @Valid UsuarioAlteraStatusInput input,
@@ -141,7 +141,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
 		return ResponseEntity.noContent().build();
 	}
 
-	@Override
+	//@Override
 	@PutMapping("/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> ativarUsuario(@RequestBody @Valid UsuarioAlteraStatusInput input,
