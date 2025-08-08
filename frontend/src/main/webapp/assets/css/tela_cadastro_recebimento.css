@@ -1,0 +1,32 @@
+.form-container {
+    background: #e3f2fd;
+    padding: 20px;
+    border: 1px solid #ccc;
+}
+
+.form-section-title {
+    color: white;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+}
+
+.form-section-title,
+.card-header {
+    background-color: #078dfb;
+    /* azul claro consistente */
+}
+
+.card {
+    background: #e3f2fd;
+}
+
+.btn-custom {
+    min-width: 120px;
+    margin: 5px;
+}
+
+.table-container {
+    max-height: 300px;
+    overflow-y: auto;
+}

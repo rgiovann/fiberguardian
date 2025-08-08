@@ -2,145 +2,188 @@
 <html lang="pt-BR">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cadastro de Recebimento</title>
-  <link rel="stylesheet" href="assets/css/normalize.css" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .form-container {
+    <meta charset="UTF-8" />
+    <title>Cadastro de Nota Fiscal por Item</title>
+    <link rel="stylesheet" href="assets/css/normalize.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Bundle (com Modal e Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/tela_cadastro_recebimento.css" />
 
-      background: #64e4f0 url("https://www.transparenttextures.com/patterns/45-degree-fabric-light.png") repeat;
-
-      padding: 20px;
-
-      border: 2px solid #000;
-    }
-
-    .form-group label {
-      font-weight: bold;
-    }
-
-    .form-control[readonly] {
-      background-color: #f0f0f0;
-
-      cursor: not-allowed;
-    }
-
-    .btn-custom {
-      width: 100px;
-
-      margin: 5px;
-    }
-  </style>
 </head>
 
 <body>
-  <div class="container mt-4">
-    <h2 class="mb-4 text-center">CADASTRO DE NOTAS DE TECELAGEM</h2>
-    <div class="form-container">
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-group mb-2">
-            <label for="dataRecebimento">Data de Recebimento</label>
-            <input type="text" class="form-control" id="dataRecebimento" value="13/06/2025" readonly>
-          </div>
-          <div class="form-group mb-2">
-            <label for="notaFiscal">Nota Fiscal</label>
-            <input type="text" class="form-control" id="notaFiscal">
-          </div>
-          <div class="form-group mb-2">
-            <label for="setor">Setor</label>
-            <select class="form-control" id="setor">
-              <option value="" disabled selected>Selecione o setor</option>
-              <option value="Setor1">Setor1</option>
-              <option value="Setor2">Setor2</option>
-              <option value="Setor3">Setor3</option>
-            </select>
-          </div>
-          <div class="form-group mb-2">
-            <label for="codigoProduto">Código do Produto</label>
-            <select class="form-control" id="codigoProduto">
-              <option value="" disabled selected>Selecione o produto</option>
-              <option value="produto1">Produto 1</option>
-              <option value="produto2">Produto 2</option>
-              <option value="produto3">Produto 3</option>
-            </select>
-          </div>
-          <div class="form-group mb-2">
-            <label for="quantRecebida">Quant. Recebida</label>
-            <input type="number" class="form-control" id="quantRecebida" min="0">
-          </div>
-          <div class="form-group mb-2">
-            <label for="rochasPorCaixa">Rocas por Caixas</label>
-            <input type="text" class="form-control" id="rochasPorCaixa" value="300" readonly>
-          </div>
-          <div class="form-group mb-2">
-            <label for="pesoMedio">Peso Médio</label>
-            <input type="text" class="form-control" id="pesoMedio" value="0" readonly>
-          </div>
-          <div class="form-group mb-2">
-            <label for="valorUnit">Valor Unit.</label>
-            <input type="text" class="form-control" id="valorUnit" value="0" readonly>
-          </div>
-          <div class="form-group mb-2">
-            <label for="recebidoPor">Recebido Por</label>
-            <select class="form-control" id="recebidoPor">
-              <option value="" disabled selected>Selecione quem recebeu</option>
-              <option value="Recebido1">Recebido1</option>
-              <option value="Recebido2">Recebido2</option>
-              <option value="Recebido3">Recebido3</option>
-            </select>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group mb-2">
-            <label for="fornecedor">Fornecedor</label>
-            <select class="form-control" id="fornecedor">
-              <option value="" disabled selected>Selecione o fornecedor</option>
-              <option>Fornecedor1</option>
-              <option>Fornecedor2</option>
-              <option>Fornecedor3</option>
-            </select>
-          </div>
-          <div class="form-group mb-2">
-            <label for="descricaoProduto">Descrição do Produto</label>
-            <input type="text" class="form-control" id="descricaoProduto" value="Fio XYZ" readonly>
-          </div>
-          <div class="form-group mb-2">
-            <label for="numeroCaixas">Número de Caixas</label>
-            <input type="number" class="form-control" id="numeroCaixas" min="0">
-          </div>
-          <div class="form-group mb-2">
-            <label for="quantRochas">Quant. Rocas</label>
-            <input type="text" class="form-control" id="quantRochas" value="0" readonly>
-          </div>
-          <div class="form-group mb-2">
-            <label for="valorNota">Valor da Nota</label>
-            <input type="number" class="form-control" id="valorNota" step="0.01" min="0">
-          </div>
-          <div class="form-group mb-2">
-            <label for="pesoMedioCaixa">Peso Médio Caixa</label>
-            <input type="text" class="form-control" id="pesoMedioCaixa" value="0" readonly>
-          </div>
-          <div class="form-group mb-2">
-            <label for="turno">Turno</label>
-            <input type="text" class="form-control" id="turno" value="Primeiro" readonly>
-          </div>
-        </div>
-      </div>
-      <div class="form-group mt-3">
-        <label for="infoRecebimento">Informações de Recebimento</label>
-        <textarea class="form-control" id="infoRecebimento" rows="3"></textarea>
-      </div>
-      <div class="text-center mt-3">
-        <button class="btn btn-primary btn-custom">Cadastrar</button>
-        <button class="btn btn-secondary btn-custom">Imprimir</button>
-        <button class="btn btn-danger btn-custom"
-          onclick="FiberGuardian.TelaRecebimento.voltarParaInicio()">Sair</button>
-      </div>
+    <div class="container mt-4 mb-5">
+        <h2 class="mb-4 text-center">Cadastro de Nota Fiscal por Item</h2>
+
+        <!-- Etapa 1: Dados da Nota Fiscal -->
+        <section class="card mb-4">
+            <div class="card-header">1. Dados da Nota Fiscal</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="dataRecebimento" class="form-label">Data de Recebimento</label>
+                        <input type="text" id="dataRecebimento" name="dataRecebimento" class="form-control"
+                            value="13/06/2025" readonly />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="notaFiscal" class="form-label">Número da Nota Fiscal</label>
+                        <input type="text" id="notaFiscal" name="notaFiscal" class="form-control" autocomplete="off" />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="fornecedor" class="form-label">Fornecedor</label>
+                        <select id="fornecedor" name="fornecedor" class="form-control" aria-label="Fornecedor">
+                            <option value="" disabled selected>Selecione o fornecedor</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="recebidoPor" class="form-label">Recebido Por</label>
+                        <select id="recebidoPor" name="recebidoPor" class="form-control" aria-label="Recebido Por">
+                            <option value="" disabled selected>Selecione quem recebeu</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="setor" class="form-label">Setor</label>
+                        <input type="text" id="setor" name="setor" class="form-control" readonly />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="turno" class="form-label">Turno</label>
+                        <input type="text" id="turno" name="turno" class="form-control" readonly />
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button id="btnAvancarItens" name="btnAvancarItens" class="btn btn-outline-primary btn-custom"
+                        type="button" disabled>
+                        Avançar para Itens da Nota
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Etapa 2: Itens da Nota Fiscal -->
+        <section class="card">
+            <div class="card-header">2. Itens da Nota Fiscal</div>
+            <div class="card-body">
+                <form id="formItemNota" name="formItemNota" novalidate>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="produto" class="form-label">Produto</label>
+                            <select id="produto" name="produto" class="form-control" aria-label="Produto">
+                                <option value="" disabled selected>Selecione o produto</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="codigoProduto" class="form-label">Código do Produto</label>
+                            <input type="text" id="codigoProduto" name="codigoProduto" class="form-control" readonly />
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label for="descricaoProduto" class="form-label">Descrição do Produto</label>
+                            <input type="text" id="descricaoProduto" name="descricaoProduto" class="form-control"
+                                readonly />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="quantRecebida" class="form-label">Quantidade Recebida</label>
+                            <input type="number" id="quantRecebida" name="quantRecebida" class="form-control" min="0"
+                                step="1" required />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="numeroCaixas" class="form-label">Número de Caixas</label>
+                            <input type="number" id="numeroCaixas" name="numeroCaixas" class="form-control" min="0"
+                                step="1" required />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="valorUnit" class="form-label">Valor Unitário</label>
+                            <input type="number" id="valorUnit" name="valorUnit" class="form-control" min="0"
+                                step="0.01" required />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="valorTotal" class="form-label">Valor Total</label>
+                            <input type="text" id="valorTotal" name="valorTotal" class="form-control" readonly />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="pesoMedio" class="form-label">Peso Médio / Caixa</label>
+                            <input type="text" id="pesoMedio" name="pesoMedio" class="form-control" readonly />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="quantRochas" class="form-label">Quantidade de Rocas</label>
+                            <input type="text" id="quantRochas" name="quantRochas" class="form-control" readonly />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="infoRecebimento" class="form-label">Informações Adicionais</label>
+                        <textarea id="infoRecebimento" name="infoRecebimento" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <button id="btnSalvarItem" name="btnSalvarItem" type="submit"
+                            class="btn btn-success btn-custom">
+                            Salvar Item
+                        </button>
+                        <button id="btnNovoItem" name="btnNovoItem" type="button" class="btn btn-warning btn-custom">
+                            Novo Item
+                        </button>
+                        <button id="btnFinalizarNota" name="btnFinalizarNota" type="button"
+                            class="btn btn-primary btn-custom">
+                            Finalizar Nota
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Lista de Itens Cadastrados -->
+                <div class="mt-4 table-container">
+                    <table class="table table-striped table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Produto</th>
+                                <th>Código</th>
+                                <th>Qtd. Recebida</th>
+                                <th>Caixas</th>
+                                <th>Valor Unit.</th>
+                                <th>Valor Total</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaItens" name="tabelaItens">
+                            <!-- Itens adicionados via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
     </div>
-  </div>
+    <!-- Modal de Alerta Global -->
+    <div class="modal fade" id="modalMensagemSistema" tabindex="-1" aria-labelledby="modalMensagemSistemaTitulo"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="modalMensagemSistemaTitulo">Aviso</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body text-pre-wrap">
+                    <!-- Conteúdo da mensagem será inserido via JS -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
