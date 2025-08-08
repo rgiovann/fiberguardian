@@ -11,10 +11,10 @@ import lombok.Setter;
 @Getter
 public class FornecedorDto {
 
-	@JsonView(FornecedorView.Completo.class)
-	private String codigoProduto;
-
 	@JsonView({FornecedorView.Completo.class,FornecedorView.SomenteNome.class})
-	private String descricaoProduto;
+	private String nomeFornecedor;
+
+	@JsonView(FornecedorView.Completo.class)
+	private String cnpj;
  
 }

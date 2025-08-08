@@ -44,7 +44,7 @@ echo
 
 echo "==> 4. Chamando endpoint /api/fornecedores (listar nome + CNPJ)..."
 curl -i -sk -b cookies.txt -c cookies.txt \
-  -X GET https://localhost/api/fornecedores \
+  -X GET https://localhost/api/fornecedores/nomes \
   -H "X-XSRF-TOKEN: $CSRF_TOKEN2" \
   -H "Accept: application/json"
 
