@@ -42,7 +42,7 @@ fi
 echo "✅ Token CSRF pós-login: $CSRF_TOKEN2"
 echo
 
-echo "==> 4. Chamando endpoint /api/fornecedores (listar nome + CNPJ)..."
+echo "==> 4. Chamando endpoint /api/fornecedores (listar tudo)..."
 curl -i -sk -b cookies.txt -c cookies.txt \
   -X GET https://localhost/api/fornecedores/nomes \
   -H "X-XSRF-TOKEN: $CSRF_TOKEN2" \

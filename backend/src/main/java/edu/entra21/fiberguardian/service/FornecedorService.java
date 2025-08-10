@@ -2,9 +2,11 @@ package edu.entra21.fiberguardian.service;
 
 import edu.entra21.fiberguardian.exception.FornecedorNaoEncontrado;
 import edu.entra21.fiberguardian.exception.exception.EntidadeEmUsoException;
+import edu.entra21.fiberguardian.exception.exception.NegocioException;
 import edu.entra21.fiberguardian.model.Fornecedor;
-import edu.entra21.fiberguardian.model.Usuario;
 import edu.entra21.fiberguardian.repository.FornecedorRepository;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -13,19 +15,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true) // padrão: todos os métodos SÃO transacionais, mas SÓ de leitura
 public class FornecedorService {
     private static final Logger logger = LoggerFactory.getLogger(UsuarioService.class);
     private final FornecedorRepository fornecedorRepository;
-    private static final String MSG_FORNECEDOR_EM_USO = "Fornecedor de código %d não pode ser removido, pois está em uso.";
+    private static final String MSG_FORNECEDOR_EM_USO = "Fornecedor de código %s não pode ser removido, pois está em uso.";
 
     public FornecedorService(FornecedorRepository fornecedorRepository) {
         this.fornecedorRepository = fornecedorRepository;
     }
-
-
 
     @Transactional
     public Fornecedor salvar(Fornecedor fornecedor) {
@@ -37,26 +38,68 @@ public class FornecedorService {
         return fornecedorRepository.findByCnpj(cnpj.trim()).orElseThrow(() -> new FornecedorNaoEncontrado(cnpj));
     }
 
+    public Optional<Fornecedor> buscarPorCNPJOpcional(String cnpj) {
+        return fornecedorRepository.findByCnpj(cnpj.trim());
+    }
+
     public List<Fornecedor> listar() {
 
         return fornecedorRepository.findAll();
 
+    }
+    public List<Fornecedor> listarFiltroPorNome(String nome) {
+        if (nome == null || nome.trim().isEmpty()) {
+            return fornecedorRepository.findAll();
+        }
+        return fornecedorRepository.findByNomeFornecedorContainingIgnoreCase(nome.trim());
     }
 
 
     @Transactional
     public void excluir(String cnpj) {
         try {
+            buscarPorCNPJObrigatorio(cnpj);
 
             fornecedorRepository.deleteByCnpj(cnpj);
 
             fornecedorRepository.flush();
 
-        } catch (EmptyResultDataAccessException e) {
-            throw new FornecedorNaoEncontrado(cnpj);
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(String.format(MSG_FORNECEDOR_EM_USO, cnpj));
         }
 
     }
+
+    // Validação para inserção (novo registro)
+    public void validarInsercao(String novoCnpj, String novoNome) {
+        validarDuplicidade(null, novoCnpj, novoNome);
+    }
+
+    public void validarAlteracao(String cnpjAtual, String novoCnpj, String novoNome) {
+        Fornecedor fornecedorAtual = buscarPorCNPJObrigatorio(cnpjAtual);
+        validarDuplicidade(fornecedorAtual.getId(), novoCnpj, novoNome);
+    }
+
+    // Metodo privado auxiliar que valida duplicidade de CNPJ e nome,
+    // ignorando o registro com id em 'idIgnorar' (se presente)
+    private void validarDuplicidade(Long idIgnorar, String cnpj, String nome) {
+        fornecedorRepository.findByCnpj(cnpj).ifPresent(f -> {
+            if (idIgnorar == null || !idIgnorar.equals(f.getId())) {
+                throw new NegocioException(
+                        String.format("Já existe fornecedor com o CNPJ %s", cnpj)
+                );
+            }
+        });
+
+        fornecedorRepository.findByNomeFornecedorIgnoreCase(nome).ifPresent(f -> {
+            if (idIgnorar == null || !idIgnorar.equals(f.getId())) {
+                throw new NegocioException(
+                        String.format("Já existe fornecedor com o nome '%s'", nome)
+                );
+            }
+        });
+    }
+
+
+
 }

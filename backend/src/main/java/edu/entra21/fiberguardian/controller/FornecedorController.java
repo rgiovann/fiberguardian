@@ -38,14 +38,14 @@ public class FornecedorController {
 
     @GetMapping(path = "/nomes")
     @JsonView(FornecedorView.SomenteNome.class)
-    public List<FornecedorDto> listarSomenteNomes() {
-        List<Fornecedor> fornecedores = fornecedorService.listar();
+    public List<FornecedorDto> listarFiltroPorNome(@RequestParam(required = false) String nome) {
+        List<Fornecedor> fornecedores = fornecedorService.listarFiltroPorNome(nome);
         return fornecedorDtoAssembler.toCollectionDto(fornecedores);
     }
 
     @GetMapping
     @JsonView(FornecedorView.Completo.class)
-    public List<FornecedorDto> listarComNomeECnpj() {
+    public List<FornecedorDto> listarTodosComNomeECnpj() {
         List<Fornecedor> fornecedores = fornecedorService.listar();
         return fornecedorDtoAssembler.toCollectionDto(fornecedores);
     }
@@ -53,6 +53,8 @@ public class FornecedorController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public FornecedorDto adicionar(@RequestBody @Valid FornecedorInput fornecedorInput) {
+        fornecedorService.validarInsercao(fornecedorInput.getCnpj(), fornecedorInput.getNomeFornecedor());
+
         Fornecedor fornecedor = fornecedorInputDisassembler.toEntity(fornecedorInput);
         fornecedor = fornecedorService.salvar(fornecedor);
         return fornecedorDtoAssembler.toDto(fornecedor);
@@ -72,16 +74,16 @@ public class FornecedorController {
         fornecedorService.excluir(cnpj);
     }
 
-    @PutMapping(value= "/{cnpj}",produces = MediaType.APPLICATION_JSON_VALUE)
-    public FornecedorDto atualizar(@PathVariable String cnpj, @RequestBody @Valid  FornecedorInput fornecedorInput)
-    {
+    @PutMapping(value= "/{cnpj}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public FornecedorDto atualizar(@PathVariable String cnpj, @RequestBody @Valid FornecedorInput fornecedorInput) {
+
+        fornecedorService.validarAlteracao(cnpj, fornecedorInput.getCnpj(), fornecedorInput.getNomeFornecedor());
+
         Fornecedor fornecedor = fornecedorService.buscarPorCNPJObrigatorio(cnpj);
 
-        fornecedorInputDisassembler.copyToEntity(fornecedorInput,fornecedor);
+        fornecedorInputDisassembler.copyToEntity(fornecedorInput, fornecedor);
 
-        return  fornecedorDtoAssembler.toDto(fornecedorService.salvar(fornecedor));
-
-
+        return fornecedorDtoAssembler.toDto(fornecedorService.salvar(fornecedor));
     }
 }
 

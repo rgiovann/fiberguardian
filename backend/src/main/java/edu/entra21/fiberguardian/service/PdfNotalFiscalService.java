@@ -3,7 +3,7 @@ package edu.entra21.fiberguardian.service;
 import edu.entra21.fiberguardian.exception.exception.PdfNotaFiscalNaoEncontradoException;
 import edu.entra21.fiberguardian.model.PdfNotaFiscal;
 import edu.entra21.fiberguardian.repository.NotaFiscalRepository;
-import edu.entra21.fiberguardian.service.storage.PdfNotaFiscalStorageService;
+import edu.entra21.fiberguardian.service.storage.MultiPartFileStorageService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,9 +13,9 @@ import java.util.Optional;
 public class PdfNotalFiscalService {
     private final NotaFiscalRepository notaFiscalRepository;
 
-    private final PdfNotaFiscalStorageService notaFiscalStorageService;
+    private final MultiPartFileStorageService notaFiscalStorageService;
 
-    public PdfNotalFiscalService(NotaFiscalRepository cursoRepository, PdfNotaFiscalStorageService notaFiscalStorageService) {
+    public PdfNotalFiscalService(NotaFiscalRepository cursoRepository, MultiPartFileStorageService notaFiscalStorageService) {
         this.notaFiscalRepository = cursoRepository;
         this.notaFiscalStorageService = notaFiscalStorageService;
     }
@@ -42,7 +42,7 @@ public class PdfNotalFiscalService {
         pdfNotaFiscal = notaFiscalRepository.save(pdfNotaFiscal);
         notaFiscalRepository.flush(); // salva no BD os dados da pdfNotaFiscal, commitando a insercao ANTES de salvar a pdfNotaFiscal.
 
-        PdfNotaFiscalStorageService.NovoPdfNotaFiscal novaFoto = PdfNotaFiscalStorageService.NovoPdfNotaFiscal.builder()
+        MultiPartFileStorageService.NovoMultipartFile novaFoto = MultiPartFileStorageService.NovoMultipartFile.builder()
                 .nomeArquivo(novoNomeArquivo)
                 .inputStream(dadosArquivo)
                 .contentType(pdfNotaFiscal.getContentType())

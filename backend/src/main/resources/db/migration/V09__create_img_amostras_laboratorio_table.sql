@@ -1,5 +1,5 @@
-create table pdf_nota_fiscal (
-  nota_fiscal_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+create table img_amostra_laboratorio (
+  engenharia_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   nome_arquivo VARCHAR(150) NOT NULL,
   descricao VARCHAR(150),
   content_type VARCHAR(80) NOT NULL,
@@ -8,5 +8,5 @@ create table pdf_nota_fiscal (
   data_alteracao DATETIME NULL,
   criado_por BIGINT NULL,
   alterado_por BIGINT NULL,
-  CONSTRAINT fk_pdf_nota_fiscal_nota_fiscal FOREIGN KEY (nota_fiscal_id) references nota_fiscal(id)
+  CONSTRAINT fk_img_amostra_laboratorio_engenharia FOREIGN KEY (engenharia_id) references engenharia(id)
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

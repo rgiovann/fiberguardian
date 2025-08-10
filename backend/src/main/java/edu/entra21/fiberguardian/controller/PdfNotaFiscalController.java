@@ -8,7 +8,7 @@ import edu.entra21.fiberguardian.model.NotaFiscal;
 import edu.entra21.fiberguardian.model.PdfNotaFiscal;
 import edu.entra21.fiberguardian.service.NotaFiscalService;
 import edu.entra21.fiberguardian.service.PdfNotalFiscalService;
-import edu.entra21.fiberguardian.service.storage.PdfNotaFiscalStorageService;
+import edu.entra21.fiberguardian.service.storage.MultiPartFileStorageService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.core.io.InputStreamResource;
@@ -27,16 +27,16 @@ import java.util.List;
 public class PdfNotaFiscalController {
     private final PdfNotalFiscalService pdfNotaFiscalservice;
     private final NotaFiscalService notaFiscalService;
-    private final PdfNotaFiscalStorageService pdfNotaFiscalStorageService;
+    private final MultiPartFileStorageService multiPartFileStorageService;
     private final PdfNotaFiscalDtoAssembler pdfNotaFiscalDtoAssembler;
 
 
     public PdfNotaFiscalController(PdfNotalFiscalService catalogoFotoProdutoService,
                                    NotaFiscalService notaFiscalService,
-                                   PdfNotaFiscalStorageService pdfNotaFiscalStorageService, PdfNotaFiscalDtoAssembler pdfNotaFiscalDtoAssembler) {
+                                   MultiPartFileStorageService multiPartFileStorageService, PdfNotaFiscalDtoAssembler pdfNotaFiscalDtoAssembler) {
         this.pdfNotaFiscalservice = catalogoFotoProdutoService;
         this.notaFiscalService = notaFiscalService;
-        this.pdfNotaFiscalStorageService = pdfNotaFiscalStorageService;
+        this.multiPartFileStorageService = multiPartFileStorageService;
         this.pdfNotaFiscalDtoAssembler = pdfNotaFiscalDtoAssembler;
     }
 
@@ -95,13 +95,13 @@ public class PdfNotaFiscalController {
 
             verificarCompatibilidadeMediaType(mediaTypeFoto,mediaTypeAceitas);
 
-            PdfNotaFiscalStorageService.PdfNotaFiscalRecuperado pdfNotaFiscalRecuperado = pdfNotaFiscalStorageService.recuperar(pdfNotaFiscal.getNomeArquivo());
+            MultiPartFileStorageService.MultiPartFileRecuperado multiPartFileRecuperado = multiPartFileStorageService.recuperar(pdfNotaFiscal.getNomeArquivo());
 
-            if(pdfNotaFiscalRecuperado.temUrl())
+            if(multiPartFileRecuperado.temUrl())
             {
                 return  ResponseEntity
                         .status(HttpStatus.FOUND)
-                        .header(HttpHeaders.LOCATION, pdfNotaFiscalRecuperado.getUrl())
+                        .header(HttpHeaders.LOCATION, multiPartFileRecuperado.getUrl())
                         .build();
             }
             else
@@ -109,7 +109,7 @@ public class PdfNotaFiscalController {
                 return ResponseEntity
                         .ok()
                         .contentType(mediaTypeFoto)
-                        .body(new InputStreamResource(pdfNotaFiscalRecuperado.getInputStream()));
+                        .body(new InputStreamResource(multiPartFileRecuperado.getInputStream()));
             }
         }
         catch(EntidadeNaoEncontradaException e) {
