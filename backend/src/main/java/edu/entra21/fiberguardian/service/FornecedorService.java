@@ -4,6 +4,7 @@ import edu.entra21.fiberguardian.exception.FornecedorNaoEncontrado;
 import edu.entra21.fiberguardian.exception.exception.EntidadeEmUsoException;
 import edu.entra21.fiberguardian.exception.exception.NegocioException;
 import edu.entra21.fiberguardian.model.Fornecedor;
+import edu.entra21.fiberguardian.model.Usuario;
 import edu.entra21.fiberguardian.repository.FornecedorRepository;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -11,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +50,11 @@ public class FornecedorService {
         return fornecedorRepository.findAll();
 
     }
+
+    public Page<Fornecedor> listarPaginado(Pageable pageable) {
+        return fornecedorRepository.findAll(pageable);
+    }
+
     public List<Fornecedor> listarFiltroPorNome(String nome) {
         if (nome == null || nome.trim().isEmpty()) {
             return fornecedorRepository.findAll();
