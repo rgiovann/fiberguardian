@@ -93,6 +93,11 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.PUT, "/api/ativo").hasAuthority(Role.ADMIN.getAuthority())
 						.requestMatchers(HttpMethod.DELETE, "/api/ativo").hasAuthority(Role.ADMIN.getAuthority())
 						.requestMatchers(HttpMethod.POST, "/api/fg-logout").authenticated()
+						.requestMatchers(HttpMethod.GET, "/api/usuarios/nomes").hasAnyAuthority(
+								Role.ADMIN.getAuthority(),
+								Role.LABORATORIO.getAuthority(),
+								Role.ENG_LAB.getAuthority()
+						)
 						.requestMatchers(HttpMethod.GET, "/api/fornecedores/**").hasAnyAuthority(
 								Role.ADMIN.getAuthority(),
 								Role.LABORATORIO.getAuthority(),

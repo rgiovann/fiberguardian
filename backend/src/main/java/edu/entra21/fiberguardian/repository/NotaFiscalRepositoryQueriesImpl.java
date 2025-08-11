@@ -17,12 +17,6 @@ public class NotaFiscalRepositoryQueriesImpl implements NotaFiscalRepositoryQuer
         return this.manager.merge(pdfNotaFiscal);
     }
 
-//    @Override
-//    @Transactional
-//    public void delete(PdfNotaFiscal pdfNotaFiscal) {
-//        this.manager.remove(pdfNotaFiscal);
-//    }
-
     @Override
     @Transactional
     public void delete(PdfNotaFiscal pdfNotaFiscal) {

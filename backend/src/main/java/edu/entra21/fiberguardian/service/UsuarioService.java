@@ -1,5 +1,6 @@
 package edu.entra21.fiberguardian.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import edu.entra21.fiberguardian.exception.exception.*;
@@ -34,8 +35,7 @@ public class UsuarioService {
     private final String USUARIO_JA_EXISTE ="Já existe um usuário com email informado.";
     private final String USUARIO_NAO_ALTERA_PROPRIO_STATUS ="Usuário não pode alterar seu proprio status.";
     private final String EMAIL_EH_OBRIGATORIO = "Informar email é obrigatório.";
-    //private final String CREDENCIAS_INVALIDAS = "Credenciais inválidas.";
-
+ 
     private static final Logger logger = LoggerFactory.getLogger(UsuarioService.class);
 
     public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder,
@@ -46,11 +46,24 @@ public class UsuarioService {
 
     }
 
+    // lista todos os usuarios paginado
     public Page<Usuario> listarPaginado(Pageable pageable) {
         return usuarioRepository.findAll(pageable);
     }
 
-    public void verificaSeUsuaurioEstaBloqueado(String email) {
+    // lista usuarios por setor
+    public List<Usuario> listarUsuarioPorSetorNaoPaginado(String setor) {
+        Setor setorEnum;
+        try {
+            setorEnum = Setor.valueOf(setor.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new NegocioException("Setor '" + setor + "' não encontrado");
+        }
+
+        return usuarioRepository.findBySetor(setorEnum);
+    }
+
+    public void verificaSeUsuarioEstaBloqueado(String email) {
         try {
             Usuario usuario = buscarPorEmailObrigatorio(email);
             if (!usuario.getAtivo()) {
@@ -191,7 +204,7 @@ public class UsuarioService {
 
         Usuario usuario = buscarPorEmailObrigatorio(email);
 
-        verificaSeUsuaurioEstaBloqueado(email);
+        verificaSeUsuarioEstaBloqueado(email);
 
         if (!novaSenha.equals(repeteSenha)) {
             throw new NegocioException(SENHA_NOVA_REPETE_SENHA_NOVA_DIFERENTES);

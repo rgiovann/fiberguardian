@@ -42,7 +42,7 @@ fi
 echo "✅ Token CSRF pós-login: $CSRF_TOKEN2"
 echo
 
-echo "==> Alterando fornecedor existente..."
+echo "==> 4. Alterando fornecedor existente..."
 curl -i -sk -b cookies.txt -c cookies.txt \
   -X PUT https://localhost/api/fornecedores/67760870000123 \
   -H "X-XSRF-TOKEN: $CSRF_TOKEN2" \
@@ -52,6 +52,28 @@ curl -i -sk -b cookies.txt -c cookies.txt \
         "nomeFornecedor": "Algodoeira do Cerrado - Alterado",
         "cnpj": "67760870000199"
       }'
+
+echo "==> 5. Alterando fornecedor para um cnpj que já existe..."
+curl -i -sk -b cookies.txt -c cookies.txt \
+  -X PUT https://localhost/api/fornecedores/67760870000199 \
+  -H "X-XSRF-TOKEN: $CSRF_TOKEN2" \
+  -H "Accept: application/json" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "nomeFornecedor": "Algodoeira do Cerrado - Alterado",
+        "cnpj": "45678901000123"
+      }'
+
+echo "==> 6. Alterando fornecedor para um nome que já existe..."
+curl -i -sk -b cookies.txt -c cookies.txt \
+  -X PUT https://localhost/api/fornecedores/67760870000199 \
+  -H "X-XSRF-TOKEN: $CSRF_TOKEN2" \
+  -H "Accept: application/json" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "nomeFornecedor": "Fiação São Bento",
+        "cnpj": "68860870000123"
+      }'      
 
 
 echo -e "\n✅ Fim do script."

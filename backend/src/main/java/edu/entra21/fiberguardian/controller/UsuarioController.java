@@ -12,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -82,6 +81,14 @@ public class UsuarioController /*implements UsuarioControllerOpenApi */{
 		return dtoPaged;
 	}
 
+	@GetMapping(path = "/lista-usuario-por-setor")
+	@JsonView(UsuarioView.SomenteNomeSetor.class)
+	public List<UsuarioDto> listarFiltroPorNome(@RequestParam String setor) {
+
+ 		List<Usuario> usuarios = usuarioService.listarUsuarioPorSetorNaoPaginado(setor);
+		return usuarioDtoAssembler.toCollectionDto(usuarios);
+	}
+
 	///@Override
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
@@ -97,7 +104,7 @@ public class UsuarioController /*implements UsuarioControllerOpenApi */{
 	}
 
 	@GetMapping(path = "/me/nome")
-	@JsonView(UsuarioView.Autenticado.class)
+	@JsonView(UsuarioView.Completo.class)
 	public UsuarioDto buscarNome(Authentication authentication) {
 		String emailAutenticado = authentication.getName();
 		return usuarioDtoAssembler.toDto(usuarioService.buscarPorEmailObrigatorio(emailAutenticado));

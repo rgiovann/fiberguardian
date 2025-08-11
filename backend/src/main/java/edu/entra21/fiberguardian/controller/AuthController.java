@@ -53,7 +53,7 @@ public class AuthController {
 
     // não faz validacao alguma, é autenticacao
     @PostMapping("/api/fg-login")
-    @JsonView(UsuarioView.Autenticado.class)
+    @JsonView(UsuarioView.Completo.class)
     public ResponseEntity<?> login(@RequestBody UsuarioEmailSenhaInput loginRequest,
                                    HttpServletRequest request, HttpServletResponse response) {
 
@@ -63,7 +63,7 @@ public class AuthController {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
                 loginRequest.getSenha());
 
-        usuarioService.verificaSeUsuaurioEstaBloqueado(loginRequest.getEmail());
+        usuarioService.verificaSeUsuarioEstaBloqueado(loginRequest.getEmail());
 
         Authentication authentication = authenticationManager.authenticate(authToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);

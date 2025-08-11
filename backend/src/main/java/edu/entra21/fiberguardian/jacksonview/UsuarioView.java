@@ -6,15 +6,15 @@ public interface UsuarioView {
 
 	}
 
-	public interface Autenticado {
-
-	}
-
 	public interface SomenteNome {
 
 	}
 
 	public interface SomenteEmail {
+
+	}
+
+	public interface SomenteNomeSetor {
 
 	}
 
