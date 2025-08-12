@@ -23,6 +23,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -38,6 +39,7 @@ import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import edu.entra21.fiberguardian.exception.exception.EntidadeEmUsoException;
 import edu.entra21.fiberguardian.exception.exception.EntidadeNaoEncontradaException;
 import edu.entra21.fiberguardian.exception.exception.NegocioException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
@@ -163,6 +165,45 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	 * request); }
 	 * 
 	 */
+
+	@Override
+	protected ResponseEntity<Object> handleMissingServletRequestParameter(
+			@NonNull MissingServletRequestParameterException ex,
+			@NonNull HttpHeaders headers,
+			@NonNull HttpStatusCode status,
+			@NonNull WebRequest request) {
+
+		ProblemType problemType = ProblemType.PARAMETRO_INVALIDO;
+
+		String detail = String.format(
+				"O parâmetro obrigatório '%s' do tipo '%s' não foi informado na requisição.",
+				ex.getParameterName(),
+				ex.getParameterType()
+		);
+
+		Problem problem = createProblemBuilder(status, problemType, detail)
+				.userMessage("Parâmetro obrigatório ausente. Verifique a requisição e tente novamente.")
+				.build();
+
+		return handleExceptionInternal(ex, problem, headers, status, request);
+	}
+
+	@Override
+	protected ResponseEntity<Object> handleNoResourceFoundException(
+			@NonNull NoResourceFoundException ex,
+			@NonNull HttpHeaders headers,
+			@NonNull HttpStatusCode status,
+			@NonNull WebRequest request) {
+
+		String recurso = ex.getResourcePath();
+		String detail = String.format("O recurso '%s' não foi encontrado no servidor.", recurso);
+
+		Problem problem = createProblemBuilder(status, ProblemType.RECURSO_NAO_ENCONTRADO, detail)
+				.userMessage("Recurso solicitado não encontrado. Verifique a URL e tente novamente.")
+				.build();
+
+		return handleExceptionInternal(ex, problem, headers, status, request);
+	}
 
 	@ExceptionHandler(BindException.class)
 	public ResponseEntity<Object> handleBindException(BindException ex, WebRequest request) {

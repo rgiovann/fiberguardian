@@ -3,15 +3,13 @@ package edu.entra21.fiberguardian.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import edu.entra21.fiberguardian.assembler.FornecedorDtoAssembler;
 import edu.entra21.fiberguardian.assembler.FornecedorInputDisassembler;
-import edu.entra21.fiberguardian.assembler.FornecedorListagemDtoAssembler;
+import edu.entra21.fiberguardian.assembler.FornecedorListagemPagedDtoAssembler;
 import edu.entra21.fiberguardian.dto.FornecedorDto;
-import edu.entra21.fiberguardian.dto.FornecedorListagemDto;
+import edu.entra21.fiberguardian.dto.FornecedorListagemPagedDto;
 import edu.entra21.fiberguardian.dto.PageDto;
-import edu.entra21.fiberguardian.dto.UsuarioListagemDto;
 import edu.entra21.fiberguardian.input.FornecedorInput;
 import edu.entra21.fiberguardian.jacksonview.FornecedorView;
 import edu.entra21.fiberguardian.model.Fornecedor;
-import edu.entra21.fiberguardian.model.Usuario;
 import edu.entra21.fiberguardian.service.FornecedorService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -33,7 +31,7 @@ public class FornecedorController {
     private final FornecedorService fornecedorService;
     private final FornecedorDtoAssembler fornecedorDtoAssembler;
     private final FornecedorInputDisassembler fornecedorInputDisassembler;
-    private final FornecedorListagemDtoAssembler fornecedorListagemDtoAssembler;
+    private final FornecedorListagemPagedDtoAssembler fornecedorListagemPagedDtoAssembler;
 
     private static final int TAMANHO_PAGINA_PADRAO = 10;
     private static final Sort ORDENACAO_PADRAO =
@@ -44,11 +42,11 @@ public class FornecedorController {
     public FornecedorController(FornecedorService fornecedorService,
                                 FornecedorDtoAssembler fornecedorDtoAssembler,
                                 FornecedorInputDisassembler fornecedorInputDisassembler,
-                                FornecedorListagemDtoAssembler fornecedorListagemDtoAssembler) {
+                                FornecedorListagemPagedDtoAssembler fornecedorListagemPagedDtoAssembler) {
         this.fornecedorService = fornecedorService;
         this.fornecedorDtoAssembler = fornecedorDtoAssembler;
         this.fornecedorInputDisassembler = fornecedorInputDisassembler;
-        this.fornecedorListagemDtoAssembler = fornecedorListagemDtoAssembler;
+        this.fornecedorListagemPagedDtoAssembler = fornecedorListagemPagedDtoAssembler;
     }
 
 
@@ -60,16 +58,16 @@ public class FornecedorController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public PageDto<FornecedorListagemDto> listarPaginado(
+    public PageDto<FornecedorListagemPagedDto> listarPaginado(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size
     ) {
         Pageable pageable = PageRequest.of(page, size, ORDENACAO_PADRAO);
 
         Page<Fornecedor> pagina = fornecedorService.listarPaginado(pageable);
-        List<FornecedorListagemDto> dtos = fornecedorListagemDtoAssembler.toCollectionDto(pagina.getContent());
+        List<FornecedorListagemPagedDto> dtos = fornecedorListagemPagedDtoAssembler.toCollectionDto(pagina.getContent());
 
-        PageDto<FornecedorListagemDto> dtoPaged = new PageDto<>();
+        PageDto<FornecedorListagemPagedDto> dtoPaged = new PageDto<>();
         dtoPaged.setContent(dtos);
         dtoPaged.setPageNumber(pagina.getNumber());
         dtoPaged.setPageSize(pagina.getSize());

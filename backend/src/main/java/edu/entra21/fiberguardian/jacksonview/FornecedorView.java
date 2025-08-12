@@ -9,4 +9,8 @@ public class FornecedorView {
     public interface SomenteNome {
 
     }
+
+    public interface SomenteCnpj {
+
+    }
 }

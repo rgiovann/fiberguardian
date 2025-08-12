@@ -13,7 +13,6 @@ import java.time.OffsetDateTime;
 @Entity
 @Getter
 @Setter
-@ToString
 @Table(name = "fornecedor")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @EntityListeners(AuditingEntityListener.class)

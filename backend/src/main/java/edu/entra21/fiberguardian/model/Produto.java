@@ -13,7 +13,6 @@ import java.time.OffsetDateTime;
 @Entity
 @Getter
 @Setter
-@ToString
 @Table(name = "produto",
         uniqueConstraints = {
                 @UniqueConstraint(
@@ -32,10 +31,10 @@ public class Produto {
     private Long id;
 
     @Column(name = "codigo_produto", nullable = false, length = 100)
-    private String codigoProduto;
+    private String codigo;
 
     @Column(name = "descricao_produto", length = 255)
-    private String descricaoProduto;
+    private String descricao;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "fornecedor_id", nullable = false,

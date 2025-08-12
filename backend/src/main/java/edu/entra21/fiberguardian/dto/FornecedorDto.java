@@ -14,7 +14,7 @@ public class FornecedorDto {
 	@JsonView({FornecedorView.Completo.class,FornecedorView.SomenteNome.class})
 	private String nomeFornecedor;
 
-	@JsonView(FornecedorView.Completo.class)
+	@JsonView({FornecedorView.Completo.class, FornecedorView.SomenteCnpj.class, ProdutoView.Completo.class})
 	private String cnpj;
- 
+
 }

@@ -19,7 +19,6 @@ import java.time.OffsetDateTime;
 @Entity
 @Getter
 @Setter
-@ToString
 @Table(
         name = "nota_fiscal",
         uniqueConstraints = {

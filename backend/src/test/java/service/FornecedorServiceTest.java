@@ -1,6 +1,6 @@
 package service;
 
-import edu.entra21.fiberguardian.exception.FornecedorNaoEncontrado;
+import edu.entra21.fiberguardian.exception.exception.FornecedorNaoEncontradoException;
 import edu.entra21.fiberguardian.exception.exception.EntidadeEmUsoException;
 import edu.entra21.fiberguardian.exception.exception.NegocioException;
 import edu.entra21.fiberguardian.model.Fornecedor;
@@ -66,7 +66,7 @@ class FornecedorServiceTest {
     void buscarPorCNPJObrigatorio_quandoNaoExiste() {
         when(fornecedorRepository.findByCnpj("123")).thenReturn(Optional.empty());
 
-        assertThrows(FornecedorNaoEncontrado.class,
+        assertThrows(FornecedorNaoEncontradoException.class,
                 () -> fornecedorService.buscarPorCNPJObrigatorio("123"));
     }
 

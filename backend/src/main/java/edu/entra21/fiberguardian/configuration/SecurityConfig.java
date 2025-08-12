@@ -98,11 +98,17 @@ public class SecurityConfig {
 								Role.LABORATORIO.getAuthority(),
 								Role.ENG_LAB.getAuthority()
 						)
-						.requestMatchers(HttpMethod.GET, "/api/fornecedores/**").hasAnyAuthority(
-								Role.ADMIN.getAuthority(),
-								Role.LABORATORIO.getAuthority(),
-								Role.ENG_LAB.getAuthority()
-						)
+						// Padrão seguro para cada recurso
+ 						.requestMatchers(HttpMethod.POST, "/api/fornecedores/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
+						.requestMatchers(HttpMethod.PUT, "/api/fornecedores/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
+						.requestMatchers(HttpMethod.DELETE, "/api/fornecedores/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
+						.requestMatchers(HttpMethod.GET, "/api/fornecedores/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
+
+						.requestMatchers(HttpMethod.POST, "/api/produtos/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
+						.requestMatchers(HttpMethod.PUT, "/api/produtos/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
+						.requestMatchers(HttpMethod.DELETE, "/api/produtos/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
+						.requestMatchers(HttpMethod.GET, "/api/produtos/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
+
 						.requestMatchers(HttpMethod.POST, "/api/usuarios/alterar-senha").authenticated()
 						.requestMatchers(HttpMethod.GET, "/api/usuarios/buscar-por-email").authenticated().anyRequest()
 						.authenticated())

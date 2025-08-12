@@ -1,17 +1,13 @@
 package edu.entra21.fiberguardian.service;
 
-import edu.entra21.fiberguardian.exception.FornecedorNaoEncontrado;
+import edu.entra21.fiberguardian.exception.exception.FornecedorNaoEncontradoException;
 import edu.entra21.fiberguardian.exception.exception.EntidadeEmUsoException;
 import edu.entra21.fiberguardian.exception.exception.NegocioException;
 import edu.entra21.fiberguardian.model.Fornecedor;
-import edu.entra21.fiberguardian.model.Usuario;
 import edu.entra21.fiberguardian.repository.FornecedorRepository;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,7 +19,7 @@ import java.util.Optional;
 @Service
 @Transactional(readOnly = true) // padrão: todos os métodos SÃO transacionais, mas SÓ de leitura
 public class FornecedorService {
-    private static final Logger logger = LoggerFactory.getLogger(UsuarioService.class);
+    private static final Logger logger = LoggerFactory.getLogger(FornecedorService.class);
     private final FornecedorRepository fornecedorRepository;
     private static final String MSG_FORNECEDOR_EM_USO = "Fornecedor de código %s não pode ser removido, pois está em uso.";
 
@@ -38,7 +34,7 @@ public class FornecedorService {
     }
 
     public Fornecedor buscarPorCNPJObrigatorio(String cnpj) {
-        return fornecedorRepository.findByCnpj(cnpj.trim()).orElseThrow(() -> new FornecedorNaoEncontrado(cnpj));
+        return fornecedorRepository.findByCnpj(cnpj.trim()).orElseThrow(() -> new FornecedorNaoEncontradoException(cnpj));
     }
 
     public Optional<Fornecedor> buscarPorCNPJOpcional(String cnpj) {
@@ -86,6 +82,12 @@ public class FornecedorService {
     public void validarAlteracao(String cnpjAtual, String novoCnpj, String novoNome) {
         Fornecedor fornecedorAtual = buscarPorCNPJObrigatorio(cnpjAtual);
         validarDuplicidade(fornecedorAtual.getId(), novoCnpj, novoNome);
+    }
+
+    public void validaFornecedor(String cnpj){
+        if (!fornecedorRepository.existsFornecedorByCnpj(cnpj)) {
+            throw new FornecedorNaoEncontradoException(cnpj);
+        }
     }
 
     // Metodo privado auxiliar que valida duplicidade de CNPJ e nome,

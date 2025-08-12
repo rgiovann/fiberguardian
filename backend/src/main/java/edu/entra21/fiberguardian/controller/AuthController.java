@@ -57,8 +57,8 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody UsuarioEmailSenhaInput loginRequest,
                                    HttpServletRequest request, HttpServletResponse response) {
 
-        logger.debug("JSESSIONID recebido: " + request.getSession(false).getId()); // Log para depuração
-        logger.debug("Token CSRF esperado: " + request.getAttribute("_csrf")); // Log para depuração
+        //logger.debug("JSESSIONID recebido: " + request.getSession(false).getId()); // Log para depuração
+        //logger.debug("Token CSRF esperado: " + request.getAttribute("_csrf")); // Log para depuração
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
                 loginRequest.getSenha());

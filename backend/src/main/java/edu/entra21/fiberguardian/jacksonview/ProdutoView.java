@@ -6,7 +6,7 @@ public class ProdutoView {
 
     }
 
-    public interface SomenteCodigo {
+    public interface SomenteCodigoEDescricao {
 
     }
 
