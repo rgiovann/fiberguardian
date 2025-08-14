@@ -119,27 +119,6 @@
 
       <!-- Menu começa aqui -->
       <ul class="nav nav-pills flex-column" id="menu">
-        <!--
-        <li class="nav-item">
-          <a class="nav-link" data-bs-toggle="collapse" href="#menu-cadastros" role="button"
-            aria-expanded="false">Cadastros</a>
-          <div class="collapse" id="menu-cadastros">
-            <ul class="nav flex-column ms-3">
-              <li class="nav-item">
-                <a class="nav-link" href="#"
-                  onclick="FiberGuardian.Core.carregarPagina('tela_cadastro_recebimento.html')">Recebimentos</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Fornecedor</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Produto</a>
-              </li>
-            </ul>
-          </div>
-        </li>
-      -->
-
         <li class="nav-item">
           <a class="nav-link" data-bs-toggle="collapse" href="#submenu-recebimentos" role="button"
             aria-expanded="false">Recebimentos</a>
@@ -153,6 +132,40 @@
                 <a class="nav-link" href="#"
                   onclick="FiberGuardian.Core.carregarPagina('tela_pesquisa_recebimento.html')">Pesquisar
                   Recebimentos</a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="collapse" href="#submenu-fornecimentos" role="button"
+            aria-expanded="false">Fornecedor</a>
+          <div class="collapse" id="submenu-fornecimentos">
+            <ul class="nav flex-column ms-3">
+              <li class="nav-item">
+                <a class="nav-link" href="#"
+                  onclick="FiberGuardian.Core.carregarPagina('tela_cadastro_fornecimento.html')">Novo Fornecedor</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#"
+                  onclick="FiberGuardian.Core.carregarPagina('tela_pesquisa_fornecimento.html')">Pesquisar
+                  Fornecedores</a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="collapse" href="#submenu-produtos" role="button"
+            aria-expanded="false">Produto</a>
+          <div class="collapse" id="submenu-produtos">
+            <ul class="nav flex-column ms-3">
+              <li class="nav-item">
+                <a class="nav-link" href="#"
+                  onclick="FiberGuardian.Core.carregarPagina('tela_cadastro_produto.html')">Novo Produto</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#"
+                  onclick="FiberGuardian.Core.carregarPagina('tela_pesquisa_produto.html')">Pesquisar
+                  Produtos</a>
               </li>
             </ul>
           </div>

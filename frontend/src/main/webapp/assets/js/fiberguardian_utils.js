@@ -293,6 +293,47 @@
             dropdown.appendChild(tabela);
             dropdown.classList.add('show');
         }
+        /*
+        function fecharDropdownSeAberto(event, dropdownEl, inputEl) {
+            const aberto = dropdownEl.classList.contains('show');
+
+            if (
+                aberto &&
+                !dropdownEl.contains(event.target) &&
+                event.target !== inputEl
+            ) {
+                dropdownEl.classList.remove('show');
+                inputEl.focus();
+            }
+        }
+        */
+
+        function fecharDropdownSeAberto(dropdownEl, inputEl, botaoBuscar = null) {
+            const handleClickFora = (event) => {
+                // Verifica se estava aberto ANTES de processar o clique
+                const estavaberto = dropdownEl.classList.contains('show');
+
+                if (
+                    estavaberto &&
+                    !dropdownEl.contains(event.target) &&
+                    event.target !== inputEl &&
+                    event.target !== botaoBuscar // ← Ignora cliques no botão buscar
+                ) {
+                    dropdownEl.classList.remove('show');
+
+                    // Aguarda um tick para garantir que o dropdown foi fechado
+                    setTimeout(() => {
+                        inputEl.focus();
+                    }, 10);
+                }
+            };
+
+            document.addEventListener('click', handleClickFora);
+
+            return () => {
+                document.removeEventListener('click', handleClickFora);
+            };
+        }
 
         // Exporta apenas o necessário
         return {
@@ -307,6 +348,7 @@
             exibirMensagemSessaoExpirada,
             exibirErroDeRede,
             renderizarDropdownGenerico,
+            fecharDropdownSeAberto,
         };
     })();
 })();

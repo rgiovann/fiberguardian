@@ -13,16 +13,23 @@
                 console.error('Elementos da busca de Fornecedor não encontrados.');
                 return;
             }
-            document.addEventListener('click', (event) => {
-                // Se o clique não for no input nem dentro do dropdown
-                if (
-                    !dropdownFornecedor.contains(event.target) &&
-                    event.target !== inputFornecedor
-                ) {
-                    dropdownFornecedor.classList.remove('show');
-                    inputFornecedor.focus();
-                }
-            });
+
+            //document.addEventListener('click', (event) => {
+            //    // Se o clique não for no input nem dentro do dropdown
+            //    if (
+            //        !dropdownFornecedor.contains(event.target) &&
+            //        event.target !== inputFornecedor
+            //    ) {
+            //        dropdownFornecedor.classList.remove('show');
+            //        inputFornecedor.focus();
+            //    }
+            //});
+
+            FiberGuardian.Utils.fecharDropdownSeAberto(
+                dropdownFornecedor,
+                inputFornecedor,
+                btnBuscarFornecedor
+            );
 
             btnBuscarFornecedor.addEventListener('click', async function () {
                 const codigoParcial = inputFornecedor.value.trim();
