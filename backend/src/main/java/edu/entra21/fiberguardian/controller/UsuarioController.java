@@ -2,7 +2,10 @@ package edu.entra21.fiberguardian.controller;
 
 import java.util.List;
 
+import edu.entra21.fiberguardian.dto.FornecedorDto;
 import edu.entra21.fiberguardian.input.*;
+import edu.entra21.fiberguardian.jacksonview.FornecedorView;
+import edu.entra21.fiberguardian.model.Fornecedor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -81,9 +84,16 @@ public class UsuarioController /*implements UsuarioControllerOpenApi */{
 		return dtoPaged;
 	}
 
+	@GetMapping(path = "/list")
+	@JsonView(UsuarioView.SomenteNome.class)
+	public List<UsuarioDto> listarFiltroPorNome(@RequestParam String nome) {
+		List<Usuario> fornecedores = usuarioService.buscaTop20ByNomeUsuarioContendoStringIgnoraCase(nome);
+		return usuarioDtoAssembler.toCollectionDto(fornecedores);
+	}
+
 	@GetMapping(path = "/lista-usuario-por-setor")
 	@JsonView(UsuarioView.SomenteNomeSetor.class)
-	public List<UsuarioDto> listarFiltroPorNome(@RequestParam String setor) {
+	public List<UsuarioDto> listarFiltroPorSetor(@RequestParam String setor) {
 
  		List<Usuario> usuarios = usuarioService.listarUsuarioPorSetorNaoPaginado(setor);
 		return usuarioDtoAssembler.toCollectionDto(usuarios);

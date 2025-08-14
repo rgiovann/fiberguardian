@@ -239,6 +239,61 @@
             }
         }
 
+        function renderizarDropdownGenerico({
+            input,
+            dropdown,
+            lista,
+            campoExibir,
+            titulo = 'Item',
+            msgVazio = 'Nenhum item encontrado.',
+        }) {
+            dropdown.innerHTML = ''; // Limpa resultados anteriores
+
+            const tabela = document.createElement('table');
+            tabela.className = 'table table-sm table-hover mb-0';
+            tabela.style.border = '1px solid #b5d4f5';
+            tabela.style.borderRadius = '4px';
+            tabela.style.tableLayout = 'fixed';
+            tabela.style.width = '100%';
+
+            const thead = document.createElement('thead');
+            thead.innerHTML = `<tr class="col-drop-down-gen"><th>${titulo}</th></tr>`;
+            tabela.appendChild(thead);
+
+            const tbody = document.createElement('tbody');
+
+            if (!Array.isArray(lista) || lista.length === 0) {
+                const linha = document.createElement('tr');
+                const celula = document.createElement('td');
+                celula.colSpan = 1;
+                celula.className = 'text-muted text-center';
+                celula.textContent = msgVazio;
+                linha.appendChild(celula);
+                tbody.appendChild(linha);
+            } else {
+                lista.forEach((item) => {
+                    const linha = document.createElement('tr');
+                    linha.style.cursor = 'pointer';
+
+                    const celula = document.createElement('td');
+                    celula.textContent = item[campoExibir] || '';
+                    linha.appendChild(celula);
+
+                    linha.addEventListener('click', () => {
+                        input.value = item[campoExibir] || '';
+                        dropdown.classList.remove('show');
+                        input.focus();
+                    });
+
+                    tbody.appendChild(linha);
+                });
+            }
+
+            tabela.appendChild(tbody);
+            dropdown.appendChild(tabela);
+            dropdown.classList.add('show');
+        }
+
         // Exporta apenas o necessário
         return {
             obterTokenCsrf,
@@ -251,6 +306,7 @@
             obterCampo,
             exibirMensagemSessaoExpirada,
             exibirErroDeRede,
+            renderizarDropdownGenerico,
         };
     })();
 })();

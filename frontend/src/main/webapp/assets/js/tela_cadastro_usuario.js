@@ -34,7 +34,7 @@
                 console.log('Repete senha valor é :' + confirmarSenha);
 
                 try {
-                    const csrfToken = await FiberGuardian.Utils.obterNovoToken();
+                    const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
 
                     const resposta = await fetch('/api/usuarios', {
                         method: 'POST',
@@ -63,10 +63,7 @@
                     } else if (resposta.status === 403) {
                         FiberGuardian.Utils.exibirMensagemSessaoExpirada();
                     } else {
-                        await FiberGuardian.Utils.tratarErroFetch(
-                            resposta,
-                            campoNome
-                        );
+                        await FiberGuardian.Utils.tratarErroFetch(resposta, campoNome);
                     }
                     formCadastraUsuario.reset();
                     return;

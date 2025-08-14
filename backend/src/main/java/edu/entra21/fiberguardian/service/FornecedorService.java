@@ -4,6 +4,7 @@ import edu.entra21.fiberguardian.exception.exception.FornecedorNaoEncontradoExce
 import edu.entra21.fiberguardian.exception.exception.EntidadeEmUsoException;
 import edu.entra21.fiberguardian.exception.exception.NegocioException;
 import edu.entra21.fiberguardian.model.Fornecedor;
+import edu.entra21.fiberguardian.model.NotaFiscal;
 import edu.entra21.fiberguardian.repository.FornecedorRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,11 +14,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional(readOnly = true) // padrão: todos os métodos SÃO transacionais, mas SÓ de leitura
+@Transactional(readOnly = true)  //  todos os métodos sao SÓ de leitura, a menos declarado o contrario
 public class FornecedorService {
     private static final Logger logger = LoggerFactory.getLogger(FornecedorService.class);
     private final FornecedorRepository fornecedorRepository;
@@ -110,6 +112,15 @@ public class FornecedorService {
         });
     }
 
-
+    /**
+     * Autocomplete por código parcial do fornecedor.
+     * Retorna no máximo 20 resultados.
+     */
+    public List<Fornecedor> buscaTop20ByNomeFornecedorContendoStringIgnoraCase(String nomeFornecedor) {
+        if (nomeFornecedor == null || nomeFornecedor.isBlank()) {
+            return Collections.emptyList();
+        }
+        return fornecedorRepository.findTop20ByNomeFornecedorContainingIgnoreCase(nomeFornecedor);
+    }
 
 }

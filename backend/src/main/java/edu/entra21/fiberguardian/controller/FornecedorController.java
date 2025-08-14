@@ -50,10 +50,10 @@ public class FornecedorController {
     }
 
 
-    @GetMapping(path = "/nomes")
+    @GetMapping(path = "/list")
     @JsonView(FornecedorView.SomenteNome.class)
-    public List<FornecedorDto> listarFiltroPorNome(@RequestParam(required = false) String nome) {
-        List<Fornecedor> fornecedores = fornecedorService.listarFiltroPorNome(nome);
+    public List<FornecedorDto> listarFiltroPorNome(@RequestParam String nome) {
+        List<Fornecedor> fornecedores = fornecedorService.buscaTop20ByNomeFornecedorContendoStringIgnoraCase(nome);
         return fornecedorDtoAssembler.toCollectionDto(fornecedores);
     }
 

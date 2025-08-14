@@ -23,4 +23,13 @@ public interface FornecedorRepository extends JpaRepository<Fornecedor, Long> {
     @Query("SELECT COUNT(f) > 0 FROM Fornecedor f WHERE f.cnpj = :cnpj")
     boolean existsFornecedorByCnpj(@Param("cnpj") String cnpj);
 
+    @Query("""
+    SELECT f
+    FROM Fornecedor f
+    WHERE LOWER(f.nomeFornecedor) LIKE LOWER(CONCAT('%', :nomeParcial, '%'))
+""")
+    List<Fornecedor> findTop20ByNomeFornecedorContainingIgnoreCase(
+            @Param("nomeParcial") String nomeParcial
+    );
+
 }

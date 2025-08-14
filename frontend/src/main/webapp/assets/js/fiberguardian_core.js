@@ -9,7 +9,10 @@
         const scriptsCarregados = new Set();
 
         const pageToScriptMap = {
-            'tela_cadastro_recebimento.html': ['assets/js/fiberguardian_utils.js'],
+            'tela_cadastro_recebimento.html': [
+                'assets/js/fiberguardian_utils.js',
+                'assets/js/tela_cadastro_recebimento.js',
+            ],
             'tela_cadastro_usuario.html': [
                 'assets/js/fiberguardian_utils.js',
                 'assets/js/tela_cadastro_usuario.js',

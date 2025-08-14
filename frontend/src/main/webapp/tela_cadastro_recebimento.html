@@ -11,11 +11,13 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/tela_cadastro_recebimento.css" />
+  <link rel="stylesheet" href="assets/css/dropdown_generico.css" />
+
 </head>
 
 <body>
   <div class="container mt-4 mb-5">
-    <h2 class="mb-4 text-center">Cadastro de Nota Fiscal por Item</h2>
+    <h2 class="mb-4 text-center">Cadastro de Nota Fiscal</h2>
 
     <!-- Etapa 1: Dados da Nota Fiscal -->
     <section class="card mb-4">
@@ -27,25 +29,62 @@
             <input type="date" id="dataRecebimento" name="dataRecebimento" class="form-control"
               value="<?= date('Y-m-d') ?>" />
           </div>
+
+          <!-- Número da Nota Fiscal com botão Buscar -->
           <div class="col-md-6 mb-3">
             <label for="notaFiscal" class="form-label">Número da Nota Fiscal</label>
-            <input type="text" id="notaFiscal" name="notaFiscal" class="form-control" autocomplete="off" />
+            <div class="input-group">
+              <input type="text" id="notaFiscal" name="notaFiscal" class="form-control" autocomplete="off" />
+              <!--
+              <button id="btnBuscarNotaFiscal" name="btnBuscarNotaFiscal" class="btn btn-outline-secondary"
+                type="button">
+                Buscar
+              </button>
+              -->
+            </div>
+            <!-- Dropdown de resultados para Nota Fiscal
+            <div id="dropdownNotaFiscal" name="dropdownNotaFiscal" class="dropdown-menu w-100" aria-labelledby="notaFiscal"></div>
+            -->
           </div>
+
           <div class="col-md-6 mb-3">
             <label for="arquivoNota" class="form-label">Arquivo da Nota Fiscal (PDF)</label>
             <input type="file" id="arquivoNota" name="arquivoNota" class="form-control" accept="application/pdf" />
           </div>
+
+          <!-- Fornecedor como texto + botão Buscar -->
           <div class="col-md-4 mb-3">
             <label for="fornecedor" class="form-label">Fornecedor</label>
-            <select id="fornecedor" name="fornecedor" class="form-control" aria-label="Fornecedor">
-              <option value="" disabled selected>
-                Selecione o fornecedor
-              </option>
-            </select>
+            <div class="input-group">
+              <input type="text" id="fornecedor" name="fornecedor" class="form-control" autocomplete="off"
+                placeholder="Digite parte do nome/CNPJ" />
+              <button id="btnBuscarFornecedor" name="btnBuscarFornecedor" class="btn btn-outline-secondary"
+                type="button">
+                Buscar
+              </button>
+            </div>
+            <!-- Dropdown de resultados para Fornecedor -->
+            <div id="dropdownFornecedor" name="dropdownFornecedor" class="dropdown-menu w-100"
+              aria-labelledby="fornecedor"></div>
           </div>
         </div>
 
         <div class="row">
+          <!-- a) Recebido por vem antes de Setor -->
+          <div class="col-md-4 mb-3">
+            <label for="recebidoPor" class="form-label">Recebido Por</label>
+            <div class="input-group">
+              <input type="text" id="recebidoPor" name="recebidoPor" class="form-control" autocomplete="off"
+                placeholder="Digite parte do nome" />
+              <button id="btnBuscarRecebidoPor" name="btnBuscarRecebidoPor" class="btn btn-outline-secondary"
+                type="button">
+                Buscar
+              </button>
+            </div>
+            <!-- Dropdown de resultados para Recebido Por -->
+            <div id="dropdownRecebidoPor" name="dropdownRecebidoPor" class="dropdown-menu w-100"
+              aria-labelledby="recebidoPor"></div>
+          </div>
 
           <div class="col-md-4 mb-3">
             <label for="setor" class="form-label">Setor</label>
@@ -58,14 +97,6 @@
             </select>
           </div>
 
-          <div class="col-md-4 mb-3">
-            <label for="recebidoPor" class="form-label">Recebido Por</label>
-            <select id="recebidoPor" name="recebidoPor" class="form-control" aria-label="Recebido Por">
-              <option value="" disabled selected>
-                Selecione quem recebeu
-              </option>
-            </select>
-          </div>
           <div class="col-md-4 mb-3">
             <label for="turno" class="form-label">Turno</label>
             <input type="text" id="turno" name="turno" class="form-control" readonly />
@@ -90,9 +121,7 @@
             <div class="col-md-6 mb-3">
               <label for="produto" class="form-label">Produto</label>
               <select id="produto" name="produto" class="form-control" aria-label="Produto">
-                <option value="" disabled selected>
-                  Selecione o produto
-                </option>
+                <option value="" disabled selected>Selecione o produto</option>
               </select>
             </div>
             <div class="col-md-6 mb-3">
@@ -143,15 +172,12 @@
           </div>
 
           <div class="text-center mt-3">
-            <button id="btnSalvarItem" name="btnSalvarItem" type="submit" class="btn btn-success btn-custom">
-              Salvar Item
-            </button>
-            <button id="btnNovoItem" name="btnNovoItem" type="button" class="btn btn-warning btn-custom">
-              Novo Item
-            </button>
-            <button id="btnFinalizarNota" name="btnFinalizarNota" type="button" class="btn btn-primary btn-custom">
-              Finalizar Nota
-            </button>
+            <button id="btnSalvarItem" name="btnSalvarItem" type="submit" class="btn btn-success btn-custom">Salvar
+              Item</button>
+            <button id="btnNovoItem" name="btnNovoItem" type="button" class="btn btn-warning btn-custom">Novo
+              Item</button>
+            <button id="btnFinalizarNota" name="btnFinalizarNota" type="button"
+              class="btn btn-primary btn-custom">Finalizar Nota</button>
           </div>
         </form>
 
@@ -177,22 +203,21 @@
       </div>
     </section>
   </div>
+
   <!-- Modal de Alerta Global -->
-  <div class="modal fade" id="modalMensagemSistema" tabindex="-1" aria-labelledby="modalMensagemSistemaTitulo"
-    aria-hidden="true">
+  <div class="modal fade" id="modalMensagemSistema" name="modalMensagemSistema" tabindex="-1"
+    aria-labelledby="modalMensagemSistemaTitulo" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header bg-warning text-dark">
-          <h5 class="modal-title" id="modalMensagemSistemaTitulo">Aviso</h5>
+          <h5 class="modal-title" id="modalMensagemSistemaTitulo" name="modalMensagemSistemaTitulo">Aviso</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
         </div>
         <div class="modal-body text-pre-wrap">
           <!-- Conteúdo da mensagem será inserido via JS -->
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-            OK
-          </button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
         </div>
       </div>
     </div>

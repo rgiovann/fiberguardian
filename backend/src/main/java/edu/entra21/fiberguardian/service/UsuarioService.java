@@ -1,11 +1,11 @@
 package edu.entra21.fiberguardian.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import edu.entra21.fiberguardian.exception.exception.*;
-import edu.entra21.fiberguardian.model.Setor;
-import edu.entra21.fiberguardian.model.Turno;
+import edu.entra21.fiberguardian.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -17,12 +17,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import edu.entra21.fiberguardian.model.Role;
-import edu.entra21.fiberguardian.model.Usuario;
 import edu.entra21.fiberguardian.repository.UsuarioRepository;
 
 @Service
-@Transactional(readOnly = true) // padrão: todos os métodos SÃO transacionais, mas SÓ de leitura
+@Transactional(readOnly = true)  //  todos os métodos sao SÓ de leitura, a menos declarado o contrario
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
@@ -197,6 +195,17 @@ public class UsuarioService {
         }
 
         return authentication;
+    }
+
+    /**
+     * Autocomplete por código parcial do fornecedor.
+     * Retorna no máximo 20 resultados.
+     */
+    public List<Usuario> buscaTop20ByNomeUsuarioContendoStringIgnoraCase(String nomeUsuario) {
+        if (nomeUsuario == null || nomeUsuario.isBlank()) {
+            return Collections.emptyList();
+        }
+        return usuarioRepository.findTop20ByNomeContainingIgnoreCase(nomeUsuario);
     }
 
     @Transactional

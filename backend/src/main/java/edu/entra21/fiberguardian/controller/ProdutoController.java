@@ -68,8 +68,7 @@ public class ProdutoController {
     @GetMapping("/{cnpjFornecedor}/{codigoProduto}")
     public ProdutoDto buscar(@PathVariable String cnpjFornecedor, @PathVariable String codigoProduto) {
         Produto  produto  = produtoService.buscarPorCnpjECodigoObrigatorio(cnpjFornecedor, codigoProduto);
-        ProdutoDto produtoDto  = produtoDtoAssembler.toDto(produto);
-        return produtoDto;
+        return produtoDtoAssembler.toDto(produto);
     }
 
     @GetMapping("/paged")

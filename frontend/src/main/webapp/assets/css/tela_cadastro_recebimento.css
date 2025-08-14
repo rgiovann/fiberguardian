@@ -30,3 +30,17 @@
     max-height: 300px;
     overflow-y: auto;
 }
+
+/* Tom mais escuro para os botões Buscar */
+.btn-outline-secondary {
+    color: #444;
+    border-color: #444;
+    background-color: #c5defd;
+}
+
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus {
+    background-color: #8b8e91;
+    border-color: #444;
+    color: #fff;
+}

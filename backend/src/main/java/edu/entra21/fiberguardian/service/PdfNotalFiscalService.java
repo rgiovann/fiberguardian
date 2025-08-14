@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.InputStream;
 import java.util.Optional;
 @Service
+@Transactional(readOnly = true) //  todos os métodos sao SÓ de leitura, a menos declarado o contrario
+
 public class PdfNotalFiscalService {
     private final NotaFiscalRepository notaFiscalRepository;
 

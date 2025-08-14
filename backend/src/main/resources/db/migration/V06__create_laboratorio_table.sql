@@ -1,6 +1,6 @@
 CREATE TABLE laboratorio (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    cod_nota_fiscal BIGINT NOT NULL,
+    item_nota_fiscal_id BIGINT NOT NULL,
     numero_lote VARCHAR(45) NOT NULL,
     cvm DECIMAL(15,2) NOT NULL CHECK (cvm >= 0),
     pontos_finos INTEGER NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE laboratorio (
     data_alteracao DATETIME NULL,
     criado_por BIGINT NULL,
     alterado_por BIGINT NULL,
-    CONSTRAINT uk_laboratorio_numero_lote UNIQUE (cod_nota_fiscal,numero_lote),
-    CONSTRAINT fk_laboratorio_nota_fiscal FOREIGN KEY (cod_nota_fiscal) REFERENCES nota_fiscal(id),
+    CONSTRAINT uk_laboratorio_numero_lote UNIQUE (item_nota_fiscal_id,numero_lote),
+    CONSTRAINT fk_laboratorio_item_nota_fiscal_id FOREIGN KEY (item_nota_fiscal_id) REFERENCES nota_item(id),
     CONSTRAINT fk_laboratorio_usuario_liberado FOREIGN KEY (liberado_por) REFERENCES usuario(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

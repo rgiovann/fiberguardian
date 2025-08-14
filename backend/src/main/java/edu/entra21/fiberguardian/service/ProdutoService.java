@@ -18,6 +18,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)  //  todos os métodos sao SÓ de leitura, a menos declarado o contrario
 public class ProdutoService {
 
     private final ProdutoRepository produtoRepository;

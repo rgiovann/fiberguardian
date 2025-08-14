@@ -6,6 +6,8 @@ import java.util.Optional;
 import edu.entra21.fiberguardian.model.Fornecedor;
 import edu.entra21.fiberguardian.model.Setor;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import edu.entra21.fiberguardian.model.Usuario;
@@ -19,8 +21,12 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
 	List<Usuario> findBySetor(Setor setor);
 
-	// verifica se o email já existe
-	// @Query("from Usuario u where u.email = :email and u.id <> :id")
-	// Optional<Usuario> findByEmailAndIdNot(@Param("email") String email,
-	// @Param("id") Long id);
+	@Query("""
+    SELECT u
+    FROM Usuario u
+    WHERE LOWER(u.nome) LIKE LOWER(CONCAT('%', :nomeParcial, '%'))
+""")
+	List<Usuario> findTop20ByNomeContainingIgnoreCase(
+			@Param("nomeParcial") String nomeParcial
+	);
 }

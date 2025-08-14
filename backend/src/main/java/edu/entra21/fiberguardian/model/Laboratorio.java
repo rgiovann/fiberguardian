@@ -29,9 +29,9 @@ public class Laboratorio {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cod_nota_fiscal", nullable = false,
-            foreignKey = @ForeignKey(name = "fk_laboratorio_nota_fiscal"))
-    private NotaFiscal notaFiscal;
+    @JoinColumn(name = "item_nota_fiscal_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_laboratorio_item_nota_fiscal"))
+    private ItemNotaFiscal itemNotaFiscalnotaFiscal;
 
     @Column(name = "numero_lote", nullable = false, length = 45)
     private String numeroLote;
