@@ -1,15 +1,21 @@
 package edu.entra21.fiberguardian.service;
 
+import edu.entra21.fiberguardian.assembler.NotaFiscalDtoAssembler;
+import edu.entra21.fiberguardian.dto.NotaFiscalDto;
 import edu.entra21.fiberguardian.exception.exception.NotaFiscalNaoEncontradaException;
 import edu.entra21.fiberguardian.exception.exception.PdfNotaFiscalNaoEncontradoException;
+import edu.entra21.fiberguardian.model.Fornecedor;
 import edu.entra21.fiberguardian.model.NotaFiscal;
 import edu.entra21.fiberguardian.model.PdfNotaFiscal;
+import edu.entra21.fiberguardian.model.Usuario;
 import edu.entra21.fiberguardian.repository.NotaFiscalRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,19 +26,28 @@ public class NotaFiscalService {
 
     private final NotaFiscalRepository notaFiscalRepository;
     private final FornecedorService fornecedorService;
+    private final UsuarioService usuarioService;
+    private final NotaFiscalDtoAssembler notaFiscalDtoAssembler;
 
     private static final Logger logger = LoggerFactory.getLogger(NotaFiscalService.class);
 
     public NotaFiscalService(NotaFiscalRepository notaFiscalRepository,
-                             FornecedorService fornecedorService) {
+                             FornecedorService fornecedorService,
+                             UsuarioService usuarioService,
+                             NotaFiscalDtoAssembler notaFiscalDtoAssembler) {
         this.notaFiscalRepository = notaFiscalRepository;
         this.fornecedorService = fornecedorService;
+        this.usuarioService = usuarioService;
+        this.notaFiscalDtoAssembler = notaFiscalDtoAssembler;
     }
 
     @Transactional
-    public NotaFiscal salvar(String cnpj, NotaFiscal notaFiscal) {
-        // Regra de negócio específica será implementada depois
-        return null;
+    public NotaFiscal salvar(NotaFiscal notaFiscal) {
+        Fornecedor fornecedor= fornecedorService.buscarPorCNPJObrigatorio(notaFiscal.getFornecedor().getCnpj());
+        Usuario usuario = usuarioService.buscarPorEmailObrigatorio(notaFiscal.getRecebidoPor().getEmail());
+        notaFiscal.setFornecedor(fornecedor);
+        notaFiscal.setRecebidoPor(usuario);
+        return notaFiscalRepository.save(notaFiscal);
     }
 
     @Transactional

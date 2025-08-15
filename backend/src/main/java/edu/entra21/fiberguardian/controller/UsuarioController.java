@@ -2,10 +2,7 @@ package edu.entra21.fiberguardian.controller;
 
 import java.util.List;
 
-import edu.entra21.fiberguardian.dto.FornecedorDto;
 import edu.entra21.fiberguardian.input.*;
-import edu.entra21.fiberguardian.jacksonview.FornecedorView;
-import edu.entra21.fiberguardian.model.Fornecedor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -84,10 +81,16 @@ public class UsuarioController /*implements UsuarioControllerOpenApi */{
 		return dtoPaged;
 	}
 
-	@GetMapping(path = "/list")
-	@JsonView(UsuarioView.SomenteNome.class)
+	/*
+      Endpoint usado para as dropdownlists
+      elemcam os 20 registros onde o parcial de nome do fornecedor está contida no nome
+      Ex. "Mar" vai listar todas os nome que contem MAR por exemplo Mario, Marcio, Marciana etc
+      o json retorna com nome, email, setor e turno entretanto.
+     */
+	@GetMapping(path = "/list/recebimento")
+	@JsonView(UsuarioView.CompletoMenosRole.class)
 	public List<UsuarioDto> listarFiltroPorNome(@RequestParam String nome) {
-		List<Usuario> fornecedores = usuarioService.buscaTop20ByNomeUsuarioContendoStringIgnoraCase(nome);
+		List<Usuario> fornecedores = usuarioService.buscaTop20ByNomeUsuarioRecebimentoContendoStringIgnoraCase(nome);
 		return usuarioDtoAssembler.toCollectionDto(fornecedores);
 	}
 

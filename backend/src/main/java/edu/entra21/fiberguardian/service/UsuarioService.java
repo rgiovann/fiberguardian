@@ -150,15 +150,14 @@ public class UsuarioService {
     }
 
     public Usuario buscarPorEmailObrigatorio(String email) {
-        return usuarioRepository.findByEmail(email).orElseThrow(() -> new EmailUsuarioNaoEncontradoException(email));
+        return usuarioRepository.findByEmail(email.trim()).orElseThrow(() -> new EmailUsuarioNaoEncontradoException(email));
     }
 
-    public boolean existeEmailCadastrado(String email) {
-        if (usuarioRepository.existsByEmail(email)) {
-            throw new EntidadeEmUsoException(USUARIO_JA_EXISTE);
+    public void validaUsuario(String email) {
+        if (!usuarioRepository.existsUsuarioByEmail(email.trim())) {
+            throw new EmailUsuarioNaoEncontradoException(email);
         }
-        return true;
-    }
+     }
 
     @Transactional
     public void ativarUsuario(String emailAutenticado, String emailUsuario) {
@@ -201,11 +200,13 @@ public class UsuarioService {
      * Autocomplete por código parcial do fornecedor.
      * Retorna no máximo 20 resultados.
      */
-    public List<Usuario> buscaTop20ByNomeUsuarioContendoStringIgnoraCase(String nomeUsuario) {
+    public List<Usuario> buscaTop20ByNomeUsuarioRecebimentoContendoStringIgnoraCase(String nomeUsuario) {
         if (nomeUsuario == null || nomeUsuario.isBlank()) {
             return Collections.emptyList();
         }
-        return usuarioRepository.findTop20ByNomeContainingIgnoreCase(nomeUsuario);
+        List<String> rolesPermitidas = List.of("USUARIO", "ADMIN");
+        return usuarioRepository
+                .findTop20UsuarioRecebimentoByNomeContainingIgnoreCase(nomeUsuario, rolesPermitidas);
     }
 
     @Transactional

@@ -12,12 +12,18 @@ import lombok.Setter;
 public class FornecedorDto {
 
 	@JsonView({FornecedorView.Completo.class,FornecedorView.SomenteNome.class})
-	private String nomeFornecedor;
+	private String nome;
 
 	@JsonView({FornecedorView.Completo.class,
 			FornecedorView.SomenteCnpj.class,
 			ProdutoView.Completo.class,
-			NotaFiscalView.NFNomeFornecedorRecebidoPor.class})
+			NotaFiscalView.NotafiscalRespostaDto.class})
 	private String cnpj;
+
+	@JsonView({FornecedorView.Completo.class})
+	private String email;
+
+	@JsonView({FornecedorView.Completo.class})
+	private String telefone;
 
 }

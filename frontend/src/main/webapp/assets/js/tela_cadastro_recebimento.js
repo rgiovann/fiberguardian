@@ -1,5 +1,8 @@
 (function () {
     window.FiberGuardian = window.FiberGuardian || {};
+    // Variáveis globais dentro do escopo do módulo
+    let cnpjFornecedor = null;
+    let emailUsuario = null;
 
     FiberGuardian.TelaCadastroRecebimento = (function () {
         function configurarEventos() {
@@ -9,26 +12,75 @@
             const inputFornecedor = document.getElementById('fornecedor');
             const dropdownFornecedor = document.getElementById('dropdownFornecedor');
 
+            const btnBuscarRecebidoPor =
+                document.getElementById('btnBuscarRecebidoPor');
+            const inputRecebidoPor = document.getElementById('recebidoPor');
+            const dropdownRecebidoPor = document.getElementById('dropdownRecebidoPor');
+
             if (!btnBuscarFornecedor || !inputFornecedor || !dropdownFornecedor) {
                 console.error('Elementos da busca de Fornecedor não encontrados.');
                 return;
             }
 
-            //document.addEventListener('click', (event) => {
-            //    // Se o clique não for no input nem dentro do dropdown
-            //    if (
-            //        !dropdownFornecedor.contains(event.target) &&
-            //        event.target !== inputFornecedor
-            //    ) {
-            //        dropdownFornecedor.classList.remove('show');
-            //        inputFornecedor.focus();
-            //    }
-            //});
+            if (!btnBuscarRecebidoPor || !inputRecebidoPor || !dropdownRecebidoPor) {
+                console.error('Elementos da busca de Recebido por não encontrados.');
+                return;
+            }
 
-            FiberGuardian.Utils.fecharDropdownSeAberto(
-                dropdownFornecedor,
-                inputFornecedor,
-                btnBuscarFornecedor
+            const campoData = document.getElementById('dataRecebimento');
+
+            if (campoData) {
+                // Preenche com valor padrão só se estiver vazio
+                if (!campoData.value) {
+                    const hoje = new Date();
+                    const yyyy = hoje.getFullYear();
+                    const mm = String(hoje.getMonth() + 1).padStart(2, '0');
+                    const dd = String(hoje.getDate()).padStart(2, '0');
+                    campoData.value = `${yyyy}-${mm}-${dd}`;
+                }
+            }
+
+            const input = document.getElementById('valorTotal');
+
+            input.addEventListener('input', () => {
+                // Permitir apenas dígitos e vírgula
+                input.value = input.value.replace(/[^\d,]/g, '');
+
+                // Permitir apenas uma vírgula
+                const partes = input.value.split(',');
+                if (partes.length > 2) {
+                    input.value = partes[0] + ',' + partes[1];
+                }
+
+                // Limitar a 2 casas decimais
+                if (partes[1]?.length > 2) {
+                    partes[1] = partes[1].slice(0, 2);
+                    input.value = partes[0] + ',' + partes[1];
+                }
+            });
+
+            /*
+            LEMBRAR === VALOR TOTAL
+                const valorInput = document.getElementById('valorTotal').value; // "12,34"
+                const valorParaJson = valorInput.replace(',', '.');             // "12.34"
+
+                const json = {
+                valorTotal: Number(valorParaJson), // ou parseFloat(valorParaJson)
+                // outros campos...
+                };
+
+                fetch('/api/notas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(json)
+                });
+
+            */
+
+            FiberGuardian.Utils.fecharQualquerDropdownAberto(
+                [dropdownFornecedor, dropdownRecebidoPor],
+                [inputFornecedor, inputRecebidoPor],
+                [btnBuscarFornecedor, btnBuscarRecebidoPor]
             );
 
             btnBuscarFornecedor.addEventListener('click', async function () {
@@ -63,15 +115,21 @@
 
                     if (resposta.ok) {
                         const listaFornecedores = await resposta.json();
-                        //renderizarDropdownFornecedores(listaFornecedores);
-                        FiberGuardian.Utils.renderizarDropdownGenerico({
-                            input: inputFornecedor,
-                            dropdown: dropdownFornecedor,
-                            lista: listaFornecedores,
-                            campoExibir: 'nomeFornecedor',
-                            titulo: 'Fornecedor',
-                            msgVazio: 'Nenhum fornecedor encontrado.',
-                        });
+
+                        const { index, item } =
+                            await FiberGuardian.Utils.renderizarDropdownGenericoAsync({
+                                input: inputFornecedor,
+                                dropdown: dropdownFornecedor,
+                                lista: listaFornecedores,
+                                camposExibir: ['nome', 'cnpj'],
+                                titulosColunas: ['Fornecedor', 'CNPJ'],
+                                msgVazio: 'Nenhum fornecedor encontrado.',
+                            });
+                        // Armazena do objeto recebido o cnpj
+                        cnpjFornecedor = item.cnpj;
+                        //console.log('Index:', index);
+                        //console.log('CNPJ: [cnpjFornecedor]', cnpjFornecedor);
+                        // aqui você pode salvar em variável ou mandar para outra função
                     } else if (resposta.status === 403) {
                         FiberGuardian.Utils.exibirMensagemSessaoExpirada();
                     } else {
@@ -81,10 +139,74 @@
                         );
                     }
                 } catch (erro) {
-                    console.error('Erro ao buscar notas fiscais:', erro);
+                    console.error('Erro ao buscar fornecedores:', erro);
                     FiberGuardian.Utils.exibirErroDeRede(
-                        'Erro de rede ao buscar notas fiscais.',
+                        'Erro de rede ao buscar fornecedores.',
                         inputFornecedor,
+                        erro
+                    );
+                }
+            });
+
+            btnBuscarRecebidoPor.addEventListener('click', async function () {
+                const codigoParcial = inputRecebidoPor.value.trim();
+
+                // Validação defensiva
+                if (!codigoParcial) {
+                    FiberGuardian.Utils.exibirMensagemModalComFoco(
+                        'Digite parte do nome para buscar.',
+                        'warning',
+                        inputRecebidoPor
+                    );
+                    return;
+                }
+
+                try {
+                    const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
+
+                    const resposta = await fetch(
+                        `/api/usuarios/list/recebimento?nome=${encodeURIComponent(
+                            codigoParcial
+                        )}`,
+                        {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-XSRF-TOKEN': csrfToken,
+                            },
+                            credentials: 'include',
+                        }
+                    );
+
+                    if (resposta.ok) {
+                        const listaUsuarios = await resposta.json();
+
+                        const { index, item } =
+                            await FiberGuardian.Utils.renderizarDropdownGenericoAsync({
+                                input: inputRecebidoPor,
+                                dropdown: dropdownRecebidoPor,
+                                lista: listaUsuarios,
+                                camposExibir: ['nome', 'email', 'setor', 'turno'],
+                                titulosColunas: ['Usuário', 'Email', 'Setor', 'Turno'],
+                                msgVazio: 'Nenhum usuário encontrado.',
+                            });
+                        // Armazena do objeto recebido o email
+                        emailUsuario = item.email;
+                        //console.log('Index:', index);
+                        //console.log('Email: [emailUsuario]', emailUsuario);
+                    } else if (resposta.status === 403) {
+                        FiberGuardian.Utils.exibirMensagemSessaoExpirada();
+                    } else {
+                        await FiberGuardian.Utils.tratarErroFetch(
+                            resposta,
+                            inputRecebidoPor
+                        );
+                    }
+                } catch (erro) {
+                    console.error('Erro ao buscar usuários:', erro);
+                    FiberGuardian.Utils.exibirErroDeRede(
+                        'Erro de rede ao buscar usuários.',
+                        inputRecebidoPor,
                         erro
                     );
                 }

@@ -6,6 +6,10 @@ public interface UsuarioView {
 
 	}
 
+	public interface CompletoMenosRole {
+
+	}
+
 	public interface SomenteNome {
 
 	}

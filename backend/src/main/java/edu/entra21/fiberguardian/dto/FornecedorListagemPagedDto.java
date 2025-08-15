@@ -9,5 +9,7 @@ public class FornecedorListagemPagedDto {
 
 	private String nomeFornecedor;
 	private String cnpj;
+	private String email;
+	private String telefone;
 
 }

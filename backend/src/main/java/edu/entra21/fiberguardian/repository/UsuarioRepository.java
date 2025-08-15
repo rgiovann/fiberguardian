@@ -3,7 +3,7 @@ package edu.entra21.fiberguardian.repository;
 import java.util.List;
 import java.util.Optional;
 
-import edu.entra21.fiberguardian.model.Fornecedor;
+import edu.entra21.fiberguardian.model.Role;
 import edu.entra21.fiberguardian.model.Setor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,16 +17,22 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
 	Optional<Usuario> findByEmail(String email);
 
-	boolean existsByEmail(String email);
-
 	List<Usuario> findBySetor(Setor setor);
 
-	@Query("""
-    SELECT u
-    FROM Usuario u
+	@Query(value = """
+    SELECT *
+    FROM usuario u
     WHERE LOWER(u.nome) LIKE LOWER(CONCAT('%', :nomeParcial, '%'))
-""")
-	List<Usuario> findTop20ByNomeContainingIgnoreCase(
-			@Param("nomeParcial") String nomeParcial
+      AND u.role IN (:roles)
+      AND u.ativo = 1
+      ORDER BY u.nome ASC
+    LIMIT 20
+""", nativeQuery = true)
+	List<Usuario> findTop20UsuarioRecebimentoByNomeContainingIgnoreCase(
+			@Param("nomeParcial") String nomeParcial,
+			@Param("roles") List<String> roles
 	);
+
+	@Query("SELECT COUNT(u) > 0 FROM Usuario u WHERE u.email = :email")
+	boolean existsUsuarioByEmail(@Param("email") String email);
 }

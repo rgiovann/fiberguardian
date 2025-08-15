@@ -6,7 +6,7 @@ public class NotaFiscalView {
 
         }
 
-        public interface NFNomeFornecedorRecebidoPor {
+        public interface NotafiscalRespostaDto {
 
         }
 }

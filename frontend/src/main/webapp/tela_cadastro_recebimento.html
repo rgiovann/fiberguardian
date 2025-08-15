@@ -26,30 +26,15 @@
         <div class="row">
           <div class="col-md-4 mb-3">
             <label for="dataRecebimento" class="form-label">Data de Recebimento</label>
-            <input type="date" id="dataRecebimento" name="dataRecebimento" class="form-control"
-              value="<?= date('Y-m-d') ?>" />
+            <input type="date" id="dataRecebimento" name="dataRecebimento" class="form-control" />
           </div>
 
           <!-- Número da Nota Fiscal com botão Buscar -->
-          <div class="col-md-6 mb-3">
+          <div class="col-md-4 mb-3">
             <label for="notaFiscal" class="form-label">Número da Nota Fiscal</label>
             <div class="input-group">
               <input type="text" id="notaFiscal" name="notaFiscal" class="form-control" autocomplete="off" />
-              <!--
-              <button id="btnBuscarNotaFiscal" name="btnBuscarNotaFiscal" class="btn btn-outline-secondary"
-                type="button">
-                Buscar
-              </button>
-              -->
             </div>
-            <!-- Dropdown de resultados para Nota Fiscal
-            <div id="dropdownNotaFiscal" name="dropdownNotaFiscal" class="dropdown-menu w-100" aria-labelledby="notaFiscal"></div>
-            -->
-          </div>
-
-          <div class="col-md-6 mb-3">
-            <label for="arquivoNota" class="form-label">Arquivo da Nota Fiscal (PDF)</label>
-            <input type="file" id="arquivoNota" name="arquivoNota" class="form-control" accept="application/pdf" />
           </div>
 
           <!-- Fornecedor como texto + botão Buscar -->
@@ -57,7 +42,7 @@
             <label for="fornecedor" class="form-label">Fornecedor</label>
             <div class="input-group">
               <input type="text" id="fornecedor" name="fornecedor" class="form-control" autocomplete="off"
-                placeholder="Digite parte do nome/CNPJ" />
+                placeholder="Digite parte do nome, clique botão Buscar." />
               <button id="btnBuscarFornecedor" name="btnBuscarFornecedor" class="btn btn-outline-secondary"
                 type="button">
                 Buscar
@@ -67,15 +52,12 @@
             <div id="dropdownFornecedor" name="dropdownFornecedor" class="dropdown-menu w-100"
               aria-labelledby="fornecedor"></div>
           </div>
-        </div>
 
-        <div class="row">
-          <!-- a) Recebido por vem antes de Setor -->
           <div class="col-md-4 mb-3">
             <label for="recebidoPor" class="form-label">Recebido Por</label>
             <div class="input-group">
               <input type="text" id="recebidoPor" name="recebidoPor" class="form-control" autocomplete="off"
-                placeholder="Digite parte do nome" />
+                placeholder="Digite parte do nome, clique botão Buscar." />
               <button id="btnBuscarRecebidoPor" name="btnBuscarRecebidoPor" class="btn btn-outline-secondary"
                 type="button">
                 Buscar
@@ -85,31 +67,33 @@
             <div id="dropdownRecebidoPor" name="dropdownRecebidoPor" class="dropdown-menu w-100"
               aria-labelledby="recebidoPor"></div>
           </div>
-
           <div class="col-md-4 mb-3">
-            <label for="setor" class="form-label">Setor</label>
-            <select id="setor" name="setor" class="form-control" aria-label="Setor">
-              <option value="" disabled selected>Selecione o setor</option>
-              <option value="Fiação">Fiação</option>
-              <option value="Tecelagem">Tecelagem</option>
-              <option value="Preparação">Preparação</option>
-              <option value="Beneficiamento">Beneficiamento</option>
-            </select>
+            <label for="arquivoNota" class="form-label">Arquivo da Nota Fiscal (PDF)</label>
+            <input type="file" id="arquivoNota" name="arquivoNota" class="form-control" accept="application/pdf" />
           </div>
 
           <div class="col-md-4 mb-3">
-            <label for="turno" class="form-label">Turno</label>
-            <input type="text" id="turno" name="turno" class="form-control" readonly />
+
+            <label for="valorTotal" class="form-label">Valor Total da NF</label>
+            <!--
+            <input type="number" id="valorTotal" name="valorTotal" class="form-control" step="0.01" min="0"
+              placeholder="0,00">
+           </div>
+            -->
+            <div class="input-group">
+              <span class="input-group-text">R$</span>
+              <input type="text" id="valorTotal" name="valorTotal" class="form-control" placeholder="0,00"
+                maxlength="15">
+            </div>
+
+          </div>
+          <div class="text-center mt-4">
+            <button id="btnAvancarItens" name="btnAvancarItens" class="btn btn-outline-primary btn-custom" type="button"
+              disabled>
+              Avançar para Itens da Nota
+            </button>
           </div>
         </div>
-
-        <div class="text-center mt-4">
-          <button id="btnAvancarItens" name="btnAvancarItens" class="btn btn-outline-primary btn-custom" type="button"
-            disabled>
-            Avançar para Itens da Nota
-          </button>
-        </div>
-      </div>
     </section>
 
     <!-- Etapa 2: Itens da Nota Fiscal -->

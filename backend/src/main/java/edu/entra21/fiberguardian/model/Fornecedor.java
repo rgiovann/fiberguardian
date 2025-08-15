@@ -29,6 +29,12 @@ public class Fornecedor {
     @Column(name = "cnpj", nullable = false, unique = true, length = 45)
     private String cnpj;
 
+    @Column(name = "telefone", nullable = false, unique = true, length = 45)
+    private String telefone;
+
+    @Column(name = "email", nullable = false, unique = true, length = 45)
+    private String email;
+
     @CreationTimestamp
     @Column(name = "data_cadastro", nullable = false, columnDefinition = "datetime")
     private OffsetDateTime dataCadastro;

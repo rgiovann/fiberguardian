@@ -15,6 +15,7 @@
 }
 
 /* Garante que as células não sobrescrevam a cor de fundo */
+
 .dropdown-menu table th,
 .dropdown-menu table td {
     background-color: transparent !important;
@@ -24,9 +25,10 @@
     white-space: nowrap !important;
 }
 
-/* Estilos para colunas - LARGURAS AJUSTADAS */
+/* Estilos para colunas - LARGURAS AJUSTADAS
 .col-drop-down-gen {
     width: 100px !important;
     min-width: 100px;
     max-width: 120px;
 }
+*/

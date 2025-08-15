@@ -12,16 +12,23 @@ import java.time.OffsetDateTime;
 @Getter
 public class NotaFiscalDto {
 
-    @JsonView({NotaFiscalView.NFNomeFornecedorRecebidoPor.class,NotaFiscalView.Completo.class})
+    @JsonView({NotaFiscalView.NotafiscalRespostaDto.class,
+            NotaFiscalView.Completo.class})
     private String codigoNf;
-    @JsonView({ NotaFiscalView.Completo.class, NotaFiscalView.NFNomeFornecedorRecebidoPor.class})
+
+    @JsonView({ NotaFiscalView.Completo.class,
+            NotaFiscalView.NotafiscalRespostaDto.class})
     private FornecedorDto fornecedor;
-    @JsonView({ NotaFiscalView.Completo.class,NotaFiscalView.NFNomeFornecedorRecebidoPor.class})
+
+    @JsonView({ NotaFiscalView.Completo.class,
+            NotaFiscalView.NotafiscalRespostaDto.class})
     private UsuarioDto recebidoPor;
-    @JsonView({ NotaFiscalView.Completo.class})
+
+    @JsonView({ NotaFiscalView.Completo.class,
+            NotaFiscalView.NotafiscalRespostaDto.class})
     private BigDecimal valorTotal;
-    @JsonView({ NotaFiscalView.Completo.class})
+
+    @JsonView({ NotaFiscalView.Completo.class,
+            NotaFiscalView.NotafiscalRespostaDto.class})
     private OffsetDateTime dataRecebimento;
-
-
 }

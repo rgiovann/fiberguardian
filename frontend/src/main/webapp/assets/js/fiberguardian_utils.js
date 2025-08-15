@@ -5,28 +5,6 @@
         'use strict';
         console.log('FiberGuardian.Utils carregado com sucesso.');
 
-        // === Funções Privadas ===
-        /*
-        function normalizarEmail(email) {
-            return email.trim().toLowerCase();
-        }
-*/
-        /*
-        function desabilitarEntradas(formulario, desabilitar) {
-            if (!formulario) return;
-            formulario.querySelectorAll('input, button').forEach((el) => {
-                el.disabled = desabilitar;
-            });
-        }
-*/
-        // === Funções Públicas ===
-        /*
-        function isEmailValido(email) {
-            const emailNormalizado = normalizarEmail(email);
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailNormalizado);
-        }
-*/
-
         function getCookie(nome) {
             const cookies = document.cookie.split('; ');
             for (const cookie of cookies) {
@@ -238,101 +216,175 @@
                 exibirMensagemModal('Erro no logout: ' + e.message, 'danger');
             }
         }
-
-        function renderizarDropdownGenerico({
+        /*
+        FiberGuardian.Utils.renderizarDropdownGenericoAsync = function ({
             input,
             dropdown,
             lista,
-            campoExibir,
-            titulo = 'Item',
+            camposExibir,
+            titulosColunas,
             msgVazio = 'Nenhum item encontrado.',
         }) {
-            dropdown.innerHTML = ''; // Limpa resultados anteriores
+            return new Promise((resolve) => {
+                dropdown.innerHTML = '';
 
-            const tabela = document.createElement('table');
-            tabela.className = 'table table-sm table-hover mb-0';
-            tabela.style.border = '1px solid #b5d4f5';
-            tabela.style.borderRadius = '4px';
-            tabela.style.tableLayout = 'fixed';
-            tabela.style.width = '100%';
+                const tabela = document.createElement('table');
+                tabela.className = 'table table-sm table-hover mb-0';
+                tabela.style.border = '1px solid #b5d4f5';
+                tabela.style.borderRadius = '4px';
+                tabela.style.tableLayout = 'fixed';
+                tabela.style.width = '100%';
 
-            const thead = document.createElement('thead');
-            thead.innerHTML = `<tr class="col-drop-down-gen"><th>${titulo}</th></tr>`;
-            tabela.appendChild(thead);
+                const numColunas = titulosColunas.length;
+                const larguraPorColuna = `${100 / numColunas}%`;
 
-            const tbody = document.createElement('tbody');
+                const thead = document.createElement('thead');
+                const trHead = document.createElement('tr');
 
-            if (!Array.isArray(lista) || lista.length === 0) {
-                const linha = document.createElement('tr');
-                const celula = document.createElement('td');
-                celula.colSpan = 1;
-                celula.className = 'text-muted text-center';
-                celula.textContent = msgVazio;
-                linha.appendChild(celula);
-                tbody.appendChild(linha);
-            } else {
-                lista.forEach((item) => {
-                    const linha = document.createElement('tr');
-                    linha.style.cursor = 'pointer';
-
-                    const celula = document.createElement('td');
-                    celula.textContent = item[campoExibir] || '';
-                    linha.appendChild(celula);
-
-                    linha.addEventListener('click', () => {
-                        input.value = item[campoExibir] || '';
-                        dropdown.classList.remove('show');
-                        input.focus();
-                    });
-
-                    tbody.appendChild(linha);
+                titulosColunas.forEach((titulo) => {
+                    const th = document.createElement('th');
+                    th.textContent = titulo;
+                    th.style.width = larguraPorColuna;
+                    th.style.minWidth = larguraPorColuna;
+                    trHead.appendChild(th);
                 });
-            }
 
-            tabela.appendChild(tbody);
-            dropdown.appendChild(tabela);
-            dropdown.classList.add('show');
-        }
-        /*
-        function fecharDropdownSeAberto(event, dropdownEl, inputEl) {
-            const aberto = dropdownEl.classList.contains('show');
+                thead.appendChild(trHead);
+                tabela.appendChild(thead);
 
-            if (
-                aberto &&
-                !dropdownEl.contains(event.target) &&
-                event.target !== inputEl
-            ) {
-                dropdownEl.classList.remove('show');
-                inputEl.focus();
-            }
-        }
+                const tbody = document.createElement('tbody');
+
+                if (!Array.isArray(lista) || lista.length === 0) {
+                    const linha = document.createElement('tr');
+                    const celula = document.createElement('td');
+                    celula.colSpan = numColunas;
+                    celula.className = 'text-muted text-center';
+                    celula.textContent = msgVazio;
+                    linha.appendChild(celula);
+                    tbody.appendChild(linha);
+                } else {
+                    lista.forEach((item, index) => {
+                        const linha = document.createElement('tr');
+                        linha.style.cursor = 'pointer';
+
+                        camposExibir.forEach((campo) => {
+                            const celula = document.createElement('td');
+                            celula.textContent = item[campo] || '';
+                            celula.style.width = larguraPorColuna;
+                            celula.style.minWidth = larguraPorColuna;
+                            linha.appendChild(celula);
+                        });
+
+                        linha.addEventListener('click', () => {
+                            input.value = item[camposExibir[0]] || '';
+                            dropdown.classList.remove('show');
+                            input.focus();
+                            resolve({ index, item }); // retorna os dois
+                        });
+
+                        tbody.appendChild(linha);
+                    });
+                }
+
+                tabela.appendChild(tbody);
+                dropdown.appendChild(tabela);
+                dropdown.classList.add('show');
+            });
+        };
         */
 
-        function fecharDropdownSeAberto(dropdownEl, inputEl, botaoBuscar = null) {
-            const handleClickFora = (event) => {
-                // Verifica se estava aberto ANTES de processar o clique
-                const estavaberto = dropdownEl.classList.contains('show');
+        function renderizarDropdownGenericoAsync({
+            input,
+            dropdown,
+            lista,
+            camposExibir,
+            titulosColunas,
+            msgVazio = 'Nenhum item encontrado.',
+        }) {
+            return new Promise((resolve) => {
+                dropdown.innerHTML = '';
 
-                if (
-                    estavaberto &&
-                    !dropdownEl.contains(event.target) &&
-                    event.target !== inputEl &&
-                    event.target !== botaoBuscar // ← Ignora cliques no botão buscar
-                ) {
-                    dropdownEl.classList.remove('show');
+                const tabela = document.createElement('table');
+                tabela.className = 'table table-sm table-hover mb-0';
+                tabela.style.border = '1px solid #b5d4f5';
+                tabela.style.borderRadius = '4px';
+                tabela.style.tableLayout = 'fixed';
+                tabela.style.width = '100%';
 
-                    // Aguarda um tick para garantir que o dropdown foi fechado
-                    setTimeout(() => {
-                        inputEl.focus();
-                    }, 10);
+                const numColunas = titulosColunas.length;
+                const larguraPorColuna = `${100 / numColunas}%`;
+
+                const thead = document.createElement('thead');
+                const trHead = document.createElement('tr');
+
+                titulosColunas.forEach((titulo) => {
+                    const th = document.createElement('th');
+                    th.textContent = titulo;
+                    th.style.width = larguraPorColuna;
+                    th.style.minWidth = larguraPorColuna;
+                    trHead.appendChild(th);
+                });
+
+                thead.appendChild(trHead);
+                tabela.appendChild(thead);
+
+                const tbody = document.createElement('tbody');
+
+                if (!Array.isArray(lista) || lista.length === 0) {
+                    const linha = document.createElement('tr');
+                    const celula = document.createElement('td');
+                    celula.colSpan = numColunas;
+                    celula.className = 'text-muted text-center';
+                    celula.textContent = msgVazio;
+                    linha.appendChild(celula);
+                    tbody.appendChild(linha);
+                } else {
+                    lista.forEach((item, index) => {
+                        const linha = document.createElement('tr');
+                        linha.style.cursor = 'pointer';
+
+                        camposExibir.forEach((campo) => {
+                            const celula = document.createElement('td');
+                            celula.textContent = item[campo] || '';
+                            celula.style.width = larguraPorColuna;
+                            celula.style.minWidth = larguraPorColuna;
+                            linha.appendChild(celula);
+                        });
+
+                        linha.addEventListener('click', () => {
+                            input.value = item[camposExibir[0]] || '';
+                            dropdown.classList.remove('show');
+                            input.focus();
+                            resolve({ index, item });
+                        });
+
+                        tbody.appendChild(linha);
+                    });
                 }
-            };
 
-            document.addEventListener('click', handleClickFora);
+                tabela.appendChild(tbody);
+                dropdown.appendChild(tabela);
+                dropdown.classList.add('show');
+            });
+        }
 
-            return () => {
-                document.removeEventListener('click', handleClickFora);
-            };
+        function fecharQualquerDropdownAberto(dropdowns, inputs, botoes) {
+            document.addEventListener('click', (event) => {
+                dropdowns.forEach((dropdownEl, index) => {
+                    const inputEl = inputs[index];
+                    const botaoBuscar = botoes[index];
+
+                    if (
+                        dropdownEl.classList.contains('show') &&
+                        !dropdownEl.contains(event.target) &&
+                        event.target !== inputEl &&
+                        event.target !== botaoBuscar
+                    ) {
+                        dropdownEl.classList.remove('show');
+                        setTimeout(() => inputEl.focus(), 10);
+                    }
+                });
+            });
         }
 
         // Exporta apenas o necessário
@@ -347,8 +399,8 @@
             obterCampo,
             exibirMensagemSessaoExpirada,
             exibirErroDeRede,
-            renderizarDropdownGenerico,
-            fecharDropdownSeAberto,
+            fecharQualquerDropdownAberto,
+            renderizarDropdownGenericoAsync,
         };
     })();
 })();

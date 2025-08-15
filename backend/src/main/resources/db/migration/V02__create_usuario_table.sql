@@ -15,5 +15,6 @@ CREATE TABLE usuario (
     data_alteracao DATETIME NULL,
     criado_por BIGINT NULL,
     alterado_por BIGINT NULL,
-    CONSTRAINT uk_usuario_email UNIQUE (email)
+    CONSTRAINT uk_usuario_email UNIQUE (email),
+    CONSTRAINT uk_usuario_nome UNIQUE (nome)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

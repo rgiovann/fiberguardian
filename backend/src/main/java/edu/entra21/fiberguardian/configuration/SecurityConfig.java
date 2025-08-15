@@ -100,18 +100,18 @@ public class SecurityConfig {
 						)
 						// Padrão seguro para cada recurso
  						.requestMatchers(HttpMethod.POST, "/api/fornecedores/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
-						.requestMatchers(HttpMethod.PUT, "/api/fornecedores/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
-						.requestMatchers(HttpMethod.DELETE, "/api/fornecedores/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
+						.requestMatchers(HttpMethod.PUT, "/api/fornecedores/**").hasAnyAuthority(Role.ADMIN.getAuthority())
+						.requestMatchers(HttpMethod.DELETE, "/api/fornecedores/**").hasAnyAuthority(Role.ADMIN.getAuthority())
 						.requestMatchers(HttpMethod.GET, "/api/fornecedores/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
 
 						.requestMatchers(HttpMethod.POST, "/api/produtos/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
-						.requestMatchers(HttpMethod.PUT, "/api/produtos/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
-						.requestMatchers(HttpMethod.DELETE, "/api/produtos/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
+						.requestMatchers(HttpMethod.PUT, "/api/produtos/**").hasAnyAuthority(Role.ADMIN.getAuthority())
+						.requestMatchers(HttpMethod.DELETE, "/api/produtos/**").hasAnyAuthority(Role.ADMIN.getAuthority())
 						.requestMatchers(HttpMethod.GET, "/api/produtos/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
 
 						.requestMatchers(HttpMethod.POST, "/api/nota-fiscal/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
-						.requestMatchers(HttpMethod.PUT, "/api/nota-fiscal/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
-						.requestMatchers(HttpMethod.DELETE, "/api/nota-fiscal/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
+						.requestMatchers(HttpMethod.PUT, "/api/nota-fiscal/**").hasAnyAuthority(Role.ADMIN.getAuthority())
+						.requestMatchers(HttpMethod.DELETE, "/api/nota-fiscal/**").hasAnyAuthority(Role.ADMIN.getAuthority())
 						.requestMatchers(HttpMethod.GET, "/api/nota-fiscal/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
 
 						.requestMatchers(HttpMethod.POST, "/api/usuarios/alterar-senha").authenticated()

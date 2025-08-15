@@ -87,7 +87,7 @@ public class FornecedorService {
     }
 
     public void validaFornecedor(String cnpj){
-        if (!fornecedorRepository.existsFornecedorByCnpj(cnpj)) {
+        if (!fornecedorRepository.existsFornecedorByCnpj(cnpj.trim())) {
             throw new FornecedorNaoEncontradoException(cnpj);
         }
     }

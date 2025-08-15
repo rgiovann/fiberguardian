@@ -15,18 +15,29 @@ import lombok.Setter;
 public class UsuarioDto {
 
 	@JsonView({ UsuarioView.Completo.class,
+			UsuarioView.CompletoMenosRole.class,
 			UsuarioView.SomenteNome.class,
 			UsuarioView.SomenteNomeSetor.class})
 	private String nome;
+
 	@JsonView({ UsuarioView.Completo.class,
 			UsuarioView.SomenteEmail.class,
-			NotaFiscalView.NFNomeFornecedorRecebidoPor.class})
+			UsuarioView.CompletoMenosRole.class,
+			NotaFiscalView.NotafiscalRespostaDto.class})
 	private String email;
+
 	@JsonView({ UsuarioView.Completo.class })
 	private Role role;
-	@JsonView({ UsuarioView.Completo.class, UsuarioView.SomenteNomeSetor.class, NotaFiscalView.Completo.class })
+
+	@JsonView({ UsuarioView.Completo.class,
+			UsuarioView.SomenteNomeSetor.class,
+			UsuarioView.CompletoMenosRole.class,
+			NotaFiscalView.Completo.class })
 	private Setor setor;
-	@JsonView({ UsuarioView.Completo.class, NotaFiscalView.Completo.class  })
+
+	@JsonView({ UsuarioView.Completo.class,
+			NotaFiscalView.Completo.class,
+			UsuarioView.CompletoMenosRole.class,})
 	private Turno turno;
 
 }

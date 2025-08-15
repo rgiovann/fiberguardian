@@ -49,9 +49,14 @@ public class FornecedorController {
         this.fornecedorListagemPagedDtoAssembler = fornecedorListagemPagedDtoAssembler;
     }
 
-
+   /*
+     Endpoint usado para as dropdownlists
+     elemcam os 20 registros onde o parcial de nome do fornecedor está contida no nome
+     Ex. "Tex" vai listar todas os fornecedores que contem TEXtil por exemplo
+     o json retorna com nome e cnpj entretanto.
+    */
     @GetMapping(path = "/list")
-    @JsonView(FornecedorView.SomenteNome.class)
+    @JsonView(FornecedorView.Completo.class)
     public List<FornecedorDto> listarFiltroPorNome(@RequestParam String nome) {
         List<Fornecedor> fornecedores = fornecedorService.buscaTop20ByNomeFornecedorContendoStringIgnoraCase(nome);
         return fornecedorDtoAssembler.toCollectionDto(fornecedores);
