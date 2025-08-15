@@ -4,6 +4,10 @@
     border: 1px solid #ccc;
 }
 
+.titulo-cad-recebimento {
+    font-size: 1.5rem;
+}
+
 .form-section-title {
     color: white;
     padding: 10px;

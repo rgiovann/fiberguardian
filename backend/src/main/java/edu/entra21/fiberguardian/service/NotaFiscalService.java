@@ -2,6 +2,7 @@ package edu.entra21.fiberguardian.service;
 
 import edu.entra21.fiberguardian.assembler.NotaFiscalDtoAssembler;
 import edu.entra21.fiberguardian.dto.NotaFiscalDto;
+import edu.entra21.fiberguardian.exception.exception.NegocioException;
 import edu.entra21.fiberguardian.exception.exception.NotaFiscalNaoEncontradaException;
 import edu.entra21.fiberguardian.exception.exception.PdfNotaFiscalNaoEncontradoException;
 import edu.entra21.fiberguardian.model.Fornecedor;
@@ -43,8 +44,18 @@ public class NotaFiscalService {
 
     @Transactional
     public NotaFiscal salvar(NotaFiscal notaFiscal) {
+        // valida
+        // se existe fornecedor
+        // se existe usuario
+        // se nota para aquele fornecedor já existe.
+        // validacoes do json campo vazio, numero negativo etc...ja estão implementadas na classe
+        // NotaFiscalInput e excessoes manipuladas pelo handler de excecoes.
+
+        validaSeNFNaoEstaDuplicadaParaFornecedor(notaFiscal.getFornecedor().getCnpj(),
+                                                 notaFiscal.getCodigoNf());
         Fornecedor fornecedor= fornecedorService.buscarPorCNPJObrigatorio(notaFiscal.getFornecedor().getCnpj());
         Usuario usuario = usuarioService.buscarPorEmailObrigatorio(notaFiscal.getRecebidoPor().getEmail());
+
         notaFiscal.setFornecedor(fornecedor);
         notaFiscal.setRecebidoPor(usuario);
         return notaFiscalRepository.save(notaFiscal);
@@ -93,6 +104,15 @@ public class NotaFiscalService {
 
         return  notaFiscalRepository.findNotaFiscalById(pdfNotaFiscalId)
                 .orElseThrow(() -> new NotaFiscalNaoEncontradaException(pdfNotaFiscalId));
+    }
+
+    private void validaSeNFNaoEstaDuplicadaParaFornecedor(String cnpj, String notaFiscal) {
+        if (notaFiscalRepository.existsByFornecedorCnpjAndCodigoNf(cnpj.trim(), notaFiscal.trim())) {
+            throw new NegocioException(
+                    String.format("Nota Fiscal '%s' para o fornecedor de CNPJ '%s' já existe no banco de dados.",
+                            notaFiscal.trim(), cnpj.trim())
+            );
+        }
     }
 
 }

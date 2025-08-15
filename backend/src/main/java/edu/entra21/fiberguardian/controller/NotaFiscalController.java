@@ -13,6 +13,9 @@ import edu.entra21.fiberguardian.model.NotaFiscal;
 import edu.entra21.fiberguardian.model.Produto;
 import edu.entra21.fiberguardian.service.NotaFiscalService;
 import jakarta.validation.Valid;
+import org.aspectj.weaver.ast.Not;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +27,7 @@ public class NotaFiscalController {
     private final NotaFiscalDtoAssembler notaFiscalDtoAssembler;
     private final NotaFiscalService notaFiscalService;
     private final NotaFiscalInputDisassembler notaFiscalInputDisassembler;
+    private static final Logger logger = LoggerFactory.getLogger(NotaFiscalController.class);
 
     public NotaFiscalController(NotaFiscalDtoAssembler notaFiscalDtoAssembler,
                                 NotaFiscalService notaFiscalService,
@@ -42,9 +46,10 @@ public class NotaFiscalController {
     }
 
     @PostMapping()
-    @JsonView(ProdutoView.Completo.class)
-    public NotaFiscalDto adicionar( @RequestBody @Valid NotaFiscalInput input) {
-        NotaFiscal notaFiscal = notaFiscalInputDisassembler.toEntity(input);
+    @JsonView(NotaFiscalView.NotafiscalRespostaDto.class)
+    public NotaFiscalDto adicionar( @RequestBody @Valid NotaFiscalInput notaFiscalInput) {
+
+        NotaFiscal notaFiscal = notaFiscalInputDisassembler.toEntity(notaFiscalInput);
         return notaFiscalDtoAssembler.toDto(notaFiscalService.salvar(notaFiscal));
     }
 

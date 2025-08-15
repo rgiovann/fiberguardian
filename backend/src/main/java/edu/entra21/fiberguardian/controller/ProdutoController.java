@@ -99,6 +99,14 @@ public class ProdutoController {
          return produtoDtoAssembler.toCollectionDto(produtoService.listarTodosFiltroCnpj(cnpj));
     }
 
+    @JsonView(ProdutoView.SomenteCodigoEDescricao.class)
+    @GetMapping("/list/recebimento")
+    public List<ProdutoDto> listarPorCnpjEDescricaoParcialTop20(@RequestParam String cnpj, @RequestParam(required = false) String descricao) {
+        return produtoDtoAssembler.toCollectionDto(produtoService.buscaTop20PorDescricao(cnpj,descricao));
+    }
+
+
+
     @DeleteMapping("/{cnpjFornecedor}/{codigoProduto}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletar( @PathVariable String cnpjFornecedor,

@@ -55,7 +55,7 @@ public class FornecedorController {
      Ex. "Tex" vai listar todas os fornecedores que contem TEXtil por exemplo
      o json retorna com nome e cnpj entretanto.
     */
-    @GetMapping(path = "/list")
+    @GetMapping(path = "/list/recebimento")
     @JsonView(FornecedorView.Completo.class)
     public List<FornecedorDto> listarFiltroPorNome(@RequestParam String nome) {
         List<Fornecedor> fornecedores = fornecedorService.buscaTop20ByNomeFornecedorContendoStringIgnoraCase(nome);

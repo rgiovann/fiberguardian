@@ -6,11 +6,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 @Setter
 @Getter
 public class NotaFiscalDto {
+
+    @JsonView({NotaFiscalView.NotafiscalRespostaDto.class,
+            NotaFiscalView.Completo.class})
+    private Long id;
 
     @JsonView({NotaFiscalView.NotafiscalRespostaDto.class,
             NotaFiscalView.Completo.class})
@@ -30,5 +35,5 @@ public class NotaFiscalDto {
 
     @JsonView({ NotaFiscalView.Completo.class,
             NotaFiscalView.NotafiscalRespostaDto.class})
-    private OffsetDateTime dataRecebimento;
+    private LocalDate dataRecebimento;
 }

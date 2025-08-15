@@ -5,7 +5,7 @@ CREATE TABLE nota_fiscal (
     fornecedor_id BIGINT NOT NULL,
     recebido_por BIGINT NOT NULL,
     valor_total DECIMAL(15,2) NOT NULL CHECK (valor_total >= 0),
-    data_recebimento DATETIME NOT NULL,
+    data_recebimento DATE NOT NULL,
     criado_por BIGINT NULL,
     data_cadastro DATETIME NOT NULL,
     data_alteracao DATETIME NULL,

@@ -9,10 +9,12 @@ import edu.entra21.fiberguardian.repository.ProdutoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -101,6 +103,20 @@ public class ProdutoService {
         return produtoRepository.findByFornecedorCnpj(cnpj);
     }
 
-
+    /**
+     * Autocomplete de produtos filtrando por fornecedor (CNPJ) e parte do codigo do produto.
+     */
+    public List<Produto> buscaTop20PorDescricao(String cnpjFornecedor, String descricao) {
+        if (descricao == null || descricao.isBlank()  ) {
+            if (cnpjFornecedor == null || cnpjFornecedor.isBlank()  ) {
+                return Collections.emptyList();
+            }
+            return produtoRepository.findByFornecedorCnpj(cnpjFornecedor.trim());
+        }
+        // Pesquisa tanto no código quanto na descrição
+         return produtoRepository.findTop20ByFornecedor_CnpjAndDescricaoContainingIgnoreCase(
+                 cnpjFornecedor.trim(),
+                 descricao.trim()  );
+    }
 
 }

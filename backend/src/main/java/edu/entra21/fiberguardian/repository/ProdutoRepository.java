@@ -1,5 +1,6 @@
 package edu.entra21.fiberguardian.repository;
 
+import edu.entra21.fiberguardian.model.NotaFiscal;
 import edu.entra21.fiberguardian.model.Produto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,8 +15,6 @@ import java.util.Optional;
 
 @Repository
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
-
-    //Optional<Produto> findByFornecedorCnpjAndCodigoProduto(String cnpj, String codigoProduto);
 
     void deleteByFornecedorCnpjAndCodigo(String cnpj, String codigoProduto);
 
@@ -44,5 +43,19 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
             @Param("cnpj") String cnpj,
             @Param("codigo") String codigo
     );
+
+    /**
+     * Retorna no máximo 20 produtos cujo  descrição contém a string (ignora case)
+     * e que pertencem a um fornecedor com o CNPJ especificado.
+     * Top20 não funciona automaticamente em JPQL.
+     * Para limitar resultados, você precisa usar Pageable ou setMaxResults(20)
+     */
+
+    @EntityGraph(attributePaths = {"fornecedor"})
+    List<Produto> findTop20ByFornecedor_CnpjAndDescricaoContainingIgnoreCase(
+            String cnpj, String descricao
+    );
+
+
 }
 

@@ -387,6 +387,28 @@
             });
         }
 
+        // Função para aplicar máscara monetária com vírgula e duas casas decimais
+        function aplicarMascaraMonetaria(input) {
+            input.addEventListener('input', () => {
+                //console.log('Digitando em:', input.id, 'valor atual:', input.value); // DEBUG
+
+                // Permitir apenas dígitos e vírgula
+                input.value = input.value.replace(/[^\d,]/g, '');
+
+                // Permitir apenas uma vírgula
+                const partes = input.value.split(',');
+                if (partes.length > 2) {
+                    input.value = partes[0] + ',' + partes[1];
+                }
+
+                // Limitar a 2 casas decimais
+                if (partes[1]?.length > 2) {
+                    partes[1] = partes[1].slice(0, 2);
+                    input.value = partes[0] + ',' + partes[1];
+                }
+            });
+        }
+
         // Exporta apenas o necessário
         return {
             obterTokenCsrf,
@@ -401,6 +423,7 @@
             exibirErroDeRede,
             fecharQualquerDropdownAberto,
             renderizarDropdownGenericoAsync,
+            aplicarMascaraMonetaria,
         };
     })();
 })();

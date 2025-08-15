@@ -17,6 +17,10 @@
             const inputRecebidoPor = document.getElementById('recebidoPor');
             const dropdownRecebidoPor = document.getElementById('dropdownRecebidoPor');
 
+            const btnBuscarProduto = document.getElementById('btnBuscarProduto');
+            const inputProduto = document.getElementById('produto');
+            const dropdownProduto = document.getElementById('dropdownProduto');
+
             if (!btnBuscarFornecedor || !inputFornecedor || !dropdownFornecedor) {
                 console.error('Elementos da busca de Fornecedor não encontrados.');
                 return;
@@ -27,35 +31,39 @@
                 return;
             }
 
-            const campoData = document.getElementById('dataRecebimento');
+            if (!btnBuscarProduto || !inputProduto || !dropdownProduto) {
+                console.error('Elementos da busca de Produto não encontrados.');
+                return;
+            }
 
-            if (campoData) {
+            const dateDataRecebimento = document.getElementById('dataRecebimento');
+
+            if (dateDataRecebimento) {
                 // Preenche com valor padrão só se estiver vazio
-                if (!campoData.value) {
+                if (!dateDataRecebimento.value) {
                     const hoje = new Date();
                     const yyyy = hoje.getFullYear();
                     const mm = String(hoje.getMonth() + 1).padStart(2, '0');
                     const dd = String(hoje.getDate()).padStart(2, '0');
-                    campoData.value = `${yyyy}-${mm}-${dd}`;
+                    dateDataRecebimento.value = `${yyyy}-${mm}-${dd}`;
                 }
             }
 
-            const input = document.getElementById('valorTotal');
+            const camposMonetarios = document.querySelectorAll('.campo-monetario');
 
-            input.addEventListener('input', () => {
-                // Permitir apenas dígitos e vírgula
-                input.value = input.value.replace(/[^\d,]/g, '');
+            camposMonetarios.forEach((campo) => {
+                FiberGuardian.Utils.aplicarMascaraMonetaria(campo);
+            });
 
-                // Permitir apenas uma vírgula
-                const partes = input.value.split(',');
-                if (partes.length > 2) {
-                    input.value = partes[0] + ',' + partes[1];
-                }
+            const camposCalculo = [
+                document.getElementById('quantRecebida'),
+                document.getElementById('numeroCaixas'),
+                document.getElementById('valorUnit'),
+            ];
 
-                // Limitar a 2 casas decimais
-                if (partes[1]?.length > 2) {
-                    partes[1] = partes[1].slice(0, 2);
-                    input.value = partes[0] + ',' + partes[1];
+            camposCalculo.forEach((campo) => {
+                if (campo) {
+                    campo.addEventListener('input', updateCalculations);
                 }
             });
 
@@ -100,7 +108,7 @@
                     const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
 
                     const resposta = await fetch(
-                        `/api/fornecedores/list?nome=${encodeURIComponent(
+                        `/api/fornecedores/list/recebimento?nome=${encodeURIComponent(
                             codigoParcial
                         )}`,
                         {
@@ -211,6 +219,88 @@
                     );
                 }
             });
+
+            btnBuscarProduto.addEventListener('click', async function () {
+                const codigoParcial = inputProduto.value.trim();
+
+                // Validação defensiva
+                /*
+                if (!codigoParcial) {
+                    FiberGuardian.Utils.exibirMensagemModalComFoco(
+                        'Digite parte do nome do produto para buscar.',
+                        'warning',
+                        inputProduto
+                    );
+                    return;
+                } */
+
+                if (!cnpjFornecedor) {
+                    FiberGuardian.Utils.exibirMensagemModalComFoco(
+                        'É necessario selecionar o fornecedor antes de selecionar o produto.',
+                        'warning',
+                        inputFornecedor
+                    );
+                    return;
+                }
+
+                try {
+                    const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
+
+                    // Monta a URL com os dois parâmetros
+                    const url = new URL(
+                        '/api/produtos/list/recebimento',
+                        window.location.origin
+                    );
+                    url.searchParams.append('cnpj', cnpjFornecedor);
+
+                    if (codigoParcial) {
+                        url.searchParams.append('descricao', codigoParcial);
+                    }
+
+                    const resposta = await fetch(url.toString(), {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-XSRF-TOKEN': csrfToken,
+                        },
+                        credentials: 'include',
+                    });
+
+                    if (resposta.ok) {
+                        const listaProdutos = await resposta.json();
+
+                        const { index, item } =
+                            await FiberGuardian.Utils.renderizarDropdownGenericoAsync({
+                                input: inputProduto,
+                                dropdown: dropdownProduto,
+                                lista: listaProdutos,
+                                camposExibir: ['descricao', 'codigo'],
+                                titulosColunas: ['Produto', 'Código'],
+                                msgVazio: 'Nenhum produto encontrado.',
+                            });
+
+                        // Armazena do objeto recebido o código ou descrição
+                        codigoProdutoSelecionado = item.codigo;
+                        //console.log('Index:', index);
+                        //console.log('Código Produto:', codigoProdutoSelecionado);
+                        // aqui você pode salvar em variável ou mandar para outra função
+                    } else if (resposta.status === 403) {
+                        FiberGuardian.Utils.exibirMensagemSessaoExpirada();
+                    } else {
+                        await FiberGuardian.Utils.tratarErroFetch(
+                            resposta,
+                            inputProduto
+                        );
+                    }
+                } catch (erro) {
+                    console.error('Erro ao buscar produtos:', erro);
+                    FiberGuardian.Utils.exibirErroDeRede(
+                        'Erro de rede ao buscar produtos.',
+                        inputProduto,
+                        erro
+                    );
+                }
+            });
         }
 
         function updateCalculations() {
@@ -218,11 +308,10 @@
                 parseInt(document.getElementById('quantRecebida')?.value) || 0;
             const numeroCaixas =
                 parseInt(document.getElementById('numeroCaixas')?.value) || 0;
-            const valorNota =
-                parseFloat(document.getElementById('valorNota')?.value) || 0;
+            const valorUnit =
+                parseFloat(document.getElementById('valorUnit')?.value) || 0;
 
             const rochasPorCaixa = 300;
-
             const quantRochas = numeroCaixas * rochasPorCaixa;
             document.getElementById('quantRochas')?.setAttribute('value', quantRochas);
 
@@ -232,9 +321,11 @@
                     : 0;
             document.getElementById('pesoMedio')?.setAttribute('value', pesoMedio);
 
-            const valorUnit =
-                quantRecebida > 0 ? (valorNota / quantRecebida).toFixed(2) : 0;
-            document.getElementById('valorUnit')?.setAttribute('value', valorUnit);
+            const valorTotalItem =
+                quantRecebida > 0 ? (valorUnit * quantRecebida).toFixed(2) : 0;
+            document
+                .getElementById('valorTotalItem')
+                ?.setAttribute('value', valorTotalItem);
 
             const pesoMedioCaixa =
                 numeroCaixas > 0 ? (quantRecebida / numeroCaixas).toFixed(2) : 0;
@@ -253,8 +344,6 @@
         // Revealing: expõe apenas as funções públicas
         return {
             init: configurarEventos,
-            //updateCalculations: updateCalculations,
-            //voltarParaInicio: voltarParaInicio,
         };
     })();
 })();

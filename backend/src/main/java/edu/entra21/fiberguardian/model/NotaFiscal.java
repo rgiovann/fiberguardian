@@ -14,6 +14,7 @@ import jakarta.validation.constraints.DecimalMin;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 @Entity
@@ -61,7 +62,7 @@ public class NotaFiscal {
     private BigDecimal valorTotal;
 
     @Column(name = "data_recebimento", nullable = false, columnDefinition = "datetime")
-    private OffsetDateTime dataRecebimento;
+    private LocalDate dataRecebimento;
 
     @CreatedBy
     @Column(name = "criado_por", updatable = false)

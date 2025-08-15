@@ -19,6 +19,27 @@ public interface NotaFiscalRepository extends JpaRepository<NotaFiscal,Long>, No
     Optional<NotaFiscal> findNotaFiscalById(@Param("notaFiscalId") Long notaFiscalId);
 
 
+    @Query("""
+    SELECT n FROM NotaFiscal n
+    WHERE n.fornecedor.cnpj = :cnpj
+      AND n.codigoNf = :codigoNf
+""")
+    Optional<NotaFiscal> findByFornecedorCnpjAndCodigoNf(
+            @Param("cnpj") String cnpj,
+            @Param("codigoNf") String codigoNf
+    );
+
+    @Query("""
+    SELECT COUNT(n) > 0
+    FROM NotaFiscal n
+    WHERE n.fornecedor.cnpj = :cnpj
+      AND n.codigoNf = :codigoNf
+""")
+    boolean existsByFornecedorCnpjAndCodigoNf(
+            @Param("cnpj") String cnpj,
+            @Param("codigoNf") String codigoNf
+    );
+
     /**
      * A query formada desse jeito (join fetch)
      * resolve todos os erros de ModelMapper ao mapear Fornecedor e Usuario.

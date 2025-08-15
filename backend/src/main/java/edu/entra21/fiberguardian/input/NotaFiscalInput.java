@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 @Setter
@@ -23,12 +24,12 @@ public class NotaFiscalInput {
 	private String cnpj;
 
 	@EmailValido
-	private String email;
+	private String recebidoPor;
 
 	@NotNull(message = "A data de recebimento é obrigatória.")
 	@PastOrPresent(message = "A data de recebimento não pode ser futura.")
 	@RecebimentoRecente(mesesMaximo = 6)
-	OffsetDateTime dataRecebimento;
+	LocalDate dataRecebimento;
 
 	@NotNull(message = "O valor total da nota é obrigatório.")
 	@Positive(message = "O valor total da nota deve ser maior que zero.")

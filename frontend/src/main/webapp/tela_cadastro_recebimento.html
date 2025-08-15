@@ -17,7 +17,7 @@
 
 <body>
   <div class="container mt-4 mb-5">
-    <h2 class="mb-4 text-center">Cadastro de Nota Fiscal</h2>
+    <h4 class="mb-2 text-center titulo-cad-recebimento">CADASTRO DE NOTA FISCAL</h4>
 
     <!-- Etapa 1: Dados da Nota Fiscal -->
     <section class="card mb-4">
@@ -67,89 +67,118 @@
             <div id="dropdownRecebidoPor" name="dropdownRecebidoPor" class="dropdown-menu w-100"
               aria-labelledby="recebidoPor"></div>
           </div>
+
           <div class="col-md-4 mb-3">
             <label for="arquivoNota" class="form-label">Arquivo da Nota Fiscal (PDF)</label>
             <input type="file" id="arquivoNota" name="arquivoNota" class="form-control" accept="application/pdf" />
           </div>
 
           <div class="col-md-4 mb-3">
-
             <label for="valorTotal" class="form-label">Valor Total da NF</label>
-            <!--
-            <input type="number" id="valorTotal" name="valorTotal" class="form-control" step="0.01" min="0"
-              placeholder="0,00">
-           </div>
-            -->
             <div class="input-group">
               <span class="input-group-text">R$</span>
-              <input type="text" id="valorTotal" name="valorTotal" class="form-control" placeholder="0,00"
-                maxlength="15">
+              <input type="text" id="valorTotal" name="valorTotal" class="form-control campo-monetario"
+                placeholder="0,00" maxlength="15">
             </div>
 
           </div>
+          <!--
           <div class="text-center mt-4">
             <button id="btnAvancarItens" name="btnAvancarItens" class="btn btn-outline-primary btn-custom" type="button"
               disabled>
               Avançar para Itens da Nota
             </button>
           </div>
+          -->
         </div>
     </section>
+
 
     <!-- Etapa 2: Itens da Nota Fiscal -->
     <section class="card">
       <div class="card-header">2. Itens da Nota Fiscal</div>
       <div class="card-body">
         <form id="formItemNota" name="formItemNota" novalidate>
+
+          <!-- Linha 1 -->
+          <!--
           <div class="row">
-            <div class="col-md-6 mb-3">
+
+            <div class="col-md-4 mb-3">
               <label for="produto" class="form-label">Produto</label>
               <select id="produto" name="produto" class="form-control" aria-label="Produto">
                 <option value="" disabled selected>Selecione o produto</option>
               </select>
             </div>
-            <div class="col-md-6 mb-3">
+
+            <div class="col-md-4 mb-3">
               <label for="codigoProduto" class="form-label">Código do Produto</label>
               <input type="text" id="codigoProduto" name="codigoProduto" class="form-control" readonly />
             </div>
-            <div class="col-md-12 mb-3">
+
+            <div class="col-md-4 mb-3">
               <label for="descricaoProduto" class="form-label">Descrição do Produto</label>
               <input type="text" id="descricaoProduto" name="descricaoProduto" class="form-control" readonly />
             </div>
-          </div>
 
+          </div>
+          -->
+          <!-- Linha 2 -->
           <div class="row">
-            <div class="col-md-4 mb-3">
-              <label for="quantRecebida" class="form-label">Quantidade Recebida</label>
+            <!-- Produto como texto + botão Buscar -->
+            <div class="col-md-3 mb-3">
+              <label for="produto" class="form-label">Produto</label>
+              <div class="input-group">
+                <input type="text" id="produto" name="produto" class="form-control" autocomplete="off"
+                  placeholder="Digite parte do nome, clique botão Buscar." />
+                <button id="btnBuscarProduto" name="btnBuscarProduto" class="btn btn-outline-secondary" type="button">
+                  Buscar
+                </button>
+              </div>
+              <!-- Dropdown de resultados para Produto -->
+              <div id="dropdownProduto" name="dropdownProduto" class="dropdown-menu w-100" aria-labelledby="produto">
+              </div>
+            </div>
+            <div class="col-md-3 mb-3">
+              <label for="quantRecebida" class="form-label">Quantidade Recebida (Kgs)</label>
               <input type="number" id="quantRecebida" name="quantRecebida" class="form-control" min="0" step="1"
                 required />
             </div>
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 mb-3">
               <label for="numeroCaixas" class="form-label">Número de Caixas</label>
               <input type="number" id="numeroCaixas" name="numeroCaixas" class="form-control" min="0" step="1"
                 required />
             </div>
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 mb-3">
               <label for="valorUnit" class="form-label">Valor Unitário</label>
-              <input type="number" id="valorUnit" name="valorUnit" class="form-control" min="0" step="0.01" required />
+              <div class="input-group">
+                <span class="input-group-text">R$</span>
+                <input type="text" id="valorUnit" name="valorUnit" class="form-control campo-monetario"
+                  placeholder="0,00" maxlength="15">
+              </div>
             </div>
           </div>
 
+          <!-- Linha 3 -->
           <div class="row">
             <div class="col-md-4 mb-3">
-              <label for="valorTotal" class="form-label">Valor Total</label>
-              <input type="text" id="valorTotal" name="valorTotal" class="form-control" readonly />
-            </div>
-            <div class="col-md-4 mb-3">
-              <label for="pesoMedio" class="form-label">Peso Médio / Caixa</label>
+              <label for="pesoMedio" class="form-label">Peso Médio / Caixa (Kgs)</label>
               <input type="text" id="pesoMedio" name="pesoMedio" class="form-control" readonly />
             </div>
             <div class="col-md-4 mb-3">
               <label for="quantRochas" class="form-label">Quantidade de Rocas</label>
               <input type="text" id="quantRochas" name="quantRochas" class="form-control" readonly />
             </div>
+            <div class="col-md-4 mb-3">
+              <label for="valorTotalItem" class="form-label">Valor Total</label>
+              <div class="input-group">
+                <span class="input-group-text">R$</span>
+                <input type="text" id="valorTotalItem" name="valorTotalItem" class="form-control" readonly />
+              </div>
+            </div>
           </div>
 
+          <!-- Linha 4 -->
           <div class="mb-3">
             <label for="infoRecebimento" class="form-label">Informações Adicionais</label>
             <textarea id="infoRecebimento" name="infoRecebimento" class="form-control" rows="3"></textarea>
@@ -162,6 +191,8 @@
               Item</button>
             <button id="btnFinalizarNota" name="btnFinalizarNota" type="button"
               class="btn btn-primary btn-custom">Finalizar Nota</button>
+            <button id="btnMenuPrincipal" name="btnMenuPrincipal" type="button"
+              class="btn btn-danger btn-custom">Sair</button>
           </div>
         </form>
 
@@ -186,6 +217,9 @@
         </div>
       </div>
     </section>
+
+
+
   </div>
 
   <!-- Modal de Alerta Global -->

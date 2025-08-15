@@ -41,9 +41,9 @@ public class PdfNotaFiscalController {
     }
 
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public PdfNotaFiscalDto atualizarFoto(@PathVariable Long pdfNotaFiscalId,
-                                          @Valid PdfNotaFiscalInput pdfNotaFiscalInput,
-                                          @RequestPart(required=true) MultipartFile arquivo) throws IOException {
+    public PdfNotaFiscalDto atualizarNotaFiscal(@PathVariable Long pdfNotaFiscalId,
+                                                @Valid PdfNotaFiscalInput pdfNotaFiscalInput,
+                                                @RequestPart(required=true) MultipartFile arquivo) throws IOException {
 
         NotaFiscal notaFiscal
                 = notaFiscalService.buscarOuFalhar(pdfNotaFiscalId);
@@ -58,15 +58,15 @@ public class PdfNotaFiscalController {
         pdfNotaFiscal.setTamanho(arquivo.getSize());
         pdfNotaFiscal.setNomeArquivo(arquivo.getOriginalFilename());
 
-        PdfNotaFiscal fotoSalva = pdfNotaFiscalservice.salvar(pdfNotaFiscal, arquivo.getInputStream());
+        PdfNotaFiscal pdfNotaFiscalSalvo = pdfNotaFiscalservice.salvar(pdfNotaFiscal, arquivo.getInputStream());
 
-        return pdfNotaFiscalDtoAssembler.toDto(fotoSalva);
+        return pdfNotaFiscalDtoAssembler.toDto(pdfNotaFiscalSalvo);
 
     }
 
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public PdfNotaFiscalDto  consultarFoto(@PathVariable Long pdfNotaFiscalId ){
+    public PdfNotaFiscalDto consultarPdfNotaFiscal(@PathVariable Long pdfNotaFiscalId ){
 
         PdfNotaFiscal pdfNotaFiscal = pdfNotaFiscalservice.buscarOuFalhar(pdfNotaFiscalId );
 
@@ -75,8 +75,8 @@ public class PdfNotaFiscalController {
     }
 
     @GetMapping(produces = MediaType.ALL_VALUE)
-    public ResponseEntity<?> servirFoto(@PathVariable Long pdfNotaFiscalId,
-                                        @RequestHeader(name = "accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException {
+    public ResponseEntity<?> servirPdfNotaFiscal(@PathVariable Long pdfNotaFiscalId,
+                                                 @RequestHeader(name = "accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException {
         try {
 
             // debug on
@@ -122,7 +122,7 @@ public class PdfNotaFiscalController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void excluirFoto(@PathVariable Long pdfNotaFiscalId)
+    public void excluirPdfNotaFiscal(@PathVariable Long pdfNotaFiscalId)
     {
         PdfNotaFiscal pdfNotaFiscal = pdfNotaFiscalservice.buscarOuFalhar(pdfNotaFiscalId);
         pdfNotaFiscalservice.excluir(pdfNotaFiscal);
