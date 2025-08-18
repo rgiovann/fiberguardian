@@ -82,14 +82,12 @@
             </div>
 
           </div>
-          <!--
           <div class="text-center mt-4">
-            <button id="btnAvancarItens" name="btnAvancarItens" class="btn btn-outline-primary btn-custom" type="button"
-              disabled>
-              Avançar para Itens da Nota
+            <button id="btnAvancarItens" name="btnAvancarItens" class="btn btn-outline-primary btn-custom"
+              type="button">
+              Gravar Cabeçalho Nota Fiscal
             </button>
           </div>
-          -->
         </div>
     </section>
 
@@ -240,6 +238,31 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal de Confirmação Genérico -->
+  <div class="modal fade" id="modalConfirmacaoGenerico" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalConfirmacaoTitulo">Confirmação</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+
+        <div class="modal-body" id="modalConfirmacaoMensagem">
+          <!-- Mensagem será preenchida dinamicamente -->
+        </div>
+
+        <div class="modal-footer">
+          <button id="btnConfirmacaoSim" type="button" class="btn btn-primary">Sim</button>
+          <button id="btnConfirmacaoNao" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Não</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
 </body>
 
 </html>

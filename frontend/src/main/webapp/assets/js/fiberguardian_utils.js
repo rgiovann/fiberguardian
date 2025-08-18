@@ -409,6 +409,88 @@
             });
         }
 
+        function formatarValorMonetario(valor) {
+            if (!valor) return '0,00';
+
+            // Substitui vírgula por ponto para facilitar parseFloat
+            let numero = valor.replace(',', '.');
+            let parsed = parseFloat(numero);
+
+            if (isNaN(parsed)) return '0,00';
+
+            // Converte para string com 2 casas decimais e volta vírgula
+            return parsed.toFixed(2).replace('.', ',');
+        }
+
+        function confirmarAcao(mensagem, callbackSim, titulo = 'Confirmação') {
+            const modalEl = document.getElementById('modalConfirmacaoGenerico');
+            const modalTitulo = document.getElementById('modalConfirmacaoTitulo');
+            const modalMensagem = document.getElementById('modalConfirmacaoMensagem');
+            const btnSim = document.getElementById('btnConfirmacaoSim');
+
+            if (!modalEl) {
+                console.error('Modal de confirmação não encontrado.');
+                return;
+            }
+
+            modalTitulo.textContent = titulo;
+            modalMensagem.textContent = mensagem;
+
+            const novoBtnSim = btnSim.cloneNode(true);
+            btnSim.parentNode.replaceChild(novoBtnSim, btnSim);
+
+            novoBtnSim.addEventListener('click', () => {
+                bootstrap.Modal.getInstance(modalEl).hide();
+                if (typeof callbackSim === 'function') {
+                    callbackSim();
+                }
+            });
+
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        }
+
+        function confirmarAcaoAsync(mensagem, titulo = 'Confirmação') {
+            return new Promise((resolve) => {
+                const modalEl = document.getElementById('modalConfirmacaoGenerico');
+                const modalTitulo = document.getElementById('modalConfirmacaoTitulo');
+                const modalMensagem = document.getElementById(
+                    'modalConfirmacaoMensagem'
+                );
+                const btnSim = document.getElementById('btnConfirmacaoSim');
+                const btnNao = document.getElementById('btnConfirmacaoNao');
+
+                if (!modalEl) {
+                    console.error('Modal de confirmação não encontrado.');
+                    resolve(false);
+                    return;
+                }
+                const headerEl = modalEl.querySelector('.modal-header');
+                headerEl.className += ' ' + 'bg-warning text-dark';
+
+                modalTitulo.textContent = titulo;
+                modalMensagem.textContent = mensagem;
+
+                const novoBtnSim = btnSim.cloneNode(true);
+                const novoBtnNao = btnNao.cloneNode(true);
+                btnSim.parentNode.replaceChild(novoBtnSim, btnSim);
+                btnNao.parentNode.replaceChild(novoBtnNao, btnNao);
+
+                novoBtnSim.addEventListener('click', () => {
+                    bootstrap.Modal.getInstance(modalEl).hide();
+                    resolve(true);
+                });
+
+                novoBtnNao.addEventListener('click', () => {
+                    bootstrap.Modal.getInstance(modalEl).hide();
+                    resolve(false);
+                });
+
+                const modal = new bootstrap.Modal(modalEl);
+                modal.show();
+            });
+        }
+
         // Exporta apenas o necessário
         return {
             obterTokenCsrf,
@@ -424,6 +506,8 @@
             fecharQualquerDropdownAberto,
             renderizarDropdownGenericoAsync,
             aplicarMascaraMonetaria,
+            formatarValorMonetario,
+            confirmarAcaoAsync,
         };
     })();
 })();

@@ -21,6 +21,107 @@
             const inputProduto = document.getElementById('produto');
             const dropdownProduto = document.getElementById('dropdownProduto');
 
+            const btnAvancar = document.getElementById('btnAvancarItens');
+            const section = document.querySelector('section.card'); // pega a section da Etapa 1
+
+            btnAvancar.addEventListener('click', function () {
+                // Campos obrigatórios
+                const inputData = document.getElementById('dataRecebimento');
+                const inputNota = document.getElementById('notaFiscal');
+                const inputFornecedor = document.getElementById('fornecedor');
+                const inputRecebidoPor = document.getElementById('recebidoPor');
+                const inputArquivo = document.getElementById('arquivoNota');
+                const inputValorTotal = document.getElementById('valorTotal');
+
+                // === Validação defensiva ===
+                if (!inputData.value) {
+                    FiberGuardian.Utils.exibirMensagemModalComFoco(
+                        'Informe a Data de Recebimento.',
+                        'warning',
+                        inputData
+                    );
+                    return;
+                }
+                if (!inputNota.value.trim()) {
+                    FiberGuardian.Utils.exibirMensagemModalComFoco(
+                        'Informe o Número da Nota Fiscal.',
+                        'warning',
+                        inputNota
+                    );
+                    return;
+                }
+                if (!inputFornecedor.value.trim()) {
+                    FiberGuardian.Utils.exibirMensagemModalComFoco(
+                        'Informe o Fornecedor.',
+                        'warning',
+                        inputFornecedor
+                    );
+                    return;
+                }
+                if (!inputRecebidoPor.value.trim()) {
+                    FiberGuardian.Utils.exibirMensagemModalComFoco(
+                        'Informe quem recebeu a Nota Fiscal.',
+                        'warning',
+                        inputRecebidoPor
+                    );
+                    return;
+                }
+                if (!inputArquivo.files || inputArquivo.files.length === 0) {
+                    FiberGuardian.Utils.exibirMensagemModalComFoco(
+                        'Selecione o Arquivo da Nota Fiscal (PDF).',
+                        'warning',
+                        inputArquivo
+                    );
+                    return;
+                }
+                if (!inputValorTotal.value.trim()) {
+                    FiberGuardian.Utils.exibirMensagemModalComFoco(
+                        'Informe o Valor Total da Nota Fiscal.',
+                        'warning',
+                        inputValorTotal
+                    );
+                    return;
+                }
+
+                inputValorTotal.value = FiberGuardian.Utils.formatarValorMonetario(
+                    inputValorTotal.value
+                );
+
+                // === Se chegou até aqui, todos os campos estão preenchidos ===
+
+                // 1) Desabilitar o botão
+                btnAvancar.disabled = true;
+
+                // 2) Tornar os campos da section "readonly" ou "disabled"
+                const inputs = section.querySelectorAll(
+                    'input, button, select, textarea'
+                );
+
+                inputs.forEach((el) => {
+                    if (el.id === 'btnAvancarItens') return; // não processa o próprio botão
+
+                    if (el.tagName === 'INPUT') {
+                        if (
+                            el.type === 'text' ||
+                            el.type === 'date' ||
+                            el.type === 'number'
+                        ) {
+                            el.readOnly = true;
+                            el.classList.add('campo-desabilitado');
+                        } else if (el.type === 'file') {
+                            el.disabled = true;
+                            el.classList.add('campo-desabilitado');
+                        }
+                    } else {
+                        el.disabled = true;
+                        el.classList.add('campo-desabilitado');
+                    }
+                });
+
+                // Aplica a classe de bloqueio global na section
+                section.classList.add('campo-desabilitado');
+            });
+
             if (!btnBuscarFornecedor || !inputFornecedor || !dropdownFornecedor) {
                 console.error('Elementos da busca de Fornecedor não encontrados.');
                 return;
@@ -66,6 +167,19 @@
                     campo.addEventListener('input', updateCalculations);
                 }
             });
+
+            document
+                .getElementById('btnMenuPrincipal')
+                .addEventListener('click', async () => {
+                    const confirmado = await FiberGuardian.Utils.confirmarAcaoAsync(
+                        'Deseja realmente voltar ao Menu Principal?',
+                        'Sair do Sistema'
+                    );
+
+                    if (confirmado) {
+                        window.location.href = 'index.html';
+                    }
+                });
 
             /*
             LEMBRAR === VALOR TOTAL
