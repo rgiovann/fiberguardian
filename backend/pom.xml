@@ -178,30 +178,30 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			<!-- JaCoCo para cobertura de testes -->
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.10</version> <!-- versão estável atual -->
-				<executions>
-					<!-- Gera arquivo .exec com dados de cobertura -->
-					<execution>
-						<id>prepare-agent</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
+<!--			&lt;!&ndash; JaCoCo para cobertura de testes &ndash;&gt;-->
+<!--			<plugin>-->
+<!--				<groupId>org.jacoco</groupId>-->
+<!--				<artifactId>jacoco-maven-plugin</artifactId>-->
+<!--				<version>0.8.10</version> &lt;!&ndash; versão estável atual &ndash;&gt;-->
+<!--				<executions>-->
+<!--					&lt;!&ndash; Gera arquivo .exec com dados de cobertura &ndash;&gt;-->
+<!--					<execution>-->
+<!--						<id>prepare-agent</id>-->
+<!--						<goals>-->
+<!--							<goal>prepare-agent</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
 
-					<!-- Gera relatório ao final do build -->
-					<execution>
-						<id>report</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+<!--					&lt;!&ndash; Gera relatório ao final do build &ndash;&gt;-->
+<!--					<execution>-->
+<!--						<id>report</id>-->
+<!--						<phase>verify</phase>-->
+<!--						<goals>-->
+<!--							<goal>report</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
 		</plugins>
 		<resources>
 			<resource>

@@ -251,7 +251,7 @@ INSERT INTO produto (codigo_produto, descricao_produto, fornecedor_id,data_cadas
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('35764', 1, 52, 13750.00, '2024-11-20', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao,data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao,data_cadastro)
 VALUES (1, 1, 3000.00, 100, 7500.00, 25.00, NULL,utc_timestamp),
        (1, 2, 2500.00, 80, 6250.00, 25.00, NULL,utc_timestamp);
 
@@ -259,7 +259,7 @@ VALUES (1, 1, 3000.00, 100, 7500.00, 25.00, NULL,utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('45934', 3, 48, 22800.00, '2024-10-20', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao,data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao,data_cadastro)
 VALUES (2, 5, 6000.00, 200, 15000.00, 25.00, NULL,utc_timestamp),
        (2, 6, 3200.00, 100, 7800.00, 24.38, NULL,utc_timestamp);
 
@@ -267,14 +267,14 @@ VALUES (2, 5, 6000.00, 200, 15000.00, 25.00, NULL,utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('55231', 5, 37, 9100.00, '2024-09-22', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao,data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao,data_cadastro)
 VALUES (3, 9, 300.00, 10, 9100.00, 30.33, NULL,utc_timestamp);
 
 -- Nota Fiscal 4
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('65343', 7, 52, 25650.00, '2024-09-21', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao,data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao,data_cadastro)
 VALUES (4, 13, 4500.00, 150, 11250.00, 25.00, NULL,utc_timestamp),
        (4, 14, 4500.00, 150, 14400.00, 32.00, NULL,utc_timestamp);
 
@@ -282,7 +282,7 @@ VALUES (4, 13, 4500.00, 150, 11250.00, 25.00, NULL,utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('75667', 9, 37, 46200.00, '2024-09-20', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao,data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao,data_cadastro)
 VALUES (5, 17, 6000.00, 200, 18000.00, 30.00, NULL,utc_timestamp),
        (5, 18, 6000.00, 200, 21000.00, 35.00, NULL,utc_timestamp),
        (5, 19, 3000.00, 100, 7200.00, 24.00, NULL,utc_timestamp);
@@ -291,7 +291,7 @@ VALUES (5, 17, 6000.00, 200, 18000.00, 30.00, NULL,utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('85871', 11, 48, 15200.00, '2024-09-19', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao,data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao,data_cadastro)
 VALUES (6, 21, 4000.00, 125, 10000.00, 25.00, NULL,utc_timestamp),
        (6, 22, 2000.00, 65, 5200.00, 26.00, NULL,utc_timestamp);
 
@@ -299,14 +299,14 @@ VALUES (6, 21, 4000.00, 125, 10000.00, 25.00, NULL,utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('95000', 13, 52, 8400.00, '2024-09-18', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao,data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao,data_cadastro)
 VALUES (7, 25, 3000.00, 100, 8400.00, 28.00, NULL,utc_timestamp);
 
 -- Nota Fiscal 8
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('105000', 15, 52, 31500.00, '2024-11-18', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao,data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao,data_cadastro)
 VALUES (8, 29, 6000.00, 200, 18000.00, 30.00, NULL,utc_timestamp),
        (8, 30, 4500.00, 150, 13500.00, 30.00, NULL,utc_timestamp);
 
@@ -314,7 +314,7 @@ VALUES (8, 29, 6000.00, 200, 18000.00, 30.00, NULL,utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('115435', 17, 37, 39600.00, '2024-09-28', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao,data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao,data_cadastro)
 VALUES (9, 33, 6000.00, 200, 18000.00, 30.00, NULL,utc_timestamp),
        (9, 34, 6000.00, 200, 21600.00, 36.00, NULL,utc_timestamp);
 
@@ -322,7 +322,7 @@ VALUES (9, 33, 6000.00, 200, 18000.00, 30.00, NULL,utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('125675', 19, 48, 31200.00, '2024-10-18', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao,data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao,data_cadastro)
 VALUES (10, 37, 4500.00, 150, 13500.00, 30.00, NULL,utc_timestamp),
        (10, 38, 6000.00, 200, 17700.00, 29.50, NULL,utc_timestamp);
 
@@ -330,7 +330,7 @@ VALUES (10, 37, 4500.00, 150, 13500.00, 30.00, NULL,utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('135801', 2, 2, 36750.00, '2024-09-18', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao, data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
 VALUES (11, 3, 4500.00, 150, 13500.00, 30.00, NULL, utc_timestamp),
        (11, 4, 4200.00, 140, 23250.00, 27.50, NULL, utc_timestamp);
 
@@ -338,7 +338,7 @@ VALUES (11, 3, 4500.00, 150, 13500.00, 30.00, NULL, utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('145923', 4, 5, 28600.00, '2024-11-18', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao, data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
 VALUES (12, 7, 3000.00, 100, 9300.00, 31.00, NULL, utc_timestamp),
        (12, 8, 3800.00, 125, 12540.00, 33.00, NULL, utc_timestamp);
 
@@ -346,7 +346,7 @@ VALUES (12, 7, 3000.00, 100, 9300.00, 31.00, NULL, utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('156045', 6, 9, 19800.00, '2024-12-09', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao, data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
 VALUES (13, 11, 1800.00, 60, 5400.00, 30.00, NULL, utc_timestamp),
        (13, 12, 4800.00, 160, 14400.00, 30.00, NULL, utc_timestamp);
 
@@ -354,7 +354,7 @@ VALUES (13, 11, 1800.00, 60, 5400.00, 30.00, NULL, utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('166178', 8, 15, 24750.00, '2024-12-08', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao, data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
 VALUES (14, 15, 3500.00, 115, 10500.00, 30.00, NULL, utc_timestamp),
        (14, 16, 4200.00, 140, 14250.00, 33.93, NULL, utc_timestamp);
 
@@ -362,14 +362,14 @@ VALUES (14, 15, 3500.00, 115, 10500.00, 30.00, NULL, utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('176289', 10, 21, 17150.00, '2024-11-08', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao, data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
 VALUES (15, 20, 5500.00, 180, 17150.00, 31.18, NULL, utc_timestamp);
 
 -- Nota Fiscal 16
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('186390', 12, 35, 32400.00, '2024-11-08', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao, data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
 VALUES (16, 23, 3600.00, 120, 10800.00, 30.00, NULL, utc_timestamp),
        (16, 24, 4200.00, 140, 11760.00, 28.00, NULL, utc_timestamp);
 
@@ -377,7 +377,7 @@ VALUES (16, 23, 3600.00, 120, 10800.00, 30.00, NULL, utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('196501', 14, 42, 24750.00, '2024-10-19', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao, data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
 VALUES (17, 27, 2700.00, 90, 8370.00, 31.00, NULL, utc_timestamp),
        (17, 28, 4800.00, 160, 16380.00, 34.13, NULL, utc_timestamp);
 
@@ -385,7 +385,7 @@ VALUES (17, 27, 2700.00, 90, 8370.00, 31.00, NULL, utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('206612', 16, 2, 33900.00, '2024-10-09', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao, data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
 VALUES (18, 31, 3900.00, 130, 11700.00, 30.00, NULL, utc_timestamp),
        (18, 32, 4500.00, 150, 13950.00, 31.00, NULL, utc_timestamp);
 
@@ -393,7 +393,7 @@ VALUES (18, 31, 3900.00, 130, 11700.00, 30.00, NULL, utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('216723', 18, 5, 38400.00, '2024-09-12', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao, data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
 VALUES (19, 35, 4800.00, 160, 14400.00, 30.00, NULL, utc_timestamp),
        (19, 36, 3600.00, 120, 12240.00, 34.00, NULL, utc_timestamp);
 
@@ -401,7 +401,7 @@ VALUES (19, 35, 4800.00, 160, 14400.00, 30.00, NULL, utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('226834', 20, 9, 51750.00, '2024-11-23', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao, data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
 VALUES (20, 39, 4200.00, 140, 12600.00, 30.00, NULL, utc_timestamp),
        (20, 40, 3900.00, 130, 12870.00, 33.00, NULL, utc_timestamp),
        (20, 41, 2700.00, 90, 8370.00, 31.00, NULL, utc_timestamp);
@@ -410,7 +410,7 @@ VALUES (20, 39, 4200.00, 140, 12600.00, 30.00, NULL, utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('236945', 22, 15, 29100.00, '2024-08-23', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao, data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
 VALUES (21, 43, 3300.00, 110, 9900.00, 30.00, NULL, utc_timestamp),
        (21, 44, 4500.00, 150, 13950.00, 31.00, NULL, utc_timestamp);
 
@@ -418,7 +418,7 @@ VALUES (21, 43, 3300.00, 110, 9900.00, 30.00, NULL, utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('247056', 24, 21, 38400.00, '2024-11-10', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao, data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
 VALUES (22, 47, 4500.00, 150, 13950.00, 31.00, NULL, utc_timestamp),
        (22, 48, 4200.00, 140, 12600.00, 30.00, NULL, utc_timestamp);
 
@@ -426,7 +426,7 @@ VALUES (22, 47, 4500.00, 150, 13950.00, 31.00, NULL, utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('257167', 26, 35, 22800.00, '2024-09-03', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao, data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
 VALUES (23, 51, 2400.00, 80, 7200.00, 30.00, NULL, utc_timestamp),
        (23, 52, 3900.00, 130, 12870.00, 33.00, NULL, utc_timestamp);
 
@@ -434,7 +434,7 @@ VALUES (23, 51, 2400.00, 80, 7200.00, 30.00, NULL, utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('267278', 28, 42, 32400.00, '2024-10-03', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao, data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
 VALUES (24, 55, 4500.00, 150, 13500.00, 30.00, NULL, utc_timestamp),
        (24, 56, 3600.00, 120, 12240.00, 34.00, NULL, utc_timestamp);
 
@@ -442,7 +442,7 @@ VALUES (24, 55, 4500.00, 150, 13500.00, 30.00, NULL, utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('277389', 30, 2, 19950.00, '2025-01-03', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao, data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
 VALUES (25, 59, 2700.00, 90, 8370.00, 31.00, NULL, utc_timestamp),
        (25, 60, 3900.00, 130, 11580.00, 29.69, NULL, utc_timestamp);
 
@@ -450,7 +450,7 @@ VALUES (25, 59, 2700.00, 90, 8370.00, 31.00, NULL, utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('287490', 1, 5, 33600.00, '2024-12-13', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao, data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
 VALUES (26, 1, 4800.00, 160, 14400.00, 30.00, NULL, utc_timestamp),
        (26, 2, 3900.00, 130, 12870.00, 33.00, NULL, utc_timestamp);
 
@@ -458,7 +458,7 @@ VALUES (26, 1, 4800.00, 160, 14400.00, 30.00, NULL, utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('297601', 3, 9, 35100.00, '2024-11-23', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao, data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
 VALUES (27, 5, 3600.00, 120, 10800.00, 30.00, NULL, utc_timestamp),
        (27, 6, 4200.00, 140, 13440.00, 32.00, NULL, utc_timestamp);
 
@@ -466,7 +466,7 @@ VALUES (27, 5, 3600.00, 120, 10800.00, 30.00, NULL, utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('307712', 5, 15, 26550.00, '2024-12-03', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao, data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
 VALUES (28, 9, 900.00, 30, 2790.00, 31.00, NULL, utc_timestamp),
        (28, 10, 4500.00, 150, 14400.00, 32.00, NULL, utc_timestamp);
 
@@ -474,7 +474,7 @@ VALUES (28, 9, 900.00, 30, 2790.00, 31.00, NULL, utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('317823', 7, 21, 33750.00, '2024-11-03', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao, data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
 VALUES (29, 13, 3600.00, 120, 10800.00, 30.00, NULL, utc_timestamp),
        (29, 14, 4500.00, 150, 14850.00, 33.00, NULL, utc_timestamp);
 
@@ -482,7 +482,7 @@ VALUES (29, 13, 3600.00, 120, 10800.00, 30.00, NULL, utc_timestamp),
 INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
 VALUES ('327934', 9, 35, 53400.00, '2024-08-03', NULL, utc_timestamp(), NULL, NULL);
 
-INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_item, preco_unitario, observacao, data_cadastro)
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
 VALUES (30, 17, 4800.00, 160, 14400.00, 30.00, NULL, utc_timestamp),
        (30, 18, 3900.00, 130, 13650.00, 35.00, NULL, utc_timestamp),
        (30, 19, 3300.00, 110, 8580.00, 26.00, NULL, utc_timestamp);

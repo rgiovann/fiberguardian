@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
+import java.util.List;
 
 @Setter
 @Getter
@@ -21,19 +21,28 @@ public class NotaFiscalDto {
             NotaFiscalView.Completo.class})
     private String codigoNf;
 
-    @JsonView({ NotaFiscalView.Completo.class,
+    @JsonView({ 
             NotaFiscalView.NotafiscalRespostaDto.class})
     private FornecedorDto fornecedor;
 
-    @JsonView({ NotaFiscalView.Completo.class,
+    @JsonView({ 
             NotaFiscalView.NotafiscalRespostaDto.class})
     private UsuarioDto recebidoPor;
 
-    @JsonView({ NotaFiscalView.Completo.class,
+    @JsonView({ 
             NotaFiscalView.NotafiscalRespostaDto.class})
     private BigDecimal valorTotal;
 
-    @JsonView({ NotaFiscalView.Completo.class,
+    @JsonView({ 
             NotaFiscalView.NotafiscalRespostaDto.class})
     private LocalDate dataRecebimento;
+
+    @JsonView({
+            NotaFiscalView.NotafiscalRespostaDto.class})
+    private List<ItemNotaFiscalDto> itens;
+
+    @JsonView({
+            NotaFiscalView.NotafiscalRespostaDto.class})
+    private PdfNotaFiscalDto pdfMetadados;
+
 }

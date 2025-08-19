@@ -4,7 +4,7 @@ CREATE TABLE nota_item (
     produto_id BIGINT NOT NULL,
     quantidade_recebida DECIMAL(15,2) NULL CHECK (quantidade_recebida > 0),
     numero_caixas INT NOT NULL CHECK (numero_caixas >= 0),
-    valor_item DECIMAL(15,2) NOT NULL CHECK (valor_item >= 0),
+    valor_total_item DECIMAL(15,2) NOT NULL CHECK (valor_total_item >= 0),
     preco_unitario DECIMAL(15,2) NULL CHECK (preco_unitario >= 0),
     observacao VARCHAR(255) NULL,
     data_cadastro DATETIME NOT NULL,

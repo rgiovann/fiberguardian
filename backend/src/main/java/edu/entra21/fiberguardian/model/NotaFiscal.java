@@ -10,6 +10,9 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.validation.constraints.DecimalMin;
 import lombok.*;
 
@@ -56,6 +59,9 @@ public class NotaFiscal {
             foreignKey = @ForeignKey(name = "fk_nota_fiscal_usuario_recebeu")
     )
     private Usuario recebidoPor;
+
+    @OneToMany(mappedBy = "notaFiscal", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemNotaFiscal> itens = new ArrayList<>();
 
     //@DecimalMin(value = "0.00")
     @Column(name = "valor_total", nullable = false, precision = 15, scale = 2)

@@ -10,8 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 public class PdfNotaFiscalInput {
 
-    @NotNull
-    MultipartFile arquivo;
+    //@NotNull
+    //MultipartFile arquivo;
     @NotBlank
     String descricao;
 }

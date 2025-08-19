@@ -1,10 +1,7 @@
 package edu.entra21.fiberguardian.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -43,22 +40,18 @@ public class ItemNotaFiscal {
     @JoinColumn(name = "produto_id", nullable = false, foreignKey = @ForeignKey(name = "fk_nota_item_produto"))
     private Produto produto;
 
-    //@DecimalMin(value = "0.01", message = "A quantidade recebida deve ser maior que zero")
     @Column(name = "quantidade_recebida", precision = 15, scale = 2)
-    private BigDecimal quantidadeRecebida;
+    private BigDecimal qtdRecebida;
 
     @NotNull
-    //@Min(value = 0, message = "O número de caixas não pode ser negativo")
-    @Column(name = "numero_caixas", nullable = false)
-    private Integer numeroCaixas;
+     @Column(name = "numero_caixas", nullable = false)
+    private Integer nrCaixas;
 
     @NotNull
-    //@DecimalMin(value = "0.00", inclusive = true, message = "O valor do item não pode ser negativo")
-    @Column(name = "valor_item", nullable = false, precision = 15, scale = 2)
-    private BigDecimal valorItem;
+     @Column(name = "valor_total_item", nullable = false, precision = 15, scale = 2)
+    private BigDecimal valorTotalItem;
 
-    //@DecimalMin(value = "0.00", inclusive = true, message = "O preço unitário não pode ser negativo")
-    @Column(name = "preco_unitario", precision = 15, scale = 2)
+     @Column(name = "preco_unitario", precision = 15, scale = 2)
     private BigDecimal precoUnitario;
 
     //@Size(max = 255)
