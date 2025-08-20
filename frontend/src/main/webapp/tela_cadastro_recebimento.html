@@ -43,9 +43,19 @@
             <div class="input-group">
               <input type="text" id="fornecedor" name="fornecedor" class="form-control" autocomplete="off"
                 placeholder="Digite parte do nome, clique botão Buscar." />
+              <!--
               <button id="btnBuscarFornecedor" name="btnBuscarFornecedor" class="btn btn-outline-secondary"
                 type="button">
                 Buscar
+              </button>
+              -->
+              <button id="btnBuscarFornecedor" class="btn btn-outline-secondary" name="btnBuscarFornecedor"
+                type="button">
+                Buscar
+              </button>
+              <button id="btnTrocarFornecedor" class="btn btn-outline-danger" name="btnTrocarFornecedor" type="button"
+                disabled>
+                Trocar
               </button>
             </div>
             <!-- Dropdown de resultados para Fornecedor -->
@@ -58,10 +68,21 @@
             <div class="input-group">
               <input type="text" id="recebidoPor" name="recebidoPor" class="form-control" autocomplete="off"
                 placeholder="Digite parte do nome, clique botão Buscar." />
+              <!--
               <button id="btnBuscarRecebidoPor" name="btnBuscarRecebidoPor" class="btn btn-outline-secondary"
                 type="button">
                 Buscar
               </button>
+              -->
+              <button id="btnBuscarRecebidoPor" class="btn btn-outline-secondary" name="btnBuscarRecebidoPor"
+                type="button">
+                Buscar
+              </button>
+              <button id="btnTrocarRecebidoPor" class="btn btn-outline-danger" name="btnTrocarRecebidoPor"
+                type="button" disabled>
+                Trocar
+              </button>
+
             </div>
             <!-- Dropdown de resultados para Recebido Por -->
             <div id="dropdownRecebidoPor" name="dropdownRecebidoPor" class="dropdown-menu w-100"
@@ -129,9 +150,19 @@
               <div class="input-group">
                 <input type="text" id="produto" name="produto" class="form-control" autocomplete="off"
                   placeholder="Digite parte do nome, clique botão Buscar." />
+                <!--
                 <button id="btnBuscarProduto" name="btnBuscarProduto" class="btn btn-outline-secondary" type="button">
                   Buscar
                 </button>
+                -->
+                <button id="btnBuscarProduto" class="btn btn-outline-secondary" name="btnBuscarProduto" type="button">
+                  Buscar
+                </button>
+                <button id="btnTrocarProduto" class="btn btn-outline-danger" name="btnTrocarProduto" type="button"
+                  disabled>
+                  Trocar
+                </button>
+
               </div>
               <!-- Dropdown de resultados para Produto -->
               <div id="dropdownProduto" name="dropdownProduto" class="dropdown-menu w-100" aria-labelledby="produto">
@@ -171,7 +202,8 @@
               <label for="valorTotalItem" class="form-label">Valor Total</label>
               <div class="input-group">
                 <span class="input-group-text">R$</span>
-                <input type="text" id="valorTotalItem" name="valorTotalItem" class="form-control" readonly />
+                <input type="text" id="valorTotalItem" name="valorTotalItem" class="form-control campo-monetario"
+                  placeholder="0,00" maxlength="15" readonly />
               </div>
             </div>
           </div>
@@ -183,10 +215,12 @@
           </div>
 
           <div class="text-center mt-3">
-            <button id="btnSalvarItem" name="btnSalvarItem" type="submit" class="btn btn-success btn-custom">Salvar
+            <button id="btnSalvarItem" name="btnSalvarItem" type="button" class="btn btn-success btn-custom">Salvar
               Item</button>
+            <!--
             <button id="btnNovoItem" name="btnNovoItem" type="button" class="btn btn-warning btn-custom">Novo
               Item</button>
+            -->
             <button id="btnFinalizarNota" name="btnFinalizarNota" type="button"
               class="btn btn-primary btn-custom">Finalizar Nota</button>
             <button id="btnMenuPrincipal" name="btnMenuPrincipal" type="button"

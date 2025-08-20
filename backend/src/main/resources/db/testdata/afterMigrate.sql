@@ -202,7 +202,7 @@ INSERT INTO produto (codigo_produto, descricao_produto, fornecedor_id,data_cadas
 ('FIP91004573', '24/2 PENT.A.T.100%CO-TG', 20,utc_timestamp),
 ('FIP82006741', '24/2 PENT.A.T. 100%CO', 20,utc_timestamp),
 ('FIP82006941', '13/1 PENTZTWIST SOLUCELL', 20,utc_timestamp),
-
+('FIP82006771', '20/2 PENT.A.T. 100%CO', 20,utc_timestamp),
 -- Corantes Delta
 ('CDL33004591', '49,2 TEX PENT EGIPZTWIST', 21,utc_timestamp),
 ('CDL55009861', '13/1 PENTZTWIST SOLUCELL', 21,utc_timestamp),
