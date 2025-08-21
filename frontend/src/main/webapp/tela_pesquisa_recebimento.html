@@ -45,13 +45,13 @@
               <div class="input-group">
                 <input type="text" id="nrNotaFiscal" name="nrNotaFiscal" class="form-control"
                   placeholder="Digite o número da nota" autocomplete="off" />
-                <button id="btnBuscarNotaFiscal" class="btn btn-outline-secondary" name="btnBuscarNotaFiscal"
+                <button id="btnBuscarNrNotaFiscal" class="btn btn-outline-secondary" name="btnBuscarNrNotaFiscal"
                   type="button">
                   Buscar
                 </button>
               </div>
               <!-- Dropdown de resultados para Nota Fiscal -->
-              <div id="dropdownNotaFiscal" name="dropdownNotaFiscal" class="dropdown-menu w-100"
+              <div id="dropdownNrNotaFiscal" name="dropdownNrNotaFiscal" class="dropdown-menu w-100"
                 aria-labelledby="nrNotaFiscal"></div>
             </div>
 
@@ -125,11 +125,14 @@
                 <td>R$ 50,00</td>
                 <td>R$ 5.000,00</td>
                 <td>
-                  <button class="btn btn-sm btn-warning me-1">
+                  <button class="btn btn-sm btn-warning me-1" type="button">
                     <i class="fas fa-edit"></i> Alterar
                   </button>
-                  <button class="btn btn-sm btn-danger">
+                  <button class="btn btn-sm btn-danger me-1" type="button">
                     <i class="fas fa-trash"></i> Excluir
+                  </button>
+                  <button id="btnMenuPrincipal" name="btnMenuPrincipal" class="btn btn-sm btn-secondary"  type="button">
+                    <i class="fas fa-sign-out-alt"></i> Sair
                   </button>
                 </td>
               </tr>

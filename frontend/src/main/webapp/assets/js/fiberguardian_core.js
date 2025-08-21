@@ -25,6 +25,10 @@
                 'assets/js/fiberguardian_utils.js',
                 'assets/js/tela_lista_cadastro_usuario.js',
             ],
+            'tela_pesquisa_recebimento.html': [
+                'assets/js/fiberguardian_utils.js',
+                'assets/js/tela_pesquisa_recebimento.js',
+            ],
         };
 
         /**
@@ -197,6 +201,8 @@
 
                     const container = document.getElementById('conteudo-principal');
                     if (container) {
+                        // Remove classes de centralização ao injetar conteúdo
+                        container.className = 'content';
                         container.innerHTML = html;
                         console.info(`[FiberGuardian] Página '${pagina}' carregada.`);
                     }

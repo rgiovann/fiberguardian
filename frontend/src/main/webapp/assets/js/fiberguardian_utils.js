@@ -491,6 +491,31 @@
             });
         }
 
+        function voltarMenuPrincipal() {
+            console.log('[FiberGuardian] Voltando ao menu principal...');
+
+            const container = document.getElementById('conteudo-principal');
+            if (container) {
+                // Restaura classes de centralização para tela inicial
+                container.className =
+                    'content d-flex justify-content-center align-items-center text-center';
+
+                // Restaura conteúdo inicial
+                container.innerHTML = `
+            <div>
+                <img src="assets/img/logo-fiberguardian.png" alt="Logotipo FiberGuardian" class="img-fluid mb-4" style="max-width: 400px;">
+                <p class="lead texto-container">Selecione uma opção no menu lateral para começar</p>
+            </div>`;
+
+                console.info('[FiberGuardian] Menu principal restaurado.');
+            } else {
+                console.warn(
+                    '[FiberGuardian] Container principal não encontrado, redirecionando...'
+                );
+                window.location.href = 'index.html';
+            }
+        }
+
         // Exporta apenas o necessário
         return {
             obterTokenCsrf,
@@ -508,6 +533,7 @@
             aplicarMascaraMonetaria,
             formatarValorMonetario,
             confirmarAcaoAsync,
+            voltarMenuPrincipal,
         };
     })();
 })();
