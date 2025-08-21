@@ -522,13 +522,9 @@
                 btnSalvarItem.addEventListener('click', () => {
                     salvarItem();
                     inputProduto.value = '';
-                    //const quantRecebida = document.getElementById('quantRecebida');
                     quantRecebida.value = '';
-                    //const numeroCaixas = document.getElementById('numeroCaixas');
                     numeroCaixas.value = '';
-                    //const valorUnit = document.getElementById('valorUnit');
                     valorUnit.value = '';
-                    // const infoAdic = document.getElementById('informacoesAdicionais');
                     infoAdic.value = '';
                     document.getElementById('pesoMedio').value = '';
                     document.getElementById('quantRochas').value = '';
@@ -560,8 +556,6 @@
                         }
                         // === Coleta campos do cabeçalho ===
                         const inputNota = document.getElementById('notaFiscal');
-                        //const inputFornecedor = document.getElementById('fornecedor');
-                        //const inputRecebidoPor = document.getElementById('recebidoPor');
                         const inputData = document.getElementById('dataRecebimento');
                         const inputValorTotal = document.getElementById('valorTotal');
                         const inputArquivo = document.getElementById('arquivoNota');
@@ -636,6 +630,9 @@
                         });
 
                         if (resposta.ok) {
+                            // Zera array global
+                            itensRecebimento = [];
+                            renderizarTabelaItens();
                             limpaCabecalhoNotaFiscal();
                             limpaItensNotaFiscal();
 
@@ -653,13 +650,6 @@
                             cnpjFornecedor = null;
                             emailUsuario = null;
 
-                            // reabilita botão do cabeçalho
-                            //const btnAvancar =
-                            //    document.getElementById('btnAvancarItens');
-                            // if (btnAvancar) {
-                            //    btnAvancar.disabled = false;
-                            //    btnAvancar.classList.remove('campo-desabilitado');
-                            //}
                             return;
                         } else if (resposta.status === 403) {
                             FiberGuardian.Utils.exibirMensagemSessaoExpirada();
@@ -758,14 +748,6 @@
             const campoPesoMedioCaixa = document.getElementById('pesoMedioCaixa');
             if (campoPesoMedioCaixa) campoPesoMedioCaixa.value = pesoMedioCaixa;
         }
-        /*
-        function voltarParaInicio() {
-            document.getElementById('conteudo-principal').innerHTML = `
-                <h3>Bem-vindo ao FiberGuardian</h3>
-                <p>Selecione uma opção no menu lateral para começar.</p>
-            `;
-        }
-        */
 
         function salvarItem() {
             const produto = document.getElementById('produto')?.value.trim();
@@ -857,46 +839,9 @@
 
             // Atualiza a tabela dinâmica
             renderizarTabelaItens();
-            /*
-            // === Desabilita campos após salvar item ===
-            document.getElementById('produto').readOnly = true;
-            document.getElementById('produto').classList.add('campo-desabilitado');
 
-            document.getElementById('quantRecebida').readOnly = true;
-            document
-                .getElementById('quantRecebida')
-                .classList.add('campo-desabilitado');
-
-            document.getElementById('numeroCaixas').readOnly = true;
-            document.getElementById('numeroCaixas').classList.add('campo-desabilitado');
-
-            document.getElementById('valorUnit').readOnly = true;
-            document.getElementById('valorUnit').classList.add('campo-desabilitado');
-
-            document.getElementById('infoRecebimento').readOnly = true;
-            document
-                .getElementById('infoRecebimento')
-                .classList.add('campo-desabilitado');
-
-            document.getElementById('btnBuscarProduto').disabled = true;
-            document
-                .getElementById('btnBuscarProduto')
-                .classList.add('campo-desabilitado');
-            document.getElementById('btnTrocarProduto').disabled = true;
-            document
-                .getElementById('btnTrocarProduto')
-                .classList.add('campo-desabilitado');
-                */
+            limpaItensNotaFiscal();
         }
-        /*
-        document
-            .getElementById('btnSalvarItem')
-            .addEventListener('click', function (e) {
-                e.preventDefault(); // evita submit real
-                salvarItem();
-                // renderização virá no próximo passo
-            });
-        */
 
         function renderizarTabelaItens() {
             const tabela = document.getElementById('tabelaItens');
@@ -1034,11 +979,7 @@
 
         // Função para limpar os itens da nota fiscal
         function limpaItensNotaFiscal() {
-            // Zera array global
-            itensRecebimento = [];
-
             // Limpa tabela de itens
-            renderizarTabelaItens();
 
             // Limpa inputs de item
             const inputProduto = document.getElementById('produto');
