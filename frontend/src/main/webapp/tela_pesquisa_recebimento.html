@@ -40,20 +40,6 @@
               <input type="date" id="dataFinal" name="dataFinal" class="form-control" />
             </div>
 
-            <div class="col-md-4 mb-3">
-              <label for="nrNotaFiscal" class="form-label">Nº Nota Fiscal</label>
-              <div class="input-group">
-                <input type="text" id="nrNotaFiscal" name="nrNotaFiscal" class="form-control"
-                  placeholder="Digite o número da nota" autocomplete="off" />
-                <button id="btnBuscarNrNotaFiscal" class="btn btn-outline-secondary" name="btnBuscarNrNotaFiscal"
-                  type="button">
-                  Buscar
-                </button>
-              </div>
-              <!-- Dropdown de resultados para Nota Fiscal -->
-              <div id="dropdownNrNotaFiscal" name="dropdownNrNotaFiscal" class="dropdown-menu w-100"
-                aria-labelledby="nrNotaFiscal"></div>
-            </div>
 
             <!-- Segunda linha -->
             <div class="col-md-4 mb-3">
@@ -64,6 +50,10 @@
                 <button id="btnBuscarFornecedor" class="btn btn-outline-secondary" name="btnBuscarFornecedor"
                   type="button">
                   Buscar
+                </button>
+                <button id="btnTrocarFornecedor" class="btn btn-outline-danger" name="btnTrocarFornecedor" type="button"
+                  disabled>
+                  Trocar
                 </button>
               </div>
               <!-- Dropdown de resultados para Fornecedor -->
@@ -79,10 +69,35 @@
                 <button id="btnBuscarProduto" class="btn btn-outline-secondary" name="btnBuscarProduto" type="button">
                   Buscar
                 </button>
+                <button id="btnTrocarProduto" class="btn btn-outline-danger" name="btnTrocarProduto" type="button"
+                  disabled>
+                  Trocar
+                </button>
               </div>
               <!-- Dropdown de resultados para Produto -->
               <div id="dropdownProduto" name="dropdownProduto" class="dropdown-menu w-100" aria-labelledby="produto">
               </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label for="nrNotaFiscal" class="form-label">Nº Nota Fiscal</label>
+              <div class="input-group">
+                <input type="text" id="nrNotaFiscal" name="nrNotaFiscal" class="form-control"
+                  placeholder="Digite o número da nota" autocomplete="off" />
+                <button id="btnBuscarNrNotaFiscal" class="btn btn-outline-secondary" name="btnBuscarNrNotaFiscal"
+                  type="button">
+                  Buscar
+                </button>
+                <!--
+                <button id="btnTrocarNrNotaFiscal" class="btn btn-outline-danger" name="btnTrocarNrNotaFiscal" type="button"
+                  disabled>
+                  Trocar
+                </button>
+                -->
+              </div>
+              <!-- Dropdown de resultados para Nota Fiscal -->
+              <div id="dropdownNrNotaFiscal" name="dropdownNrNotaFiscal" class="dropdown-menu w-100"
+                aria-labelledby="nrNotaFiscal"></div>
             </div>
 
             <!-- Terceira coluna da segunda linha vazia para manter padrão 4-4-4 -->
@@ -97,6 +112,9 @@
               </button>
               <button type="reset" class="btn btn-secondary btn-custom">
                 <i class="fas fa-eraser me-2"></i>Limpar Pesquisa
+              </button>
+              <button type="button" class="btn btn-danger btn-custom" id="btnSair">
+                <i class="fas fa-sign-out-alt me-2"></i>Sair
               </button>
             </div>
           </div>
@@ -131,7 +149,7 @@
                   <button class="btn btn-sm btn-danger me-1" type="button">
                     <i class="fas fa-trash"></i> Excluir
                   </button>
-                  <button id="btnMenuPrincipal" name="btnMenuPrincipal" class="btn btn-sm btn-secondary"  type="button">
+                  <button id="btnMenuPrincipal" name="btnMenuPrincipal" class="btn btn-sm btn-secondary" type="button">
                     <i class="fas fa-sign-out-alt"></i> Sair
                   </button>
                 </td>

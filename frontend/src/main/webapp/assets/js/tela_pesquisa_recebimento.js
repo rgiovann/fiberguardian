@@ -2,8 +2,10 @@
     window.FiberGuardian = window.FiberGuardian || {};
     // Variáveis globais dentro do escopo do módulo FiberGuardian.TelaCadastroRecebimento
     //  (não vaza para window).
-    let cnpjFornecedor = null;
-    let emailUsuario = null;
+    let cnpjFornecedorSelecionado = null;
+    let codigoProdutoSelecionado = null;
+    let nrNotaFiscalSelecionado = null;
+
     // Armazena, em memória, os itens da nota fiscal enquanto o usuário trabalha na tela.
     let itensRecebimento = [];
 
@@ -14,6 +16,7 @@
             const inputFornecedor = document.getElementById('fornecedor');
             const btnBuscarFornecedor = document.getElementById('btnBuscarFornecedor');
             const dropdownFornecedor = document.getElementById('dropdownFornecedor');
+            const btnTrocarFornecedor = document.getElementById('btnTrocarFornecedor');
 
             const inputNrNotFiscal = document.getElementById('nrNotaFiscal');
             const btnBuscarNrNotaFiscal = document.getElementById(
@@ -25,23 +28,34 @@
             const inputProduto = document.getElementById('produto');
             const btnBuscarProduto = document.getElementById('btnBuscarProduto');
             const dropdownProduto = document.getElementById('dropdownProduto');
+            const btnTrocarProduto = document.getElementById('btnTrocarProduto');
 
             /*
             const btnAvancar = document.getElementById('btnAvancarItens');
             const btnSalvarItem = document.getElementById('btnSalvarItem');
             */
 
-            if (!btnBuscarFornecedor || !inputFornecedor || !dropdownFornecedor) {
+            if (
+                !btnBuscarFornecedor ||
+                !inputFornecedor ||
+                !dropdownFornecedor ||
+                !btnTrocarFornecedor
+            ) {
                 console.error('Elementos da busca de Fornecedor não encontrados.');
                 return;
             }
 
-            if (!btnBuscarProduto || !inputProduto|| !dropdownProduto) {
+            if (
+                !btnBuscarProduto ||
+                !inputProduto ||
+                !dropdownProduto ||
+                !btnTrocarProduto
+            ) {
                 console.error('Elementos da busca de Produto não encontrados.');
                 return;
             }
 
-            if (!btnBuscarNrNotaFiscal|| !inputNrNotFiscal || !dropdownNrNotaFiscal) {
+            if (!btnBuscarNrNotaFiscal || !inputNrNotFiscal || !dropdownNrNotaFiscal) {
                 console.error('Elementos da busca de Nota Fiscal não encontrados.');
                 return;
             }
@@ -83,9 +97,9 @@
             */
 
             FiberGuardian.Utils.fecharQualquerDropdownAberto(
-                [dropdownFornecedor, dropdownRecebidoPor],
-                [inputFornecedor, inputRecebidoPor],
-                [btnBuscarFornecedor, btnBuscarRecebidoPor]
+                [dropdownFornecedor, dropdownNrNotaFiscal, dropdownProduto],
+                [inputFornecedor, inputProduto, inputNrNotFiscal],
+                [btnBuscarFornecedor, btnBuscarProduto, btnBuscarNrNotaFiscal]
             );
 
             btnBuscarFornecedor.addEventListener('click', async function () {
@@ -130,11 +144,8 @@
                                 titulosColunas: ['Fornecedor', 'CNPJ'],
                                 msgVazio: 'Nenhum fornecedor encontrado.',
                             });
-                        // Depois que o usuário selecionar do dropdown
 
-                        // Depois que o usuário selecionar do dropdown
-                        cnpjFornecedor = item.cnpj;
-
+                        cnpjFornecedorSelecionado = item.cnpj;
                         // trava campo fornecedor
                         inputFornecedor.readOnly = true;
                         inputFornecedor.classList.add('campo-desabilitado');
@@ -149,7 +160,7 @@
 
                         // Quando clicar em "Trocar fornecedor"
                         btnTrocarFornecedor.addEventListener('click', () => {
-                            cnpjFornecedor = null;
+                            cnpjFornecedorSelecionado = null;
                             inputFornecedor.value = '';
                             inputFornecedor.readOnly = false;
                             inputFornecedor.classList.remove('campo-desabilitado');
@@ -160,11 +171,6 @@
                             btnTrocarFornecedor.disabled = true;
                             btnTrocarFornecedor.classList.add('campo-desabilitado');
                         });
-                        // Armazena do objeto recebido o cnpj
-                        //cnpjFornecedor = item.cnpj;
-                        //console.log('Index:', index);
-                        //console.log('CNPJ: [cnpjFornecedor]', cnpjFornecedor);
-                        // aqui você pode salvar em variável ou mandar para outra função
                     } else if (resposta.status === 403) {
                         FiberGuardian.Utils.exibirMensagemSessaoExpirada();
                     } else {
@@ -183,101 +189,10 @@
                 }
             });
 
-            btnBuscarRecebidoPor.addEventListener('click', async function () {
-                const codigoParcial = inputRecebidoPor.value.trim();
-
-                // Validação defensiva
-                if (!codigoParcial) {
-                    FiberGuardian.Utils.exibirMensagemModalComFoco(
-                        'Digite parte do nome para buscar.',
-                        'warning',
-                        inputRecebidoPor
-                    );
-                    return;
-                }
-
-                try {
-                    const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
-
-                    const resposta = await fetch(
-                        `/api/usuarios/list/recebimento?nome=${encodeURIComponent(
-                            codigoParcial
-                        )}`,
-                        {
-                            method: 'GET',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-XSRF-TOKEN': csrfToken,
-                            },
-                            credentials: 'include',
-                        }
-                    );
-
-                    if (resposta.ok) {
-                        const listaUsuarios = await resposta.json();
-
-                        const { index, item } =
-                            await FiberGuardian.Utils.renderizarDropdownGenericoAsync({
-                                input: inputRecebidoPor,
-                                dropdown: dropdownRecebidoPor,
-                                lista: listaUsuarios,
-                                camposExibir: ['nome', 'email', 'setor', 'turno'],
-                                titulosColunas: ['Usuário', 'Email', 'Setor', 'Turno'],
-                                msgVazio: 'Nenhum usuário encontrado.',
-                            });
-                        // Armazena do objeto recebido o email
-                        emailUsuario = item.email;
-
-                        // trava campo RecebidoPor
-                        inputRecebidoPor.readOnly = true;
-                        inputRecebidoPor.classList.add('campo-desabilitado');
-
-                        // desabilita botão Buscar
-                        btnBuscarRecebidoPor.disabled = true;
-                        btnBuscarRecebidoPor.classList.add('campo-desabilitado');
-
-                        // habilita botão Trocar
-                        btnTrocarRecebidoPor.disabled = false;
-                        btnTrocarRecebidoPor.classList.remove('campo-desabilitado');
-
-                        // evento de trocar
-                        btnTrocarRecebidoPor.addEventListener('click', () => {
-                            emailUsuario = null;
-                            inputRecebidoPor.value = '';
-                            inputRecebidoPor.readOnly = false;
-                            inputRecebidoPor.classList.remove('campo-desabilitado');
-
-                            btnBuscarRecebidoPor.disabled = false;
-                            btnBuscarRecebidoPor.classList.remove('campo-desabilitado');
-
-                            btnTrocarRecebidoPor.disabled = true;
-                            btnTrocarRecebidoPor.classList.add('campo-desabilitado');
-                        });
-
-                        //console.log('Index:', index);
-                        //console.log('Email: [emailUsuario]', emailUsuario);
-                    } else if (resposta.status === 403) {
-                        FiberGuardian.Utils.exibirMensagemSessaoExpirada();
-                    } else {
-                        await FiberGuardian.Utils.tratarErroFetch(
-                            resposta,
-                            inputRecebidoPor
-                        );
-                    }
-                } catch (erro) {
-                    console.error('Erro ao buscar usuários:', erro);
-                    FiberGuardian.Utils.exibirErroDeRede(
-                        'Erro de rede ao buscar usuários.',
-                        inputRecebidoPor,
-                        erro
-                    );
-                }
-            });
-
             btnBuscarProduto.addEventListener('click', async function () {
                 const codigoParcial = inputProduto.value.trim();
 
-                if (!cnpjFornecedor) {
+                if (!cnpjFornecedorSelecionado) {
                     FiberGuardian.Utils.exibirMensagemModalComFoco(
                         'É necessario selecionar o fornecedor antes de selecionar o produto.',
                         'warning',
@@ -294,7 +209,7 @@
                         '/api/produtos/list/recebimento',
                         window.location.origin
                     );
-                    url.searchParams.append('cnpj', cnpjFornecedor);
+                    url.searchParams.append('cnpj', cnpjFornecedorSelecionado);
 
                     if (codigoParcial) {
                         url.searchParams.append('descricao', codigoParcial);
@@ -350,10 +265,6 @@
                             btnTrocarProduto.disabled = true;
                             btnTrocarProduto.classList.add('campo-desabilitado');
                         });
-
-                        //console.log('Index:', index);
-                        //console.log('Código Produto:', codigoProdutoSelecionado);
-                        // aqui você pode salvar em variável ou mandar para outra função
                     } else if (resposta.status === 403) {
                         FiberGuardian.Utils.exibirMensagemSessaoExpirada();
                     } else {
@@ -372,498 +283,66 @@
                 }
             });
 
-            if (btnSalvarItem) {
-                btnSalvarItem.addEventListener('click', () => {
-                    salvarItem();
-                    inputProduto.value = '';
-                    quantRecebida.value = '';
-                    numeroCaixas.value = '';
-                    valorUnit.value = '';
-                    infoAdic.value = '';
-                    document.getElementById('pesoMedio').value = '';
-                    document.getElementById('quantRochas').value = '';
-                    document.getElementById('valorTotalItem').value = '';
-                    // botão Buscar Fornecedor volta a habilitar
-                    btnBuscarProduto.disabled = false;
-                    btnBuscarProduto.classList.remove('campo-desabilitado');
-                    // Trocar fornecedor permanece desabilitado
-                    btnTrocarProduto.disabled = true;
-                    btnTrocarProduto.classList.add('campo-desabilitado');
-                    // voltar o foco no campo produto
-                    inputProduto.focus();
-                });
-            }
+            btnBuscarNrNotaFiscal.addEventListener('click', async function () {
+                const codigoParcial = inputNrNotFiscal.value.trim();
 
-            // Dentro de configurarEventos(), após bind dos outros botões:
-            const btnFinalizarNota = document.getElementById('btnFinalizarNota');
-            if (btnFinalizarNota) {
-                btnFinalizarNota.addEventListener('click', async () => {
-                    try {
-                        // Verifica se há pelo menos 1 item antes de finalizar
-                        if (!itensRecebimento || itensRecebimento.length === 0) {
-                            FiberGuardian.Utils.exibirMensagemModalComFoco(
-                                'Nota deve ter no mínimo 1 item de nota cadastrado',
-                                'warning',
-                                document.getElementById('produto')
-                            );
-                            return;
-                        }
-                        // === Coleta campos do cabeçalho ===
-                        const inputNota = document.getElementById('notaFiscal');
-                        const inputData = document.getElementById('dataRecebimento');
-                        const inputValorTotal = document.getElementById('valorTotal');
-                        const inputArquivo = document.getElementById('arquivoNota');
+                try {
+                    const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
 
-                        // Validação defensiva mínima (usuário pode burlar travas via console)
-                        if (
-                            !inputNota.value.trim() ||
-                            !cnpjFornecedor ||
-                            !emailUsuario ||
-                            !inputArquivo.files?.length
-                        ) {
-                            FiberGuardian.Utils.exibirMensagemModalComFoco(
-                                'Preencha todos os campos obrigatórios antes de finalizar a nota.',
-                                'warning',
-                                inputNota
-                            );
-                            return;
-                        }
+                    // Monta a URL com os dois parâmetros
+                    const url = new URL(
+                        '/api/produtos/list/notasfiscais',
+                        window.location.origin
+                    );
+                    url.searchParams.append('cnpj', cnpjFornecedorSelecionado);
 
-                        // === Monta objeto da nota + itens ===
-                        const dadosNota = {
-                            nota: {
-                                codigoNf: inputNota.value.trim(),
-                                cnpj: cnpjFornecedor,
-                                recebidoPor: emailUsuario,
-                                dataRecebimento: inputData.value,
-                                valorTotal:
-                                    parseFloat(
-                                        inputValorTotal.value.replace(',', '.')
-                                    ) || 0,
-                            },
-                            itens: itensRecebimento.map((it) => ({
-                                codigoProduto: it.codigo,
-                                qtdRecebida: it.quantRecebida,
-                                nrCaixas: it.numeroCaixas,
-                                precoUnitario: it.valorUnit,
-                                observacao: it.observacao || '', // pode estar vazio
-                            })),
-                        };
-
-                        // === Monta objeto de metadados do PDF ===
-                        const pdfMeta = {
-                            descricao: `Arquivo nota fiscal ${inputNota.value.trim()} relativa ao fornecedor ${cnpjFornecedor}`,
-                        };
-
-                        // === Prepara multipart/form-data ===
-                        const formData = new FormData();
-                        formData.append(
-                            'dadosNota',
-                            new Blob([JSON.stringify(dadosNota)], {
-                                type: 'application/json',
-                            })
-                        );
-                        formData.append(
-                            'pdfMeta',
-                            new Blob([JSON.stringify(pdfMeta)], {
-                                type: 'application/json',
-                            })
-                        );
-                        formData.append('arquivo', inputArquivo.files[0]);
-
-                        // === CSRF token ===
-                        const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
-
-                        const resposta = await fetch('/api/nota-fiscal', {
-                            method: 'POST',
-                            headers: {
-                                'X-XSRF-TOKEN': csrfToken,
-                            },
-                            credentials: 'include',
-                            body: formData,
-                        });
-
-                        if (resposta.ok) {
-                            // Zera array global
-                            itensRecebimento = [];
-                            renderizarTabelaItens();
-                            limpaCabecalhoNotaFiscal();
-                            limpaItensNotaFiscal();
-
-                            FiberGuardian.Utils.exibirMensagemModalComFoco(
-                                'Nota fiscal gravada com sucesso.',
-                                'success',
-                                inputNota
-                            );
-
-                            // === Reset após sucesso ===
-                            itensRecebimento = []; // limpa array global
-                            renderizarTabelaItens(); // limpa tabela na tela
-
-                            //document.getElementById('formNotaFiscal').reset(); // se você tiver um <form>
-                            cnpjFornecedor = null;
-                            emailUsuario = null;
-
-                            return;
-                        } else if (resposta.status === 403) {
-                            FiberGuardian.Utils.exibirMensagemSessaoExpirada();
-                            window.location.href = 'index.html';
-                        } else {
-                            await FiberGuardian.Utils.tratarErroFetch(
-                                resposta,
-                                inputNota
-                            );
-                            return;
-                        }
-                    } catch (erro) {
-                        console.error('Falha na requisição:', erro);
-                        FiberGuardian.Utils.exibirErroDeRede(
-                            'Erro de rede ao finalizar nota fiscal',
-                            document.getElementById('notaFiscal'),
-                            erro
-                        );
-                        window.location.href = 'index.html';
+                    if (codigoParcial) {
+                        url.searchParams.append('descricao', codigoParcial);
                     }
-                });
-            }
-        }
 
-        // Delegação de eventos no <tbody> para capturar cliques em "Excluir"
-        const tbodyItens = document.getElementById('tabelaItens');
-        console.log('[Delegation] tbodyItens encontrado?', !!tbodyItens, tbodyItens);
+                    const resposta = await fetch(url.toString(), {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-XSRF-TOKEN': csrfToken,
+                        },
+                        credentials: 'include',
+                    });
 
-        if (tbodyItens) {
-            tbodyItens.addEventListener('click', function (e) {
-                // Log do clique bruto no tbody
-                console.log(
-                    '[Delegation] click no tbody',
-                    'target.node=',
-                    e.target?.nodeName,
-                    'class=',
-                    e.target?.className
-                );
+                    if (resposta.ok) {
+                        const listaNotasFiscais = await resposta.json();
 
-                // Usa closest para achar o botão mesmo que o clique seja no texto interno
-                const btn = e.target.closest('button.btn-excluir-item');
-                console.log('[Delegation] closest(".btn-excluir-item") =>', btn);
+                        const { index, item } =
+                            await FiberGuardian.Utils.renderizarDropdownGenericoAsync({
+                                input: inputNrNotFiscal,
+                                dropdown: dropdownNrNotaFiscal,
+                                lista: listaNotasFiscais,
+                                camposExibir: ['codigoNf', 'cnpj', 'descricao'],
+                                titulosColunas: ['Nota Fiscal', 'CNPJ', 'Empresa'],
+                                msgVazio: 'Nenhum produto encontrado.',
+                            });
 
-                if (!btn) {
-                    console.log('[Delegation] clique ignorado (não é botão Excluir)');
-                    return;
+                        // Armazena do objeto recebido o código ou descrição
+                        nrNotaFiscalSelecionado = item.codigo;
+                    } else if (resposta.status === 403) {
+                        FiberGuardian.Utils.exibirMensagemSessaoExpirada();
+                    } else {
+                        await FiberGuardian.Utils.tratarErroFetch(
+                            resposta,
+                            inputNrNotFiscal
+                        );
+                    }
+                } catch (erro) {
+                    console.error('Erro ao buscar notas fiscais:', erro);
+                    FiberGuardian.Utils.exibirErroDeRede(
+                        'Erro de rede ao buscar notas fiscais.',
+                        nrNotaFiscalSelecionado,
+                        erro
+                    );
                 }
-
-                const idxAttr = btn.getAttribute('data-index');
-                console.log('[Delegation] data-index lido do botão:', idxAttr);
-
-                const idx = Number.parseInt(idxAttr, 10);
-                if (Number.isNaN(idx)) {
-                    console.warn('[Delegation] data-index inválido/NaN');
-                    return;
-                }
-
-                excluirItem(idx);
             });
-        } else {
-            console.error('[Delegation] tbody #tabelaItens NÃO encontrado no DOM.');
         }
 
-        function updateCalculations() {
-            const quantRecebida =
-                parseInt(document.getElementById('quantRecebida')?.value) || 0;
-            const numeroCaixas =
-                parseInt(document.getElementById('numeroCaixas')?.value) || 0;
-            const valorUnit =
-                parseFloat(document.getElementById('valorUnit')?.value) || 0;
-
-            const rochasPorCaixa = 300;
-            const quantRochas = numeroCaixas * rochasPorCaixa;
-
-            // ✅ CORREÇÃO: Use .value em vez de setAttribute
-            const campoQuantRochas = document.getElementById('quantRochas');
-            if (campoQuantRochas) campoQuantRochas.value = quantRochas;
-
-            const pesoMedio =
-                quantRecebida > 0 && quantRochas > 0
-                    ? (quantRecebida / quantRochas).toFixed(2)
-                    : '0,00';
-
-            const campoPesoMedio = document.getElementById('pesoMedio');
-            if (campoPesoMedio) campoPesoMedio.value = pesoMedio;
-
-            const valorTotalItem =
-                quantRecebida > 0 ? (valorUnit * quantRecebida).toFixed(2) : '0,00';
-
-            const campoValorTotal = document.getElementById('valorTotalItem');
-            if (campoValorTotal) campoValorTotal.value = valorTotalItem;
-
-            const pesoMedioCaixa =
-                numeroCaixas > 0 ? (quantRecebida / numeroCaixas).toFixed(2) : '0,00';
-
-            const campoPesoMedioCaixa = document.getElementById('pesoMedioCaixa');
-            if (campoPesoMedioCaixa) campoPesoMedioCaixa.value = pesoMedioCaixa;
-        }
-
-        function salvarItem() {
-            const produto = document.getElementById('produto')?.value.trim();
-            const codigo =
-                typeof codigoProdutoSelecionado !== 'undefined'
-                    ? codigoProdutoSelecionado
-                    : null;
-            const quantRecebida =
-                parseInt(document.getElementById('quantRecebida')?.value) || 0;
-            const numeroCaixas =
-                parseInt(document.getElementById('numeroCaixas')?.value) || 0;
-            const valorUnit =
-                parseFloat(
-                    document.getElementById('valorUnit')?.value.replace(',', '.')
-                ) || 0;
-            const valorTotalItem =
-                parseFloat(document.getElementById('valorTotalItem')?.value) || 0;
-            const observacao = document.getElementById('infoRecebimento')?.value.trim();
-
-            // === Validação defensiva (igual ao cabeçalho) ===
-            if (!produto) {
-                FiberGuardian.Utils.exibirMensagemModalComFoco(
-                    'Informe o Produto.',
-                    'warning',
-                    document.getElementById('produto')
-                );
-                return;
-            }
-            if (quantRecebida <= 0) {
-                FiberGuardian.Utils.exibirMensagemModalComFoco(
-                    'Informe a Quantidade Recebida.',
-                    'warning',
-                    document.getElementById('quantRecebida')
-                );
-                return;
-            }
-            if (numeroCaixas <= 0) {
-                FiberGuardian.Utils.exibirMensagemModalComFoco(
-                    'Informe o Número de Caixas.',
-                    'warning',
-                    document.getElementById('numeroCaixas')
-                );
-                return;
-            }
-            if (valorUnit <= 0) {
-                FiberGuardian.Utils.exibirMensagemModalComFoco(
-                    'Informe o Valor Unitário.',
-                    'warning',
-                    document.getElementById('valorUnit')
-                );
-                return;
-            }
-            const inputPrecoUnitario = document.getElementById('valorUnit');
-
-            inputPrecoUnitario.value = FiberGuardian.Utils.formatarValorMonetario(
-                inputPrecoUnitario.value
-            );
-
-            // === Validação de duplicidade ===
-            const itemJaExiste = itensRecebimento.some(
-                (it) => it.produto === produto && it.codigo === codigo
-            );
-
-            if (itemJaExiste) {
-                FiberGuardian.Utils.exibirMensagemModalComFoco(
-                    'Este item já foi adicionado à nota fiscal.',
-                    'warning',
-                    document.getElementById('produto')
-                );
-                return;
-            }
-
-            // Objeto representando o item da NF
-            const item = {
-                produto: produto,
-                codigo: codigo,
-                quantRecebida: quantRecebida,
-                numeroCaixas: numeroCaixas,
-                valorUnit: valorUnit,
-                valorTotalItem: valorTotalItem,
-                observacao: observacao,
-            };
-
-            // Adiciona no array global
-            itensRecebimento.push(item);
-
-            console.log('Item salvo em memória:', item);
-            console.log('Estado atual do array:', itensRecebimento);
-
-            // Atualiza a tabela dinâmica
-            renderizarTabelaItens();
-
-            limpaItensNotaFiscal();
-        }
-
-        function renderizarTabelaItens() {
-            const tabela = document.getElementById('tabelaItens');
-            if (!tabela) {
-                console.error('[Render] tbody #tabelaItens não encontrado.');
-                return;
-            }
-
-            console.log(
-                '[Render] Iniciando render. Quantidade de itens em memória:',
-                itensRecebimento.length
-            );
-            tabela.innerHTML = ''; // limpa antes de repopular
-
-            itensRecebimento.forEach((item, index) => {
-                const linha = document.createElement('tr');
-
-                linha.innerHTML = `
-            <td>${item.produto}</td>
-            <td>${item.codigo || ''}</td>
-            <td>${item.quantRecebida}</td>
-            <td>${item.numeroCaixas}</td>
-            <td>R$ ${Number(item.valorUnit).toFixed(2)}</td>
-            <td>R$ ${Number(item.valorTotalItem).toFixed(2)}</td>
-            <td>
-                <button class="btn btn-danger btn-sm btn-excluir-item" data-index="${index}">
-                    Excluir
-                </button>
-            </td>
-        `;
-
-                tabela.appendChild(linha);
-            });
-
-            const linhasNoDom = tabela.querySelectorAll('tr').length;
-            console.log('[Render] Renderização concluída. Linhas no DOM:', linhasNoDom);
-        }
-
-        function excluirItem(index) {
-            console.log('[Excluir] Função chamada com index:', index);
-
-            if (index >= 0 && index < itensRecebimento.length) {
-                console.log(
-                    '[Excluir] Antes de excluir:',
-                    JSON.stringify(itensRecebimento)
-                );
-                itensRecebimento.splice(index, 1);
-                console.log(
-                    '[Excluir] Depois de excluir:',
-                    JSON.stringify(itensRecebimento)
-                );
-                renderizarTabelaItens();
-            } else {
-                console.warn('[Excluir] Index fora do intervalo:', index);
-            }
-        }
-
-        // Função para limpar o cabeçalho da nota fiscal
-        function limpaCabecalhoNotaFiscal() {
-            const inputNota = document.getElementById('notaFiscal');
-
-            const inputFornecedor = document.getElementById('fornecedor');
-
-            const inputRecebidoPor = document.getElementById('recebidoPor');
-
-            const inputValorTotal = document.getElementById('valorTotal');
-
-            const inputArquivo = document.getElementById('arquivoNota');
-
-            const dateDataRecebimento = document.getElementById('dataRecebimento');
-
-            // Limpa valores
-            inputNota.value = '';
-            inputNota.readOnly = false;
-            inputNota.classList.remove('campo-desabilitado');
-
-            inputFornecedor.value = '';
-            inputFornecedor.readOnly = false;
-            inputFornecedor.classList.remove('campo-desabilitado');
-
-            inputRecebidoPor.value = '';
-            inputRecebidoPor.readOnly = false;
-            inputRecebidoPor.classList.remove('campo-desabilitado');
-
-            inputValorTotal.value = '';
-            inputValorTotal.readOnly = false;
-            inputValorTotal.classList.remove('campo-desabilitado');
-
-            inputArquivo.value = '';
-            inputArquivo.readOnly = false;
-            inputArquivo.classList.remove('campo-desabilitado');
-
-            // Reseta variáveis globais
-            cnpjFornecedor = null;
-            emailUsuario = null;
-
-            // Reaplica data atual no calendário
-
-            if (dateDataRecebimento) {
-                const hoje = new Date();
-                const yyyy = hoje.getFullYear();
-                const mm = String(hoje.getMonth() + 1).padStart(2, '0');
-                const dd = String(hoje.getDate()).padStart(2, '0');
-                dateDataRecebimento.value = `${yyyy}-${mm}-${dd}`;
-            }
-
-            dateDataRecebimento.readOnly = false;
-            dateDataRecebimento.classList.remove('campo-desabilitado');
-
-            document.getElementById('btnAvancarItens').disabled = false;
-            document
-                .getElementById('btnAvancarItens')
-                .classList.remove('campo-desabilitado');
-
-            document.getElementById('btnBuscarFornecedor').disabled = false;
-            document
-                .getElementById('btnBuscarFornecedor')
-                .classList.remove('campo-desabilitado');
-
-            document.getElementById('btnTrocarFornecedor').disabled = true;
-            document
-                .getElementById('btnTrocarFornecedor')
-                .classList.add('campo-desabilitado');
-
-            document.getElementById('btnBuscarRecebidoPor').disabled = false;
-            document
-                .getElementById('btnBuscarRecebidoPor')
-                .classList.remove('campo-desabilitado'); // ← e aqui
-
-            document.getElementById('btnTrocarRecebidoPor').disabled = true;
-            document
-                .getElementById('btnTrocarRecebidoPor')
-                .classList.add('campo-desabilitado');
-        }
-
-        // Função para limpar os itens da nota fiscal
-        function limpaItensNotaFiscal() {
-            // Limpa tabela de itens
-
-            // Limpa inputs de item
-            const inputProduto = document.getElementById('produto');
-            const quantRecebida = document.getElementById('quantRecebida');
-            const numeroCaixas = document.getElementById('numeroCaixas');
-            const valorUnit = document.getElementById('valorUnit');
-            const infoAdic = document.getElementById('infoRecebimento');
-
-            if (inputProduto) {
-                inputProduto.value = '';
-                inputProduto.readOnly = false;
-                inputProduto.classList.remove('campo-desabilitado');
-            }
-            if (quantRecebida) quantRecebida.value = '';
-            if (numeroCaixas) numeroCaixas.value = '';
-            if (valorUnit) valorUnit.value = '';
-            if (infoAdic) infoAdic.value = '';
-
-            const pesoMedio = document.getElementById('pesoMedio');
-            const quantRochas = document.getElementById('quantRochas');
-            const valorTotalItem = document.getElementById('valorTotalItem');
-            const pesoMedioCaixa = document.getElementById('pesoMedioCaixa');
-
-            if (pesoMedio) pesoMedio.value = '';
-            if (quantRochas) quantRochas.value = '';
-            if (valorTotalItem) valorTotalItem.value = '';
-            if (pesoMedioCaixa) pesoMedioCaixa.value = '';
-        }
-
-        // Revealing: expõe apenas as funções públicas
         return {
             init: configurarEventos,
         };
