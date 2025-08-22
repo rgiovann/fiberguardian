@@ -8,6 +8,7 @@ import edu.entra21.fiberguardian.dto.PageDto;
 import edu.entra21.fiberguardian.dto.ProdutoDto;
 import edu.entra21.fiberguardian.dto.ProdutoListagemPagedDto;
 import edu.entra21.fiberguardian.input.ProdutoInput;
+import edu.entra21.fiberguardian.input.ProdutoLoteInput;
 import edu.entra21.fiberguardian.jacksonview.ProdutoView;
 import edu.entra21.fiberguardian.model.Produto;
 import edu.entra21.fiberguardian.service.ProdutoService;
@@ -22,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/produtos")
@@ -53,6 +55,21 @@ public class ProdutoController {
         Produto produto = produtoInputDisassembler.toEntity(input);
         return produtoDtoAssembler.toDto(produtoService.salvar(cnpjFornecedor, produto));
     }
+
+    @PostMapping("/lote")
+    @JsonView(ProdutoView.Completo.class)
+    public List<ProdutoDto> adicionarEmLote(@RequestBody @Valid ProdutoLoteInput input) {
+        var produtos = input.getProdutos().stream()
+                .map(produtoInputDisassembler::toEntity)
+                .collect(Collectors.toList());
+
+        var salvos = produtoService.salvarEmLote(input.getFornecedorCnpj(), produtos);
+
+        return salvos.stream()
+                .map(produtoDtoAssembler::toDto)
+                .collect(Collectors.toList());
+    }
+
 
     @PutMapping("/{cnpjFornecedor}/{codigoProduto}")
     @JsonView(ProdutoView.Completo.class)
