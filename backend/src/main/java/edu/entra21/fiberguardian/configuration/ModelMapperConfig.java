@@ -1,11 +1,13 @@
 package edu.entra21.fiberguardian.configuration;
 
 import edu.entra21.fiberguardian.dto.FornecedorCnpjDto;
+import edu.entra21.fiberguardian.dto.NotaFiscalListagemPagedDto;
 import edu.entra21.fiberguardian.input.NotaFiscalInput;
 import edu.entra21.fiberguardian.model.Fornecedor;
 import edu.entra21.fiberguardian.model.NotaFiscal;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.modelmapper.spi.MappingContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,6 +46,19 @@ public class ModelMapperConfig {
                     m.using(cnpjToFornecedor).map(NotaFiscalInput::getCnpj, NotaFiscal::setFornecedor);
                     m.using(emailToUsuario).map(NotaFiscalInput::getRecebidoPor, NotaFiscal::setRecebidoPor);
                 });
+
+        // Mapeamento de NotaFiscal -> NotaFiscalListagemPagedDto
+        modelMapper.addMappings(new PropertyMap<NotaFiscal, NotaFiscalListagemPagedDto>() {
+            @Override
+            protected void configure() {
+                // Fornecedor
+                map().setNomeFornecedor(source.getFornecedor().getNomeFornecedor());
+                map().setCnpjFornecedor(source.getFornecedor().getCnpj());
+
+                // Usuario
+                map().setEmailUsuario(source.getRecebidoPor().getEmail());
+            }
+        });
 
         return new Mapper() {
             @Override

@@ -38,6 +38,8 @@
             const valorUnit = document.getElementById('valorUnit');
             const infoAdic = document.getElementById('infoRecebimento');
 
+            const btnSair = document.getElementById('btnSair');
+
             if (
                 !btnBuscarFornecedor ||
                 !btnTrocarFornecedor ||
@@ -197,18 +199,18 @@
                 }
             });
 
-            document
-                .getElementById('btnMenuPrincipal')
-                .addEventListener('click', async () => {
-                    const confirmado = await FiberGuardian.Utils.confirmarAcaoAsync(
-                        'Deseja realmente voltar ao Menu Principal?',
-                        'Sair do Sistema'
-                    );
+            btnSair.addEventListener('click', async () => {
+                const confirmado = await FiberGuardian.Utils.confirmarAcaoAsync(
+                    'Deseja realmente voltar ao Menu Principal?',
+                    'Sair do Sistema'
+                );
 
-                    if (confirmado) {
-                        FiberGuardian.Utils.voltarMenuPrincipal();
-                    }
-                });
+                if (confirmado) {
+                    FiberGuardian.Utils.voltarMenuPrincipal();
+                }
+                dateDataRecebimento.focus();
+                return;
+            });
 
             /*
             LEMBRAR === VALOR TOTAL
@@ -653,7 +655,7 @@
                             return;
                         } else if (resposta.status === 403) {
                             FiberGuardian.Utils.exibirMensagemSessaoExpirada();
-                            window.location.href = 'index.html';
+                            FiberGuardian.Utils.voltarMenuPrincipal();
                         } else {
                             await FiberGuardian.Utils.tratarErroFetch(
                                 resposta,
@@ -668,7 +670,7 @@
                             document.getElementById('notaFiscal'),
                             erro
                         );
-                        window.location.href = 'index.html';
+                        FiberGuardian.Utils.voltarMenuPrincipal();
                     }
                 });
             }

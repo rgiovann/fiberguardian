@@ -2,6 +2,7 @@ package edu.entra21.fiberguardian.controller;
 
 import java.util.List;
 
+import edu.entra21.fiberguardian.dto.UsuarioListagemPagedDto;
 import edu.entra21.fiberguardian.input.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,11 +25,10 @@ import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import edu.entra21.fiberguardian.assembler.UsuarioDtoAssembler;
-import edu.entra21.fiberguardian.assembler.UsuarioListagemDtoAssembler;
+import edu.entra21.fiberguardian.assembler.UsuarioListagemPagedDtoAssembler;
 import edu.entra21.fiberguardian.assembler.UsuarioNovoInputDisassembler;
 import edu.entra21.fiberguardian.dto.PageDto;
 import edu.entra21.fiberguardian.dto.UsuarioDto;
-import edu.entra21.fiberguardian.dto.UsuarioListagemDto;
 import edu.entra21.fiberguardian.jacksonview.UsuarioView;
 import edu.entra21.fiberguardian.model.Usuario;
 //import edu.entra21.fiberguardian.openapi.UsuarioControllerOpenApi;
@@ -41,7 +41,7 @@ public class UsuarioController /*implements UsuarioControllerOpenApi */{
 
 	private final UsuarioService usuarioService;
 	private final UsuarioDtoAssembler usuarioDtoAssembler;
-	private final UsuarioListagemDtoAssembler usuarioListagemDtoAssembler;
+	private final UsuarioListagemPagedDtoAssembler usuarioListagemPagedDtoAssembler;
 	private final UsuarioNovoInputDisassembler UsuarioCriarUsuarioInputDisassembler;
  	private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
@@ -50,27 +50,27 @@ public class UsuarioController /*implements UsuarioControllerOpenApi */{
 			Sort.by(Sort.Order.desc("ativo"), Sort.Order.asc("nome"));
 
 	public UsuarioController(UsuarioService usuarioService, UsuarioDtoAssembler usuarioDtoAssembler,
-			UsuarioListagemDtoAssembler usuarioListagemDtoAssembler,
+			UsuarioListagemPagedDtoAssembler usuarioListagemPagedDtoAssembler,
 			UsuarioNovoInputDisassembler UsuarioCriarUsuarioInputDisassembler ) {
 
 		this.usuarioService = usuarioService;
 		this.usuarioDtoAssembler = usuarioDtoAssembler;
-		this.usuarioListagemDtoAssembler = usuarioListagemDtoAssembler;
+		this.usuarioListagemPagedDtoAssembler = usuarioListagemPagedDtoAssembler;
 		this.UsuarioCriarUsuarioInputDisassembler = UsuarioCriarUsuarioInputDisassembler;
 
 	}
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public PageDto<UsuarioListagemDto> listarPaginado(
+	public PageDto<UsuarioListagemPagedDto> listarPaginado(
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "20") int size
 	) {
 		Pageable pageable = PageRequest.of(page, size, ORDENACAO_PADRAO);
 
 		Page<Usuario> pagina = usuarioService.listarPaginado(pageable);
-		List<UsuarioListagemDto> dtos = usuarioListagemDtoAssembler.toCollectionDto(pagina.getContent());
+		List<UsuarioListagemPagedDto> dtos = usuarioListagemPagedDtoAssembler.toCollectionDto(pagina.getContent());
 
-		PageDto<UsuarioListagemDto> dtoPaged = new PageDto<>();
+		PageDto<UsuarioListagemPagedDto> dtoPaged = new PageDto<>();
 		dtoPaged.setContent(dtos);
 		dtoPaged.setPageNumber(pagina.getNumber());
 		dtoPaged.setPageSize(pagina.getSize());

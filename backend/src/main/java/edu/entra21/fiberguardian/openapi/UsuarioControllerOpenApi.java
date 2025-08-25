@@ -8,7 +8,7 @@
 //
 //import edu.entra21.fiberguardian.dto.PageDto;
 //import edu.entra21.fiberguardian.dto.UsuarioDto;
-//import edu.entra21.fiberguardian.dto.UsuarioListagemDto;
+//import edu.entra21.fiberguardian.dto.UsuarioListagemPagedDto;
 //import edu.entra21.fiberguardian.exception.handler.Problem;
 //import edu.entra21.fiberguardian.input.UsuarioAlteraSenhaInput;
 //import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +24,7 @@
 //@Tag(name = "Usuários", description = "Gerenciamento de usuários do sistema")
 //public interface UsuarioControllerOpenApi {
 //
-//	public PageDto<UsuarioListagemDto> listarPaginado(int page,int size);
+//	public PageDto<UsuarioListagemPagedDto> listarPaginado(int page,int size);
 //
 //	@Operation(summary = "Lista Usuarios", description = "Retorna Retorna uma lista paginada de usuarios. Requer autenticação via cookie JSESSIONID.")
 //	@ApiResponses({ @ApiResponse(responseCode = "200", description = "Usuário encontrado"),

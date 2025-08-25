@@ -29,7 +29,7 @@
             const btnBuscarProduto = document.getElementById('btnBuscarProduto');
             const dropdownProduto = document.getElementById('dropdownProduto');
             const btnTrocarProduto = document.getElementById('btnTrocarProduto');
-
+            const btnSair = document.getElementById('btnSair');
             /*
             const btnAvancar = document.getElementById('btnAvancarItens');
             const btnSalvarItem = document.getElementById('btnSalvarItem');
@@ -340,6 +340,19 @@
                         erro
                     );
                 }
+            });
+
+            btnSair.addEventListener('click', async () => {
+                const confirmado = await FiberGuardian.Utils.confirmarAcaoAsync(
+                    'Deseja realmente voltar ao Menu Principal?',
+                    'Sair do Sistema'
+                );
+
+                if (confirmado) {
+                    FiberGuardian.Utils.voltarMenuPrincipal();
+                }
+                dataInicial.focus();
+                return;
             });
         }
 
