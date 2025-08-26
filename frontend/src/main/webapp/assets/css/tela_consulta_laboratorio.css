@@ -1,0 +1,43 @@
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+    max-width: 98%;
+    width: auto;
+}
+
+.card-custom {
+    background-color: #eaf4fb;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.card-header {
+    background-color: #078dfb;
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 6px 6px 0 0;
+}
+
+.form-label {
+    font-weight: 500;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-menu .dropdown-item {
+    padding: 8px 16px;
+    white-space: normal;
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background-color: #078dfb;
+    color: white;
+}

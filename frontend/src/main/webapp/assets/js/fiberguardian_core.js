@@ -13,6 +13,38 @@
                 'assets/js/fiberguardian_utils.js',
                 'assets/js/tela_cadastro_recebimento.js',
             ],
+            'tela_cadastro_fornecedor.html': [
+                'assets/js/fiberguardian_utils.js',
+                'assets/js/tela_cadastro_fornecedor.js',
+            ],
+            'tela_consulta_fornecedor.html': [
+                'assets/js/fiberguardian_utils.js',
+                'assets/js/tela_consulta_fornecedor.js',
+            ],
+            'tela_cadastro_produto.html': [
+                'assets/js/fiberguardian_utils.js',
+                'assets/js/tela_cadastro_produto.js',
+            ],
+            'tela_consulta_produto.html': [
+                'assets/js/fiberguardian_utils.js',
+                'assets/js/tela_consulta_produto.js',
+            ],
+            'tela_cadastro_laboratorio.html': [
+                'assets/js/fiberguardian_utils.js',
+                'assets/js/tela_cadastro_laboratorio.js',
+            ],
+            'tela_consulta_laboratorio.html': [
+                'assets/js/fiberguardian_utils.js',
+                'assets/js/tela_consulta_laboratorio.js',
+            ],
+            'tela_teste_reprovados.html': [
+                'assets/js/fiberguardian_utils.js',
+                'assets/js/tela_teste_reprovados.js',
+            ],
+            'tela_cadastro_parecer_engenharia.html': [
+                'assets/js/fiberguardian_utils.js',
+                'assets/js/tela_cadastro_parecer_engenharia.js',
+            ],
             'tela_cadastro_usuario.html': [
                 'assets/js/fiberguardian_utils.js',
                 'assets/js/tela_cadastro_usuario.js',
@@ -25,9 +57,9 @@
                 'assets/js/fiberguardian_utils.js',
                 'assets/js/tela_lista_cadastro_usuario.js',
             ],
-            'tela_pesquisa_recebimento.html': [
+            'tela_consulta_recebimento.html': [
                 'assets/js/fiberguardian_utils.js',
-                'assets/js/tela_pesquisa_recebimento.js',
+                'assets/js/tela_consulta_recebimento.js',
             ],
         };
 
@@ -76,6 +108,27 @@
                 return; // Já redirecionou para login
             }
 
+            // dentro de inicializarApp()
+            document.addEventListener(
+                'fiberGuardian:paginaCarregada',
+                function (event) {
+                    console.log(
+                        '[FG] Evento fiberGuardian:paginaCarregada recebido:',
+                        event.detail
+                    );
+
+                    const pagina = event?.detail?.pagina;
+                    console.log(`[FG] detail.pagina = ${pagina}`);
+
+                    if (pagina === 'index.html') {
+                        console.log('[FG] É index.html -> chamando recolherSubmenus()');
+                        recolherSubmenus();
+                    } else {
+                        console.log('[FG] Não é index.html, nenhum recolhimento feito');
+                    }
+                }
+            );
+
             // Recupera dados do usuário no sessionStorage
             const dadosUsuario = sessionStorage.getItem('usuario');
             if (dadosUsuario) {
@@ -120,6 +173,20 @@
                 if (!roles.includes(roleUsuario.toUpperCase())) {
                     el.classList.add('d-none');
                 }
+            });
+        }
+
+        /**
+         * Fecha todos os submenus do menu lateral.
+         */
+        function recolherSubmenus() {
+            console;
+            document.querySelectorAll('.sidebar .collapse.show').forEach(function (el) {
+                let bsCollapse = bootstrap.Collapse.getInstance(el);
+                if (!bsCollapse) {
+                    bsCollapse = new bootstrap.Collapse(el, { toggle: false });
+                }
+                bsCollapse.hide();
             });
         }
 
@@ -206,6 +273,17 @@
                         container.innerHTML = html;
                         console.info(`[FiberGuardian] Página '${pagina}' carregada.`);
                     }
+
+                    /*
+                    document.dispatchEvent(
+                        new CustomEvent('fiberGuardian:paginaCarregada', {
+                            detail: { pagina: 'index.html' },
+                        })
+                    );
+                    console.log(
+                        '[FG] Disparado fiberGuardian:paginaCarregada inicial (index.html)'
+                    );
+                    */
 
                     const scripts = pageToScriptMap[pagina];
                     if (scripts?.length) {

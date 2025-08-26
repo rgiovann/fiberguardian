@@ -8,10 +8,15 @@ public class CnpjNotInvalidValidator implements ConstraintValidator<CnpjNotInval
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value == null || value.isBlank()) {
-            return true; // null/blank deve ser tratado por @NotBlank se necessário
+            return true; // @NotBlank cuida disso
         }
-        // remove se houver...
-        String cnpj = value.replaceAll("\\D", ""); // normaliza (remove pontos, traços e barras)
+
+        // rejeitar se tiver caracteres inválidos
+        if (!value.matches("[0-9./-]+")) {
+            return false;
+        }
+
+        String cnpj = value.replaceAll("\\D", ""); // remove pontuação
         return isCNPJ(cnpj);
     }
 

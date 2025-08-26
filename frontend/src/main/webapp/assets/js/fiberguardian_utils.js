@@ -508,6 +508,15 @@
             </div>`;
 
                 console.info('[FiberGuardian] Menu principal restaurado.');
+                // 🔔 Dispara evento para unificar comportamento
+                document.dispatchEvent(
+                    new CustomEvent('fiberGuardian:paginaCarregada', {
+                        detail: { pagina: 'index.html' },
+                    })
+                );
+                console.log(
+                    '[FiberGuardian] fiberGuardian:paginaCarregada disparado (index.html)'
+                );
             } else {
                 console.warn(
                     '[FiberGuardian] Container principal não encontrado, redirecionando...'

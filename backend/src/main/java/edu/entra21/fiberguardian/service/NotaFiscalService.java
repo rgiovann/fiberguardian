@@ -28,7 +28,6 @@ public class NotaFiscalService {
     private final FornecedorService fornecedorService;
     private final UsuarioService usuarioService;
     private final ProdutoService produtoService;
-    private final PdfNotalFiscalService pdfNotalFiscalServicenotaFiscalService;
     private final PdfNotaFiscalRepository pdfNotaFiscalRepository;
     private final MultiPartFileStorageService notaFiscalStorageService;
 
@@ -39,14 +38,12 @@ public class NotaFiscalService {
                              ItemNotaFiscalRepository itemNotaFiscalRepository,
                              UsuarioService usuarioService,
                              ProdutoService produtoService,
-                             PdfNotalFiscalService pdfNotalFiscalServicenotaFiscalService,
                              PdfNotaFiscalRepository pdfNotaFiscalRepository, MultiPartFileStorageService notaFiscalStorageService
     ) {
         this.notaFiscalRepository = notaFiscalRepository;
         this.fornecedorService = fornecedorService;
         this.usuarioService = usuarioService;
         this.produtoService = produtoService;
-        this.pdfNotalFiscalServicenotaFiscalService = pdfNotalFiscalServicenotaFiscalService;
         this.pdfNotaFiscalRepository = pdfNotaFiscalRepository;
         this.notaFiscalStorageService = notaFiscalStorageService;
     }

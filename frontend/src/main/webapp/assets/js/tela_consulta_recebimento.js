@@ -9,7 +9,7 @@
     // Armazena, em memória, os itens da nota fiscal enquanto o usuário trabalha na tela.
     let itensRecebimento = [];
 
-    FiberGuardian.TelaPesquisaRecebimento = (function () {
+    FiberGuardian.TelaConsultaRecebimento = (function () {
         function configurarEventos() {
             console.log('Módulo Tela Pesquisa Recebimento inicializado.');
 
@@ -30,6 +30,11 @@
             const dropdownProduto = document.getElementById('dropdownProduto');
             const btnTrocarProduto = document.getElementById('btnTrocarProduto');
             const btnSair = document.getElementById('btnSair');
+
+            if (!btnSair) {
+                console.error('Botão Sair não encontrado!');
+                return;
+            }
             /*
             const btnAvancar = document.getElementById('btnAvancarItens');
             const btnSalvarItem = document.getElementById('btnSalvarItem');
@@ -350,9 +355,10 @@
 
                 if (confirmado) {
                     FiberGuardian.Utils.voltarMenuPrincipal();
+                } else {
+                    // Se não confirmou, volta o foco para o campo inicial
+                    dataInicial.focus();
                 }
-                dataInicial.focus();
-                return;
             });
         }
 

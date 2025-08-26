@@ -11,7 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/tela_cadastro_recebimento.css" />
-  <link rel="stylesheet" href="assets/css/tela_pesquisa_recebimento.css" />
+  <link rel="stylesheet" href="assets/css/tela_consulta_recebimento.css" />
 
   <link rel="stylesheet" href="assets/css/dropdown_generico.css" />
 
@@ -49,11 +49,11 @@
                   placeholder="Digite parte do nome, clique botão Buscar." autocomplete="off" />
                 <button id="btnBuscarFornecedor" class="btn btn-outline-secondary" name="btnBuscarFornecedor"
                   type="button">
-                  Buscar
+                  <i class="fas fa-search me-2"></i>Buscar
                 </button>
                 <button id="btnTrocarFornecedor" class="btn btn-outline-danger" name="btnTrocarFornecedor" type="button"
                   disabled>
-                  Trocar
+                  <i class="fas fa-exchange-alt me-2"></i>Trocar
                 </button>
               </div>
               <!-- Dropdown de resultados para Fornecedor -->
@@ -67,11 +67,11 @@
                 <input type="text" id="produto" name="produto" class="form-control"
                   placeholder="Digite parte do nome, clique botão Buscar." autocomplete="off" />
                 <button id="btnBuscarProduto" class="btn btn-outline-secondary" name="btnBuscarProduto" type="button">
-                  Buscar
+                  <i class="fas fa-search me-2"></i>Buscar
                 </button>
                 <button id="btnTrocarProduto" class="btn btn-outline-danger" name="btnTrocarProduto" type="button"
                   disabled>
-                  Trocar
+                  <i class="fas fa-exchange-alt me-2"></i>Trocar
                 </button>
               </div>
               <!-- Dropdown de resultados para Produto -->
@@ -86,7 +86,7 @@
                   placeholder="Digite o número da nota" autocomplete="off" />
                 <button id="btnBuscarNrNotaFiscal" class="btn btn-outline-secondary" name="btnBuscarNrNotaFiscal"
                   type="button">
-                  Buscar
+                  <i class="fas fa-search me-2"></i>Buscar
                 </button>
                 <!--
                 <button id="btnTrocarNrNotaFiscal" class="btn btn-outline-danger" name="btnTrocarNrNotaFiscal" type="button"
@@ -113,7 +113,7 @@
               <button type="reset" class="btn btn-secondary btn-custom">
                 <i class="fas fa-eraser me-2"></i>Limpar Pesquisa
               </button>
-              <button type="button" class="btn btn-danger btn-custom" id="btnSair">
+              <button type="button" class="btn btn-danger btn-custom" id="btnSair" name="btnSair">
                 <i class="fas fa-sign-out-alt me-2"></i>Sair
               </button>
             </div>

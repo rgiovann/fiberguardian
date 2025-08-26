@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parecer de Engenharia</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/tela_cadastro_laboratorio.css">
+  <link rel="stylesheet" href="assets/css/tela_cadastro_parecer_engenharia.css">
+</head>
+<body>
+  <div class="container mt-4 mb-5">
+    <h2 class="mb-4 text-center">Parecer de Engenharia</h2>
+    <div id="alert-container"></div>
+    
+    <form id="parecerForm">
+      <div class="card-custom mb-3">
+        <div class="card-header">Dados do Parecer de Engenharia</div>
+        <div class="row mt-3">
+          <div class="col-md-6 mb-3">
+            <label for="nomeEngenheiro" class="form-label">Nome Engenheiro</label>
+            <input type="text" class="form-control" id="nomeEngenheiro" name="nomeEngenheiro" required />
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Tipo Teste Realizado</label>
+            <div class="d-flex flex-wrap">
+              <div class="custom-checkbox me-4">
+                <input type="checkbox" id="amostraFisica" name="tipoTeste" value="Amostra Física" />
+                <label for="amostraFisica">Amostra Física</label>
+              </div>
+              <div class="custom-checkbox me-4">
+                <input type="checkbox" id="amostraAcabamento" name="tipoTeste" value="Amostra Acabamento" />
+                <label for="amostraAcabamento">Amostra Acabamento</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-12 mb-3">
+            <label class="form-label">Restrição Uso</label>
+            <div>
+              <div class="custom-radio">
+                <input type="radio" id="restricaoParcial" name="restricao" value="parcial" required />
+                <label for="restricaoParcial">Restrição Parcial</label>
+              </div>
+              <div class="mt-2">
+                <textarea class="form-control restricao-adicional" id="restricaoAdicional" maxlength="500" placeholder="Descreva a restrição parcial (máx. 500 caracteres)"></textarea>
+              </div>
+              <div class="custom-radio mt-2">
+                <input type="radio" id="restricaoTotal" name="restricao" value="total" />
+                <label for="restricaoTotal">Restrição Total</label>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-12 mb-3">
+            <label for="observacao" class="form-label">Observação</label>
+            <textarea class="form-control" id="observacao" name="observacao" maxlength="1000" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-3">
+        <button type="submit" class="btn btn-primary btn-custom" id="btnSalvarParecer">Salvar</button>
+        <button type="button" class="btn btn-primary btn-custom" id="btnImprimir">Imprimir</button>
+        <button type="button" class="btn btn-danger btn-custom" id="btnSair">Sair</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal fade" id="modalMensagemSistema" tabindex="-1" aria-labelledby="modalMensagemLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-warning text-dark">
+          <h5 class="modal-title" id="modalMensagemLabel">Mensagem</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body text-pre-wrap" id="modalMensagemBody"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../webapp/assets/js/fiberguardian_core.js"></script>
+  <script src="../webapp/assets/js/tela_cadastro_parecer_engenharia.js"></script>
+</body>
+</html>

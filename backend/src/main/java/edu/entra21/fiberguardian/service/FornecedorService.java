@@ -31,7 +31,7 @@ public class FornecedorService {
 
     @Transactional
     public Fornecedor salvar(Fornecedor fornecedor) {
-
+        fornecedor.setCnpj(fornecedor.getCnpj());
         return fornecedorRepository.save(fornecedor);
     }
 
@@ -121,6 +121,11 @@ public class FornecedorService {
             return Collections.emptyList();
         }
         return fornecedorRepository.findTop20ByNomeFornecedorContainingIgnoreCase(nomeFornecedor);
+    }
+
+    private String normalizeCnpj(String cnpj) {
+        if (cnpj == null) return null;
+        return cnpj.replaceAll("\\D", ""); // remove tudo que não for número
     }
 
 }
