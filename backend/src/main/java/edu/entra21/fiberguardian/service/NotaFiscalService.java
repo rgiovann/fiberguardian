@@ -4,6 +4,7 @@ import edu.entra21.fiberguardian.exception.exception.NegocioException;
 import edu.entra21.fiberguardian.exception.exception.NotaFiscalNaoEncontradaException;
 import edu.entra21.fiberguardian.model.*;
 import edu.entra21.fiberguardian.repository.ItemNotaFiscalRepository;
+import edu.entra21.fiberguardian.repository.LaboratorioRepository;
 import edu.entra21.fiberguardian.repository.NotaFiscalRepository;
 import edu.entra21.fiberguardian.repository.PdfNotaFiscalRepository;
 import edu.entra21.fiberguardian.service.storage.MultiPartFileStorageService;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.io.InputStream;
@@ -30,6 +32,8 @@ public class NotaFiscalService {
     private final ProdutoService produtoService;
     private final PdfNotaFiscalRepository pdfNotaFiscalRepository;
     private final MultiPartFileStorageService notaFiscalStorageService;
+    private final PdfNotalFiscalService pdfNotalFiscalService;
+    private final LaboratorioRepository laboratorioRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(NotaFiscalService.class);
 
@@ -38,7 +42,10 @@ public class NotaFiscalService {
                              ItemNotaFiscalRepository itemNotaFiscalRepository,
                              UsuarioService usuarioService,
                              ProdutoService produtoService,
-                             PdfNotaFiscalRepository pdfNotaFiscalRepository, MultiPartFileStorageService notaFiscalStorageService
+                             PdfNotaFiscalRepository pdfNotaFiscalRepository,
+                             MultiPartFileStorageService notaFiscalStorageService,
+                             PdfNotalFiscalService pdfNotalFiscalService,
+                             LaboratorioRepository laboratorioRepository
     ) {
         this.notaFiscalRepository = notaFiscalRepository;
         this.fornecedorService = fornecedorService;
@@ -46,6 +53,8 @@ public class NotaFiscalService {
         this.produtoService = produtoService;
         this.pdfNotaFiscalRepository = pdfNotaFiscalRepository;
         this.notaFiscalStorageService = notaFiscalStorageService;
+        this.pdfNotalFiscalService = pdfNotalFiscalService;
+        this.laboratorioRepository = laboratorioRepository;
     }
 
 
@@ -90,15 +99,18 @@ public class NotaFiscalService {
         pdf.setNomeArquivo(novoNomeArquivo); // Agora salva com hash no banco
         PdfNotaFiscal pdfSalvo = pdfNotaFiscalRepository.save(pdf);
 
+        // Captura o nome final ANTES do callback (evita nova geração)
+        final String nomeArquivoFinal = pdfSalvo.getNomeArquivo();
+
         // Apenas após o commit, grava o arquivo no storage
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
             @Override
             public void afterCommit() {
-                String novoNomeArquivo = notaFiscalStorageService.gerarNomeArquivo(pdfSalvo.getNomeArquivo());
+                //String novoNomeArquivo = notaFiscalStorageService.gerarNomeArquivo(pdfSalvo.getNomeArquivo());
 
                 MultiPartFileStorageService.NovoMultipartFile novoArquivo =
                         MultiPartFileStorageService.NovoMultipartFile.builder()
-                                .nomeArquivo(novoNomeArquivo)
+                                .nomeArquivo(nomeArquivoFinal)
                                 .inputStream(arquivoStream)
                                 .contentType(pdfSalvo.getContentType())
                                 .build();
@@ -109,79 +121,6 @@ public class NotaFiscalService {
 
         return notaSalva;
     }
-
-    /*
-
-        @Transactional
-        public NotaFiscal salvarComItens(NotaFiscal nota, List<ItemNotaFiscal> itens) {
-
-            validaSeNFNaoEstaDuplicadaParaFornecedor(nota.getFornecedor().getCnpj(),
-                    nota.getCodigoNf());
-            Fornecedor fornecedor= fornecedorService.buscarPorCNPJObrigatorio(nota.getFornecedor().getCnpj());
-            Usuario usuario = usuarioService.buscarPorEmailObrigatorio(nota.getRecebidoPor().getEmail());
-
-            nota.setFornecedor(fornecedor);
-            nota.setRecebidoPor(usuario);
-
-            NotaFiscal finalNota = nota;
-
-            itens.forEach(item -> {
-                Produto produto = produtoService.buscarPorCnpjECodigoObrigatorio(
-                        fornecedor.getCnpj(),
-                        item.getProduto().getCodigo()
-                );
-
-                item.setProduto(produto);
-
-                item.setNotaFiscal(finalNota);
-
-                BigDecimal valorTotalItem = item.getPrecoUnitario()
-                        .multiply(item.getQtdRecebida())
-                        .setScale(2, RoundingMode.HALF_EVEN);
-
-                item.setValorTotalItem(valorTotalItem); // se você tiver um campo para armazenar
-
-            });
-
-            nota.setItens(itens);
-
-            NotaFiscal notaSaved = notaFiscalRepository.save(nota);
-
-            // registra ação a ser executada só depois do commit
-             TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-                @Override
-                public void afterCommit() {
-                    // aqui eu devo salvar os metadados da nota fiscal e o pdf da nota fiscal
-
-
-                }
-            });
-
-            return nota;
-        }
-    */
-
-
-    /*
-    @Transactional
-    public NotaFiscal salvar(NotaFiscalComItensInput notaFiscalComItensInput) {
-        // valida
-        // se existe fornecedor
-        // se existe usuario
-        // se nota para aquele fornecedor já existe.
-        // validacoes do json campo vazio, numero negativo etc...ja estão implementadas na classe
-        // NotaFiscalInput e excessoes manipuladas pelo handler de excecoes.
-
-        validaSeNFNaoEstaDuplicadaParaFornecedor(notaFiscal.getFornecedor().getCnpj(),
-                                                 notaFiscal.getCodigoNf());
-        Fornecedor fornecedor= fornecedorService.buscarPorCNPJObrigatorio(notaFiscal.getFornecedor().getCnpj());
-        Usuario usuario = usuarioService.buscarPorEmailObrigatorio(notaFiscal.getRecebidoPor().getEmail());
-
-        notaFiscal.setFornecedor(fornecedor);
-        notaFiscal.setRecebidoPor(usuario);
-        return notaFiscalRepository.save(notaFiscal);
-    }
-    */
 
     @Transactional
     public NotaFiscal atualizar(String cnpj, String codigoNf, NotaFiscal notaFiscalAlterada) {
@@ -234,6 +173,100 @@ public class NotaFiscalService {
                     String.format("Nota Fiscal '%s' para o fornecedor de CNPJ '%s' já existe no banco de dados.",
                             notaFiscal.trim(), cnpj.trim())
             );
+        }
+    }
+
+    /**
+     * Exclui uma nota fiscal pelo CNPJ do fornecedor e código da nota.
+     * @param cnpj CNPJ do fornecedor
+     * @param codigoNF Código da nota fiscal
+     * @throws NegocioException se a nota não existir
+     */
+
+    /*
+    @Transactional(readOnly = false)
+    public void excluirNotaFiscal(String cnpj, String codigoNF) {
+        // Busca a nota fiscal
+        NotaFiscal notaFiscal = notaFiscalRepository
+                .findByFornecedorCnpjAndCodigoNf(cnpj.trim(), codigoNF.trim())
+                .orElseThrow(() -> new NegocioException(
+                        "Nota fiscal " + codigoNF + " do fornecedor " + cnpj + " não existe."
+                ));
+
+        // Verifica registros associados no laboratório
+        long nrRegistros = laboratorioRepository.countByNotaFiscalId(notaFiscal.getId());
+        if (nrRegistros > 0) {
+            throw new NegocioException(
+                    "Existem " + nrRegistros + " registros associados à nota fiscal "
+                            + codigoNF + ", exclua esses registros antes de deletar a NF."
+            );
+        }
+
+        // Captura o metadados do PDF antes de excluir
+        PdfNotaFiscal pdf = pdfNotaFiscalRepository.findById(notaFiscal.getId())
+                .orElse(null);
+
+        // Exclui a nota fiscal -> cascade vai apagar itens e a FK do PDF
+        logger.info("[FG] Deletando nota fiscal.....");
+        notaFiscalRepository.delete(notaFiscal);
+        notaFiscalRepository.flush(); // força o Hibernate a executar o DELETE
+
+        // dentro de excluirNotaFiscal
+        if (pdf != null) {
+            // deleta no banco dentro da transação
+            pdfNotaFiscalRepository.delete(pdf);
+
+            // registra a exclusão do arquivo físico
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    notaFiscalStorageService.remover(pdf.getNomeArquivo());
+                }
+            });
+        }
+    }
+    */
+
+    @Transactional(readOnly = false)
+    public void excluirNotaFiscal(String cnpj, String codigoNF) {
+        // Busca a nota fiscal
+        NotaFiscal notaFiscal = notaFiscalRepository
+                .findByFornecedorCnpjAndCodigoNf(cnpj.trim(), codigoNF.trim())
+                .orElseThrow(() -> new NegocioException(
+                        "Nota fiscal " + codigoNF + " do fornecedor " + cnpj + " não existe."
+                ));
+
+        // Verifica registros associados no laboratório
+        long nrRegistros = laboratorioRepository.countByNotaFiscalId(notaFiscal.getId());
+        if (nrRegistros > 0) {
+            throw new NegocioException(
+                    "Existem " + nrRegistros + " registros associados à nota fiscal "
+                            + codigoNF + ", exclua esses registros antes de deletar a NF."
+            );
+        }
+
+        // Captura dados do PDF antes da exclusão
+        String nomeArquivo = null;
+        if (notaFiscal.getPdfNotaFiscal() != null) {
+            nomeArquivo = notaFiscal.getPdfNotaFiscal().getNomeArquivo();
+        }
+        logger.info("[FG] Nome do arquivo.....: "+nomeArquivo);
+
+
+        // Exclui a nota fiscal (cascade deleta o PDF automaticamente)
+        logger.info("[FG] Deletando nota fiscal.....");
+        notaFiscalRepository.delete(notaFiscal);
+        notaFiscalRepository.flush();
+
+        // Registra a exclusão do arquivo físico
+        if (nomeArquivo != null) {
+            final String arquivo = nomeArquivo;
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    notaFiscalStorageService.remover(arquivo);
+                }
+            });
         }
     }
 

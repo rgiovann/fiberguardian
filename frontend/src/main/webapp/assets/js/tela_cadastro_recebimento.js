@@ -278,7 +278,6 @@
                                 titulosColunas: ['Fornecedor', 'CNPJ'],
                                 msgVazio: 'Nenhum fornecedor encontrado.',
                             });
-                        // Depois que o usuário selecionar do dropdown
 
                         // Depois que o usuário selecionar do dropdown
                         cnpjFornecedor = item.cnpj;
@@ -308,11 +307,6 @@
                             btnTrocarFornecedor.disabled = true;
                             btnTrocarFornecedor.classList.add('campo-desabilitado');
                         });
-                        // Armazena do objeto recebido o cnpj
-                        //cnpjFornecedor = item.cnpj;
-                        //console.log('Index:', index);
-                        //console.log('CNPJ: [cnpjFornecedor]', cnpjFornecedor);
-                        // aqui você pode salvar em variável ou mandar para outra função
                     } else if (resposta.status === 403) {
                         FiberGuardian.Utils.exibirMensagemSessaoExpirada();
                     } else {
@@ -714,7 +708,7 @@
         } else {
             console.error('[Delegation] tbody #tabelaItens NÃO encontrado no DOM.');
         }
-
+        /*
         function updateCalculations() {
             const quantRecebida =
                 parseInt(document.getElementById('quantRecebida')?.value) || 0;
@@ -750,6 +744,36 @@
             const campoPesoMedioCaixa = document.getElementById('pesoMedioCaixa');
             if (campoPesoMedioCaixa) campoPesoMedioCaixa.value = pesoMedioCaixa;
         }
+        */
+
+        function updateCalculations() {
+            const quantRecebida =
+                parseInt(document.getElementById('quantRecebida')?.value) || 0;
+            const numeroCaixas =
+                parseInt(document.getElementById('numeroCaixas')?.value) || 0;
+
+            const valorUnit = FiberGuardian.Utils.parseCurrencyToNumber(
+                document.getElementById('valorUnit')?.value
+            );
+
+            const rochasPorCaixa = 300;
+            const quantRochas = numeroCaixas * rochasPorCaixa;
+            document.getElementById('quantRochas').value = quantRochas;
+
+            const pesoMedio =
+                quantRecebida > 0 && quantRochas > 0
+                    ? (quantRecebida / quantRochas).toFixed(2)
+                    : '0,00';
+            document.getElementById('pesoMedio').value = pesoMedio;
+
+            const valorTotalItem =
+                quantRecebida > 0 ? (valorUnit * quantRecebida).toFixed(2) : '0,00';
+            document.getElementById('valorTotalItem').value = valorTotalItem;
+
+            const pesoMedioCaixa =
+                numeroCaixas > 0 ? (quantRecebida / numeroCaixas).toFixed(2) : '0,00';
+            document.getElementById('pesoMedioCaixa').value = pesoMedioCaixa;
+        }
 
         function salvarItem() {
             const produto = document.getElementById('produto')?.value.trim();
@@ -761,10 +785,9 @@
                 parseInt(document.getElementById('quantRecebida')?.value) || 0;
             const numeroCaixas =
                 parseInt(document.getElementById('numeroCaixas')?.value) || 0;
-            const valorUnit =
-                parseFloat(
-                    document.getElementById('valorUnit')?.value.replace(',', '.')
-                ) || 0;
+            const valorUnit = FiberGuardian.Utils.parseCurrencyToNumber(
+                document.getElementById('valorUnit')?.value
+            );
             const valorTotalItem =
                 parseFloat(document.getElementById('valorTotalItem')?.value) || 0;
             const observacao = document.getElementById('infoRecebimento')?.value.trim();

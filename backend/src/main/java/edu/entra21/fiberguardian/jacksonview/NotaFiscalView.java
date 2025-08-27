@@ -9,4 +9,8 @@ public class NotaFiscalView {
         public interface NotafiscalRespostaDto {
 
         }
+
+        public interface NotafiscalCompactoDto {
+
+        }
 }

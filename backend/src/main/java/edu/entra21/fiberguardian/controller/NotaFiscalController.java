@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,6 +43,7 @@ public class NotaFiscalController {
     private final PdfNotaFiscalDtoAssembler pdfNotaFiscalDtoAssembler;
     private final NotaFiscalQueryService notaFiscalQueryService;
     private final NotaFiscalListagemPagedDtoAssembler notaFiscalListagemPagedDtoAssembler;
+    private final NotaFiscalCompactoDtoAssembler notaFiscalCompactoDtoAssembler;
     private static final Sort ORDENACAO_PADRAO =
             Sort.by(Sort.Order.desc("codigoNf"));
 
@@ -54,7 +56,8 @@ public class NotaFiscalController {
             PdfNotalFiscalService pdfNotalFiscalService,
             PdfNotaFiscalDtoAssembler pdfNotaFiscalDtoAssembler,
             NotaFiscalQueryService notaFiscalQueryService,
-            NotaFiscalListagemPagedDtoAssembler notaFiscalListagemPagedDtoAssembler) {
+            NotaFiscalListagemPagedDtoAssembler notaFiscalListagemPagedDtoAssembler,
+            NotaFiscalCompactoDtoAssembler notaFiscalCompactoDtoAssembler) {
 
         this.notaFiscalService = notaFiscalService;
         this.notaFiscalInputDisassembler = notaFiscalInputDisassembler;
@@ -64,12 +67,13 @@ public class NotaFiscalController {
         this.pdfNotaFiscalDtoAssembler = pdfNotaFiscalDtoAssembler;
         this.notaFiscalQueryService = notaFiscalQueryService;
         this.notaFiscalListagemPagedDtoAssembler = notaFiscalListagemPagedDtoAssembler;
+        this.notaFiscalCompactoDtoAssembler = notaFiscalCompactoDtoAssembler;
     }
 
-    @JsonView(NotaFiscalView.NotafiscalRespostaDto.class)
+    @JsonView(NotaFiscalView.NotafiscalCompactoDto.class)
     @GetMapping("/list")
-    public List<NotaFiscalDto> listarPorCodigo(@RequestParam String codigo) {
-        return notaFiscalDtoAssembler.toCollectionDto(
+    public List<NotaFiscalCompactoDto> listarPorCodigo(@RequestParam(required = false) String codigo) {
+        return notaFiscalCompactoDtoAssembler.toCollectionDto(
                 notaFiscalService.buscarPorCodigoNf(codigo)
         );
     }
@@ -140,19 +144,11 @@ public class NotaFiscalController {
         return dtoPaged;
     }
 
-
-//    @PostMapping()
-//    @JsonView(NotaFiscalView.NotafiscalRespostaDto.class)
-//    public  NotaFiscalDto  salvar(@RequestBody @Valid NotaFiscalComItensInput input) {
-//        NotaFiscal nota = notaFiscalInputDisassembler.toEntity(input.getNota());
-//
-//        List<ItemNotaFiscal> itens = input.getItens().stream()
-//                .map(itemNotaFiscalInputDisassembler::toEntity)
-//                .collect(Collectors.toList()); // retorna ArrayList mutável
-//
-//        NotaFiscal notaSalva = notaFiscalService.salvarComItens(nota, itens);
-//
-//        return  notaFiscalDtoAssembler.toDto(notaSalva);
-//    }
+    @DeleteMapping("/{cnpj}/{codigoNF}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletar(@PathVariable String cnpj,
+                        @PathVariable String codigoNF) {
+        notaFiscalService.excluirNotaFiscal(cnpj, codigoNF);
+    }
 
 }

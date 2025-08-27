@@ -107,10 +107,10 @@
 
             <!-- Botões centralizados -->
             <div class="text-center mt-4">
-              <button type="submit" class="btn btn-primary btn-custom">
+              <button type="button" id="btnPesquisarNf" name="btnPesquisarNf" class="btn btn-primary btn-custom">
                 <i class="fas fa-search me-2"></i>Pesquisar Notas
               </button>
-              <button type="reset" class="btn btn-secondary btn-custom">
+              <button type="button" id="btnLimpar" name="btnLimpar" class="btn btn-secondary btn-custom">
                 <i class="fas fa-eraser me-2"></i>Limpar Pesquisa
               </button>
               <button type="button" class="btn btn-danger btn-custom" id="btnSair" name="btnSair">
@@ -124,40 +124,22 @@
           <table class="table table-bordered table-striped align-middle text-center">
             <thead class="table-dark">
               <tr>
-                <th>Nº Nota Fiscal</th>
-                <th>Fornecedor (CNPJ)</th>
-                <th>Código Produto</th>
-                <th>Quantidade</th>
-                <th>Valor Unitário</th>
-                <th>Valor Total</th>
+                <th>Nr. Nota Fiscal</th>
+                <th>Fornecedor</th>
+                <th>CNPJ</th>
+                <th>Recebido por</th>
+                <th>Data Recebimento</th>
+                <th>Valor Total NF</th>
                 <th>Ações</th>
               </tr>
             </thead>
-            <tbody>
-              <!-- Linhas geradas dinamicamente via JS -->
-              <tr>
-                <td>12345</td>
-                <td>12.345.678/0001-99</td>
-                <td>PRD001</td>
-                <td>100</td>
-                <td>R$ 50,00</td>
-                <td>R$ 5.000,00</td>
-                <td>
-                  <button class="btn btn-sm btn-danger me-1" type="button">
-                    <i class="fas fa-trash"></i> Excluir
-                  </button>
-                </td>
-              </tr>
-            </tbody>
+            <tbody></tbody>
           </table>
         </div>
+        <div id="paginacao-container" class="d-flex justify-content-center mt-3"></div>
       </div>
     </section>
   </div>
-
-
-
-
   </div>
   </div>
 

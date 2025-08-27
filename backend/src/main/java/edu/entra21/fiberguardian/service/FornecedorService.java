@@ -61,7 +61,7 @@ public class FornecedorService {
     }
 
 
-    @Transactional
+    @Transactional(readOnly = false)
     public void excluir(String cnpj) {
         try {
             buscarPorCNPJObrigatorio(cnpj);

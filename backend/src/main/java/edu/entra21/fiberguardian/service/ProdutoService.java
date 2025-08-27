@@ -22,7 +22,6 @@ import java.util.*;
 public class ProdutoService {
 
     private final ProdutoRepository produtoRepository;
-    private final FornecedorRepository fornecedorRepository;
 
     private final FornecedorService fornecedorService; // já existente
     private static final Logger logger = LoggerFactory.getLogger(ProdutoService.class);
@@ -32,7 +31,6 @@ public class ProdutoService {
                           FornecedorRepository fornecedorRepository) {
         this.produtoRepository = produtoRepository;
         this.fornecedorService = fornecedorService;
-        this.fornecedorRepository = fornecedorRepository;
     }
 
     @Transactional
@@ -113,7 +111,7 @@ public class ProdutoService {
                 .orElseThrow(() -> new ProdutoNaoEncontradoException(cnpj, codigoProduto));
     }
 
-    @Transactional
+    @Transactional(readOnly = false)
     public void excluir(String cnpj, String codigoProduto) {
         fornecedorService.validaFornecedor(cnpj);
             buscarPorCnpjECodigoObrigatorio(cnpj,codigoProduto);

@@ -525,6 +525,20 @@
             }
         }
 
+        /**
+         * Converte um valor monetário (pt-BR ou en-US) em número JS.
+         * Aceita string com vírgula ou ponto como separador decimal.
+         * Retorna sempre Number, ou 0 em caso de falha.
+         */
+        function parseCurrencyToNumber(value) {
+            if (!value) return 0;
+            if (typeof value === 'number') return value; // já é numérico
+            const sanitized = value.replace(/\./g, '').replace(',', '.');
+            // remove separadores de milhar e ajusta decimal
+            const parsed = parseFloat(sanitized);
+            return isNaN(parsed) ? 0 : parsed;
+        }
+
         // Exporta apenas o necessário
         return {
             obterTokenCsrf,
@@ -543,6 +557,7 @@
             formatarValorMonetario,
             confirmarAcaoAsync,
             voltarMenuPrincipal,
+            parseCurrencyToNumber,
         };
     })();
 })();

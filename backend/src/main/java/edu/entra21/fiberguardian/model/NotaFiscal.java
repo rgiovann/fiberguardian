@@ -63,6 +63,9 @@ public class NotaFiscal {
     @OneToMany(mappedBy = "notaFiscal", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemNotaFiscal> itens = new ArrayList<>();
 
+    @OneToOne(mappedBy = "notaFiscal", cascade = CascadeType.ALL, orphanRemoval = true)
+    private PdfNotaFiscal pdfNotaFiscal;
+
     //@DecimalMin(value = "0.00")
     @Column(name = "valor_total", nullable = false, precision = 15, scale = 2)
     private BigDecimal valorTotal;

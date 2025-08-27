@@ -62,12 +62,12 @@ public class PdfNotalFiscalService {
                 .orElseThrow(() -> new PdfNotaFiscalNaoEncontradoException(pdfNotaFiscalId));
     }
 
-    @Transactional
-    public void excluir(PdfNotaFiscal foto) {
+     @Transactional(readOnly = false)
+     public void excluir(PdfNotaFiscal pdf) {
 
-        notaFiscalRepository.delete(foto);
-        notaFiscalRepository.flush(); // salva no BD os dados da foto, commitando a insercao ANTES de remover a foto.
-        notaFiscalStorageService.remover(foto.getNomeArquivo());
+        notaFiscalRepository.delete(pdf);
+        notaFiscalRepository.flush(); // salva no BD os dados da pdf, commitando a insercao ANTES de remover a pdf.
+        notaFiscalStorageService.remover(pdf.getNomeArquivo());
     }
 
 }
