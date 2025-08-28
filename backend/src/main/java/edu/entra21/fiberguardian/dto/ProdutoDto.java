@@ -1,6 +1,7 @@
 package edu.entra21.fiberguardian.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import edu.entra21.fiberguardian.jacksonview.ItemNotaFiscalView;
 import edu.entra21.fiberguardian.jacksonview.NotaFiscalView;
 import edu.entra21.fiberguardian.jacksonview.ProdutoView;
 import lombok.Getter;
@@ -11,11 +12,14 @@ import lombok.Setter;
 public class ProdutoDto {
 
 	@JsonView({ProdutoView.Completo.class,
-			ProdutoView.SomenteCodigoEDescricao.class,
-			NotaFiscalView.NotafiscalRespostaDto.class })
+			   ProdutoView.SomenteCodigoEDescricao.class,
+			   NotaFiscalView.NotafiscalRespostaDto.class,
+			   ItemNotaFiscalView.ItemNotaFiscalListDto.class})
 	private String codigo;
 
-	@JsonView({ProdutoView.Completo.class, ProdutoView.SomenteCodigoEDescricao.class  })
+	@JsonView({ProdutoView.Completo.class,
+			   ProdutoView.SomenteCodigoEDescricao.class,
+			   ItemNotaFiscalView.ItemNotaFiscalListDto.class})
 	private String descricao;
 
 	@JsonView({ProdutoView.Completo.class })

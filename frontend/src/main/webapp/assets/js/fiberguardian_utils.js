@@ -71,6 +71,108 @@
             exibirMensagemModalComFoco(msgDetalhado, 'danger', campoFoco);
         }
 
+        function exibirMensagemModal(mensagemOuConfig, tipo = 'info,', titulo = null) {
+            const modalEl = document.getElementById('modalMensagemSistema');
+            if (!modalEl) return;
+
+            const dialogEl = modalEl.querySelector('.modal-dialog');
+            if (!dialogEl) return;
+
+            // Resetar classes para evitar acúmulo
+            dialogEl.className = 'modal-dialog';
+
+            let mensagem = '';
+            let usarHtml = false;
+            let tamanho = null;
+
+            if (typeof mensagemOuConfig === 'object') {
+                if (mensagemOuConfig.html) {
+                    mensagem = mensagemOuConfig.html;
+                    usarHtml = true;
+                } else {
+                    mensagem = mensagemOuConfig.texto || '';
+                }
+                tamanho = mensagemOuConfig.tamanho || null; // 👈 novo
+            } else {
+                mensagem = mensagemOuConfig;
+            }
+
+            // aplica tamanho dinamicamente
+            if (tamanho === 'lg') {
+                dialogEl.classList.add('modal-lg');
+            } else if (tamanho === 'xl') {
+                dialogEl.classList.add('modal-xl');
+            }
+
+            const tituloEl = modalEl.querySelector('.modal-title');
+            if (tituloEl) {
+                // se não passar título, mantém o que já existe no HTML ("Aviso")
+                tituloEl.textContent = titulo || tituloEl.textContent;
+            }
+
+            const bodyEl = modalEl.querySelector('.modal-body');
+            if (usarHtml) {
+                bodyEl.innerHTML = mensagem;
+            } else {
+                bodyEl.textContent = mensagem;
+            }
+
+            // título/cores do modal
+            const headerEl = modalEl.querySelector('.modal-header');
+            if (headerEl) {
+                headerEl.className = 'modal-header';
+                const tipoCor = {
+                    danger: 'bg-danger text-white',
+                    warning: 'bg-warning text-dark',
+                    success: 'bg-success text-white',
+                    info: 'bg-info text-white',
+                    primary: 'bg-primary text-white',
+                };
+                headerEl.className += ' ' + (tipoCor[tipo] || 'bg-warning text-dark');
+            }
+
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+        }
+
+        /*
+        function exibirMensagemModal(mensagem, tipo = 'info') {
+            const modalEl = document.getElementById('modalMensagemSistema');
+            if (!modalEl) return;
+
+            const tituloEl = modalEl.querySelector('.modal-title');
+            const corpoEl = modalEl.querySelector('.modal-body');
+
+            if (tituloEl) tituloEl.textContent = 'Aviso';
+
+            if (corpoEl) {
+                if (typeof mensagem === 'object' && mensagem.html) {
+                    // Novo modo: recebe HTML pronto
+                    corpoEl.innerHTML = mensagem.html;
+                } else {
+                    // Modo antigo: texto simples
+                    corpoEl.innerHTML = mensagem;
+                }
+            }
+
+            const headerEl = modalEl.querySelector('.modal-header');
+            if (headerEl) {
+                headerEl.className = 'modal-header';
+                const tipoCor = {
+                    danger: 'bg-danger text-white',
+                    warning: 'bg-warning text-dark',
+                    success: 'bg-success text-white',
+                    info: 'bg-info text-white',
+                    primary: 'bg-primary text-white',
+                };
+                headerEl.className += ' ' + (tipoCor[tipo] || 'bg-warning text-dark');
+            }
+
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        }
+
+
         function exibirMensagemModal(mensagem, tipo = 'info') {
             const modalEl = document.getElementById('modalMensagemSistema');
             if (!modalEl) return;
@@ -100,6 +202,7 @@
             const modal = new bootstrap.Modal(modalEl);
             modal.show();
         }
+        */
 
         function escapeHTML(text) {
             const div = document.createElement('div');
@@ -216,82 +319,6 @@
                 exibirMensagemModal('Erro no logout: ' + e.message, 'danger');
             }
         }
-        /*
-        FiberGuardian.Utils.renderizarDropdownGenericoAsync = function ({
-            input,
-            dropdown,
-            lista,
-            camposExibir,
-            titulosColunas,
-            msgVazio = 'Nenhum item encontrado.',
-        }) {
-            return new Promise((resolve) => {
-                dropdown.innerHTML = '';
-
-                const tabela = document.createElement('table');
-                tabela.className = 'table table-sm table-hover mb-0';
-                tabela.style.border = '1px solid #b5d4f5';
-                tabela.style.borderRadius = '4px';
-                tabela.style.tableLayout = 'fixed';
-                tabela.style.width = '100%';
-
-                const numColunas = titulosColunas.length;
-                const larguraPorColuna = `${100 / numColunas}%`;
-
-                const thead = document.createElement('thead');
-                const trHead = document.createElement('tr');
-
-                titulosColunas.forEach((titulo) => {
-                    const th = document.createElement('th');
-                    th.textContent = titulo;
-                    th.style.width = larguraPorColuna;
-                    th.style.minWidth = larguraPorColuna;
-                    trHead.appendChild(th);
-                });
-
-                thead.appendChild(trHead);
-                tabela.appendChild(thead);
-
-                const tbody = document.createElement('tbody');
-
-                if (!Array.isArray(lista) || lista.length === 0) {
-                    const linha = document.createElement('tr');
-                    const celula = document.createElement('td');
-                    celula.colSpan = numColunas;
-                    celula.className = 'text-muted text-center';
-                    celula.textContent = msgVazio;
-                    linha.appendChild(celula);
-                    tbody.appendChild(linha);
-                } else {
-                    lista.forEach((item, index) => {
-                        const linha = document.createElement('tr');
-                        linha.style.cursor = 'pointer';
-
-                        camposExibir.forEach((campo) => {
-                            const celula = document.createElement('td');
-                            celula.textContent = item[campo] || '';
-                            celula.style.width = larguraPorColuna;
-                            celula.style.minWidth = larguraPorColuna;
-                            linha.appendChild(celula);
-                        });
-
-                        linha.addEventListener('click', () => {
-                            input.value = item[camposExibir[0]] || '';
-                            dropdown.classList.remove('show');
-                            input.focus();
-                            resolve({ index, item }); // retorna os dois
-                        });
-
-                        tbody.appendChild(linha);
-                    });
-                }
-
-                tabela.appendChild(tbody);
-                dropdown.appendChild(tabela);
-                dropdown.classList.add('show');
-            });
-        };
-        */
 
         function renderizarDropdownGenericoAsync({
             input,

@@ -35,51 +35,175 @@
                 const tabelaBody = document.querySelector('.table-container tbody');
 
                 tabelaBody.addEventListener('click', async (e) => {
-                    const btn = e.target.closest('.btn-excluir');
-                    if (!btn) return;
+                    const btnExcluir = e.target.closest('.btn-excluir');
+                    const btnVerItens = e.target.closest('.btn-ver-itens');
 
-                    const linha = btn.closest('tr');
-                    const codigoNf = linha.children[0].textContent;
-                    const cnpjFornecedor = linha.children[2].textContent;
+                    // evita logs/fluxos desnecessários para outros clicks
+                    if (!btnExcluir && !btnVerItens) return;
 
-                    const confirmado = await FiberGuardian.Utils.confirmarAcaoAsync(
-                        `Deseja realmente excluir a nota fiscal ${codigoNf}?`,
-                        'Confirmação de Exclusão'
-                    );
+                    if (btnExcluir) {
+                        const linha = btnExcluir.closest('tr');
+                        const codigoNf = linha.children[0].textContent.trim();
+                        const cnpjFornecedor = linha.children[2].textContent.trim();
 
-                    if (!confirmado) return;
-
-                    try {
-                        const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
-
-                        const resposta = await fetch(
-                            `/api/nota-fiscal/${cnpjFornecedor}/${codigoNf}`,
-                            {
-                                method: 'DELETE',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-XSRF-TOKEN': csrfToken,
-                                },
-                                credentials: 'include',
-                            }
+                        const confirmado = await FiberGuardian.Utils.confirmarAcaoAsync(
+                            `Deseja realmente excluir a nota fiscal ${codigoNf}?`,
+                            'Confirmação de Exclusão'
                         );
 
-                        if (resposta.ok) {
-                            FiberGuardian.Utils.exibirMensagemModal(
-                                `Nota fiscal ${codigoNf} excluída com sucesso.`,
-                                'success'
+                        if (!confirmado) return;
+
+                        try {
+                            const csrfToken =
+                                await FiberGuardian.Utils.obterTokenCsrf();
+
+                            const resposta = await fetch(
+                                `/api/nota-fiscal/${cnpjFornecedor}/${codigoNf}`,
+                                {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-XSRF-TOKEN': csrfToken,
+                                    },
+                                    credentials: 'include',
+                                }
                             );
-                            buscarNotas(paginaAtual);
-                        } else {
-                            await FiberGuardian.Utils.tratarErroFetch(resposta, linha);
+
+                            if (resposta.ok) {
+                                FiberGuardian.Utils.exibirMensagemModal(
+                                    `Nota fiscal ${codigoNf} excluída com sucesso.`,
+                                    'success'
+                                );
+                                buscarNotas(paginaAtual);
+                            } else {
+                                await FiberGuardian.Utils.tratarErroFetch(resposta);
+                            }
+                        } catch (erro) {
+                            console.error('Erro ao excluir nota fiscal:', erro);
+                            FiberGuardian.Utils.exibirErroDeRede(
+                                'Erro de rede ao excluir a nota fiscal.',
+                                null,
+                                erro
+                            );
                         }
-                    } catch (erro) {
-                        console.error('Erro ao excluir nota fiscal:', erro);
-                        FiberGuardian.Utils.exibirErroDeRede(
-                            'Erro de rede ao excluir a nota fiscal.',
-                            linha,
-                            erro
-                        );
+                    }
+
+                    if (btnVerItens) {
+                        const linha = btnVerItens.closest('tr');
+                        const codigoNf = linha.children[0].textContent.trim();
+                        const cnpjFornecedor = linha.children[2].textContent.trim();
+
+                        console.log('[FG] Código NF : ' + codigoNf);
+                        console.log('[FG] CNPJ : ' + cnpjFornecedor);
+
+                        try {
+                            const csrfToken =
+                                await FiberGuardian.Utils.obterTokenCsrf();
+                            const response = await fetch(
+                                `/api/item-notas-fiscais/list/${cnpjFornecedor}/${codigoNf}`,
+                                {
+                                    method: 'GET',
+                                    headers: {
+                                        Accept: 'application/json',
+                                        'X-XSRF-TOKEN': csrfToken,
+                                    },
+                                    credentials: 'include',
+                                }
+                            );
+
+                            if (!response.ok) {
+                                await FiberGuardian.Utils.tratarErroFetch(response); // corrigido: usar 'response'
+                                return;
+                            }
+
+                            const itens = await response.json();
+
+                            if (!Array.isArray(itens) || itens.length === 0) {
+                                FiberGuardian.Utils.exibirMensagemModal(
+                                    'Nenhum item encontrado para esta Nota Fiscal.',
+                                    'info',
+                                    'Itens da Nota Fiscal'
+                                );
+                                return;
+                            }
+
+                            // monta html da mesma forma que o mock original, com formatação
+                            let htmlTabela = `
+                <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Cod. Produto</th>
+                        <th>Descrição</th>
+                        <th class="text-end">Quantidade</th>
+                        <th class="text-end">Nº Caixas</th>
+                        <th class="text-end">Preço Unitário</th>
+                        <th class="text-end">Valor Total</th>
+                        <th>Observação</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+                            itens.forEach((item) => {
+                                const codigo = item.produto?.codigo ?? '';
+                                const descricao = item.produto?.descricao ?? '';
+                                const qtd =
+                                    typeof item.qtdRecebida === 'number'
+                                        ? item.qtdRecebida.toLocaleString('pt-BR')
+                                        : item.qtdRecebida ?? '';
+                                const nrCaixas = item.nrCaixas ?? '';
+                                const precoUnit =
+                                    typeof item.precoUnitario === 'number'
+                                        ? item.precoUnitario.toLocaleString('pt-BR', {
+                                              style: 'currency',
+                                              currency: 'BRL',
+                                          })
+                                        : item.precoUnitario ?? '';
+                                const valorTotal =
+                                    typeof item.valorTotalItem === 'number'
+                                        ? item.valorTotalItem.toLocaleString('pt-BR', {
+                                              style: 'currency',
+                                              currency: 'BRL',
+                                          })
+                                        : item.valorTotalItem ?? '';
+                                const obs = item.observacao ?? '';
+
+                                htmlTabela += `
+                                    <tr>
+                                        <td>${codigo}</td>
+                                        <td>${descricao}</td>
+                                        <td class="text-end">${qtd}</td>
+                                        <td class="text-end">${nrCaixas}</td>
+                                        <td class="text-end">${precoUnit}</td>
+                                        <td class="text-end">${valorTotal}</td>
+                                        <td>${obs}</td>
+                                    </tr>
+                                `;
+                            });
+
+                            htmlTabela += `
+                                    </tbody>
+                                </table>
+                                </div>
+                            `;
+
+                            FiberGuardian.Utils.exibirMensagemModal(
+                                { html: htmlTabela, tamanho: 'xl' },
+                                'info',
+                                'Itens da Nota Fiscal'
+                            );
+                        } catch (erro) {
+                            console.error(
+                                'Erro ao carregar itens da Nota Fiscal:',
+                                erro
+                            );
+                            FiberGuardian.Utils.exibirErroDeRede(
+                                'Erro de rede ao carregar os itens da nota fiscal.',
+                                null,
+                                erro
+                            );
+                        }
                     }
                 });
 
@@ -504,11 +628,20 @@
                 const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
 
                 // Captura valores dos filtros
-                const dataInicial = document.getElementById('dataInicial').value;
-                const dataFinal = document.getElementById('dataFinal').value;
+                const dataInicialValor = document.getElementById('dataInicial').value;
+                const dataFinalValor = document.getElementById('dataFinal').value;
                 const nfCodigo = document.getElementById('nrNotaFiscal').value.trim();
                 const fornecedor = cnpjFornecedorSelecionado; // já vem do fluxo do fornecedor
                 const produto = codigoProdutoSelecionado;
+
+                if (dataInicialValor > dataFinalValor) {
+                    FiberGuardian.Utils.exibirMensagemModalComFoco(
+                        'Data Inicial não pode ser maior que Data Final.',
+                        'warning',
+                        dataInicialValor
+                    );
+                    return;
+                }
 
                 console.log('Código Fornecedor : ' + cnpjFornecedorSelecionado);
 
@@ -517,8 +650,9 @@
                 url.searchParams.append('page', pagina);
                 url.searchParams.append('size', tamanhoPagina);
 
-                if (dataInicial) url.searchParams.append('dataini', dataInicial);
-                if (dataFinal) url.searchParams.append('datafim', dataFinal);
+                if (dataInicialValor)
+                    url.searchParams.append('dataini', dataInicialValor);
+                if (dataFinalValor) url.searchParams.append('datafim', dataFinalValor);
                 if (nfCodigo) url.searchParams.append('nfCodigo', nfCodigo);
                 if (fornecedor) url.searchParams.append('cnpj', fornecedor);
                 if (produto) url.searchParams.append('produtoCodigo', produto);
@@ -583,7 +717,7 @@
                     'pt-BR'
                 );
 
-                linha.innerHTML = `
+                /*     linha.innerHTML = `
             <td>${nota.codigoNf}</td>
             <td>${nota.nomeFornecedor}</td>
             <td>${nota.cnpjFornecedor}</td>
@@ -596,6 +730,25 @@
                 </button>
             </td>
             `;
+            */
+
+                linha.innerHTML = `
+            <td>${nota.codigoNf}</td>
+            <td>${nota.nomeFornecedor}</td>
+            <td>${nota.cnpjFornecedor}</td>
+            <td>${nota.emailUsuario}</td>
+            <td>${dataFormatada}</td>
+            <td>${valorFormatado}</td>
+            <td>
+                <button class="btn btn-sm btn-danger me-1 btn-excluir" type="button">
+                    <i class="fas fa-trash"></i> Excluir
+                </button>
+                <button class="btn btn-sm btn-info btn-ver-itens" type="button">
+                    <i class="fas fa-list"></i> Ver Itens
+                </button>
+            </td>
+        `;
+
                 tabelaBody.appendChild(linha);
             });
         }

@@ -122,13 +122,7 @@ public class NotaFiscalService {
         return notaSalva;
     }
 
-    @Transactional
-    public NotaFiscal atualizar(String cnpj, String codigoNf, NotaFiscal notaFiscalAlterada) {
-        // Regra de negócio específica será implementada depois
-        return null;
-    }
-
-    /**
+     /**
      * Autocomplete por código parcial da nota fiscal.
      * Retorna no máximo 20 resultados.
      */
@@ -143,12 +137,12 @@ public class NotaFiscalService {
      * Autocomplete por nome parcial do fornecedor.
      * Retorna no máximo 20 resultados, evitando N+1 no fornecedor.
      */
-    public List<NotaFiscal> buscarPorNomeFornecedor(String nomeParcialFornecedor) {
-        if (nomeParcialFornecedor == null || nomeParcialFornecedor.isBlank()) {
-            return Collections.emptyList();
-        }
-        return notaFiscalRepository.findTop20ByFornecedorNomeFornecedorContainingIgnoreCase(nomeParcialFornecedor);
-    }
+//    public List<NotaFiscal> buscarPorNomeFornecedor(String nomeParcialFornecedor) {
+//        if (nomeParcialFornecedor == null || nomeParcialFornecedor.isBlank()) {
+//            return Collections.emptyList();
+//        }
+//        return notaFiscalRepository.findTop20ByFornecedorNomeFornecedorContainingIgnoreCase(nomeParcialFornecedor);
+//    }
 
     /**
      * Autocomplete por nome parcial do usuário que recebeu a nota.
@@ -174,6 +168,14 @@ public class NotaFiscalService {
                             notaFiscal.trim(), cnpj.trim())
             );
         }
+    }
+
+    public NotaFiscal buscarObrigatorioPorNotaECnpj(String cnpj, String notaFiscal){
+        return notaFiscalRepository
+                .findByFornecedorCnpjAndCodigoNf(cnpj.trim(), notaFiscal.trim())
+                .orElseThrow(() -> new NegocioException(
+                        "Nota fiscal " + notaFiscal + " do fornecedor " + cnpj + " não existe."
+                ));
     }
 
     /**
@@ -229,12 +231,15 @@ public class NotaFiscalService {
 
     @Transactional(readOnly = false)
     public void excluirNotaFiscal(String cnpj, String codigoNF) {
+
         // Busca a nota fiscal
-        NotaFiscal notaFiscal = notaFiscalRepository
-                .findByFornecedorCnpjAndCodigoNf(cnpj.trim(), codigoNF.trim())
-                .orElseThrow(() -> new NegocioException(
-                        "Nota fiscal " + codigoNF + " do fornecedor " + cnpj + " não existe."
-                ));
+        //NotaFiscal notaFiscal = notaFiscalRepository
+        //        .findByFornecedorCnpjAndCodigoNf(cnpj.trim(), codigoNF.trim())
+        //        .orElseThrow(() -> new NegocioException(
+        //                "Nota fiscal " + codigoNF + " do fornecedor " + cnpj + " não existe."
+        //        ));
+
+        NotaFiscal notaFiscal = buscarObrigatorioPorNotaECnpj(cnpj,codigoNF);
 
         // Verifica registros associados no laboratório
         long nrRegistros = laboratorioRepository.countByNotaFiscalId(notaFiscal.getId());

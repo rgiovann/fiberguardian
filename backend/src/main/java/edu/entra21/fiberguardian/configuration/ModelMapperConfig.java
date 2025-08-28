@@ -18,7 +18,7 @@ public class ModelMapperConfig {
 
     @Bean
     Mapper mapper() {
-    	final  ModelMapper modelMapper = new ModelMapper();
+        final  ModelMapper modelMapper = new ModelMapper();
 
         modelMapper.getConfiguration()
                 .setSkipNullEnabled(true);
@@ -70,8 +70,7 @@ public class ModelMapperConfig {
             public void map(Object source, Object destination) {
                 modelMapper.map(source, destination);
             }
-        };     
-    }
-    	
+        };
     }
 
+}
