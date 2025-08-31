@@ -18,7 +18,11 @@
 .form-section-title,
 .card-header {
     background-color: #078dfb;
-    /* azul claro consistente */
+}
+
+.branco-bold {
+    color: white;
+    font-weight: bold;
 }
 
 .card {
@@ -51,17 +55,16 @@
 
 /* Força cor diferenciada nos inputs/textareas */
 .form-control.campo-desabilitado {
-  background-color: #dee2e6 !important; /* tom mais escuro que o readonly normal */
-  color: #6c757d; /* texto um pouco apagado */
+    background-color: #dee2e6 !important; /* tom mais escuro que o readonly normal */
+    color: #6c757d; /* texto um pouco apagado */
 }
 
 /* Para botões bloqueados manualmente */
 button.campo-desabilitado {
-  opacity: 0.65 !important;
+    opacity: 0.65 !important;
 }
 
 /* Para toda a section “travada” dar um efeito esmaecido */
 section.card.campo-desabilitado {
-  opacity: 0.85;
+    opacity: 0.85;
 }
-

@@ -10,19 +10,31 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 100vh; /* garante altura mínima do viewport */
 }
 
 .card {
-    width: 100%;
-    max-width: 420px;
+    flex: 0 0 auto;
+    width: auto; /* deixa o card ter largura natural */
+    max-width: 420px; /* nunca ultrapassa 420px */
+    min-width: 400px;
     padding: 1.25rem;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
     border-radius: 1rem;
+
+    max-height: 90vh; /* limita altura */
+    min-height: 200px; /* altura mínima */
+    overflow: auto; /* scroll interno se necessário */
 }
 
 .card-body {
     padding: 0;
     /* reduz espaço interno */
+}
+
+body > .card {
+    width: auto;
+    max-width: 420px;
 }
 
 h5.card-title {

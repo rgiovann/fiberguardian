@@ -1,294 +1,292 @@
 (function () {
-    'use strict';
-
     window.FiberGuardian = window.FiberGuardian || {};
+    let cnpjFornecedorSelecionado = null;
+    let codigoProdutoSelecionado = null;
+    let nrNotaFiscalSelecionado = null;
 
-    FiberGuardian.TelaCadastroLaboratorio = (function () {
-        const URL_API_FORNECEDOR = '/api/fornecedores/list/recebimento';
-        const URL_API_NOTA_FISCAL = '/api/notas-fiscais/list';
-        const URL_API_PRODUTO = '/api/produtos/list';
-        const URL_API_TESTE = '/api/testes-laboratorio';
+    let itensRecebimento = [];
 
-        let fornecedorSelecionado = null;
-        let notaFiscalSelecionada = null;
-        let produtoSelecionado = null;
-        let testeIdParaEdicao = null;
+    FiberGuardian.TelaCadastroLaboratorio = (function() {
+        function configurarEventos() {
+            console.log('Módulo Tela Cadastro Laboratorio inicializado.');
 
-        const form = document.getElementById('laboratorioForm');
-        const inputFornecedor = document.getElementById('fornecedor');
-        const dropdownFornecedor = document.getElementById('dropdownFornecedor');
-        const btnBuscarFornecedor = document.getElementById('btnBuscarFornecedor');
-        const btnTrocarFornecedor = document.getElementById('btnTrocarFornecedor');
-        const inputNotaFiscal = document.getElementById('notaFiscal');
-        const dropdownNotaFiscal = document.getElementById('dropdownNotaFiscal');
-        const btnBuscarNotaFiscal = document.getElementById('btnBuscarNotaFiscal');
-        const btnTrocarNotaFiscal = document.getElementById('btnTrocarNotaFiscal');
-        const inputCodigoProduto = document.getElementById('codigoProduto');
-        const dropdownCodigoProduto = document.getElementById('dropdownCodigoProduto');
-        const btnBuscarCodigoProduto = document.getElementById('btnBuscarCodigoProduto');
-        const btnTrocarCodigoProduto = document.getElementById('btnTrocarCodigoProduto');
-        const inputNumeroLote = document.getElementById('numeroLote');
-        const inputCvm = document.getElementById('cvm');
-        const inputPontosFinos = document.getElementById('pontosFinos');
-        const inputPontosGrossos = document.getElementById('pontosGrossos');
-        const inputNeps = document.getElementById('neps');
-        const inputHPilosidade = document.getElementById('hPilosidade');
-        const inputResistencia = document.getElementById('resistencia');
-        const inputAlongamento = document.getElementById('alongamento');
-        const inputTituloNe = document.getElementById('tituloNe');
-        const inputTorcaoTm = document.getElementById('torcaoTm');
-        const selectStatus = document.getElementById('status');
-        const inputLiberacaoPor = document.getElementById('liberacaoPor');
-        const textareaInfoRecebimento = document.getElementById('infoRecebimento');
+            const formLaboratorio = document.getElementById('laboratorioForm'); // Obtém o elemento do formulário
+            const inputFornecedor = document.getElementById('fornecedor');
+            const btnBuscarFornecedor = document.getElementById('btnBuscarFornecedor');
+            const dropdownFornecedor = document.getElementById('dropdownFornecedor');
+            const btnTrocarFornecedor = document.getElementById('btnTrocarFornecedor');
 
-        async function fetchData(url, method = 'GET', body = null) {
-            try {
-                const csrf = await FiberGuardian.Utils.obterTokenCsrf();
-                if (!csrf) {
-                    FiberGuardian.Utils.exibirMensagemModal('Erro: Token CSRF não encontrado.', 'danger');
-                    return [];
-                }
+            const inputNrNotFiscal = document.getElementById('nrNotaFiscal');
+            const btnBuscarNrNotaFiscal = document.getElementById('btnBuscarNrNotaFiscal');
+            const dropdownNrNotaFiscal = document.getElementById('dropdownNrNotaFiscal');
 
-                const opcoes = {
-                    method: method,
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-XSRF-TOKEN': csrf,
-                    },
+            const inputProduto = document.getElementById('produto');
+            const btnBuscarProduto = document.getElementById('btnBuscarProduto');
+            const dropdownProduto = document.getElementById('dropdownProduto');
+            const btnTrocarProduto = document.getElementById('btnTrocarProduto');
+
+            const btnSair = document.getElementById('btnSair');
+
+            if (!btnBuscarFornecedor || !inputFornecedor || !dropdownFornecedor || !btnTrocarFornecedor) {
+                console.error('Elementos da busca de Fornecedor não encontrados.');
+                return;
+            }
+
+            if (!btnBuscarProduto || !inputProduto || !dropdownProduto || !btnTrocarProduto) {
+                console.error('Elementos da busca de Produto não encontrados.');
+                return;
+            }
+
+            if (!btnBuscarNrNotaFiscal || !inputNrNotFiscal || !dropdownNrNotaFiscal) {
+                console.error('Elementos da busca de Nota Fiscal não encontrados.');
+                return;
+            }
+
+            // Função para manipular o envio dos dados do formulário
+            async function handleFormSubmit(event) {
+                event.preventDefault(); // Impede o envio padrão do formulário
+
+                const formData = {
+                    cnpjFornecedor: cnpjFornecedorSelecionado,
+                    nrNotaFiscal: nrNotaFiscalSelecionado,
+                    codigoProduto: codigoProdutoSelecionado,
+                    numeroLote: document.getElementById('numeroLote').value,
+                    cvm: document.getElementById('cvm').value,
+                    pontosFinos: document.getElementById('pontosFinos').value,
+                    pontosGrossos: document.getElementById('pontosGrossos').value,
+                    neps: document.getElementById('neps').value,
+                    hPilosidade: document.getElementById('hPilosidade').value,
+                    resistencia: document.getElementById('resistencia').value,
+                    alongamento: document.getElementById('alongamento').value,
+                    tituloNe: document.getElementById('tituloNe').value,
+                    torcaoTm: document.getElementById('torcaoTm').value,
+                    status: document.getElementById('status').value,
+                    liberacaoPor: document.getElementById('liberacaoPor').value,
+                    infoRecebimento: document.getElementById('infoRecebimento').value,
                 };
 
-                if (body) {
-                    opcoes.body = JSON.stringify(body);
+                // Valida se um número de lote, produto e nota fiscal foram selecionados/preenchidos
+                if (!cnpjFornecedorSelecionado || !nrNotaFiscalSelecionado || !codigoProdutoSelecionado || !formData.numeroLote) {
+                     FiberGuardian.Utils.exibirMensagemModalComFoco('Por favor, preencha todos os campos obrigatórios na seção "Dados do Teste".', 'warning', formLaboratorio);
+                    return;
                 }
 
-                const resposta = await fetch(url, opcoes);
-                if (!resposta.ok) {
-                    if (resposta.status === 403) {
+                try {
+                    const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
+                    const resposta = await fetch('/api/laboratorio/save', { // Ajuste o endpoint conforme necessário
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-XSRF-TOKEN': csrfToken
+                        },
+                        body: JSON.stringify(formData),
+                        credentials: 'include',
+                    });
+
+                    if (resposta.ok) {
+                        FiberGuardian.Utils.exibirMensagemModalComFoco('Dados do laboratório salvos com sucesso!', 'success', formLaboratorio);
+                        // Opcionalmente, você pode redefinir o formulário ou redirecionar o usuário aqui
+                    } else if (resposta.status === 403) {
                         FiberGuardian.Utils.exibirMensagemSessaoExpirada();
                     } else {
-                        await FiberGuardian.Utils.tratarErroFetch(resposta);
+                        await FiberGuardian.Utils.tratarErroFetch(resposta, formLaboratorio);
                     }
-                    return null;
+                } catch (erro) {
+                    FiberGuardian.Utils.exibirErroDeRede('Erro de rede ao salvar os dados do laboratório.', formLaboratorio, erro);
                 }
-                const dados = await resposta.json();
-                return Array.isArray(dados) ? dados : (dados.content || dados);
-            } catch (erro) {
-                FiberGuardian.Utils.exibirErroDeRede('Erro de rede na requisição.', null, erro);
-                return null;
             }
-        }
 
-        function configurarDropdownGenerico(inputElement, dropdownElement, btnBuscar, btnTrocar, urlApi, paramsKey, itemDisplay) {
-            btnBuscar.addEventListener('click', async () => {
-                dropdownElement.innerHTML = '';
-                dropdownElement.classList.remove('show');
-                const valorParcial = inputElement.value.trim();
-                if (!valorParcial) {
-                    dropdownElement.innerHTML = `<div class="dropdown-item-text">Digite para buscar.</div>`;
-                    dropdownElement.classList.add('show');
+
+            // Função auxiliar para gerenciar o estado dos campos e botões
+            function alternarEstadoCampos(input, btnBuscar, btnTrocar, isSelecionado) {
+                input.readOnly = isSelecionado;
+                input.classList.toggle('campo-desabilitado', isSelecionado);
+                btnBuscar.disabled = isSelecionado;
+                btnBuscar.classList.toggle('campo-desabilitado', isSelecionado);
+                btnTrocar.disabled = !isSelecionado;
+                btnTrocar.classList.toggle('campo-desabilitado', !isSelecionado);
+            }
+
+            // Funções de reset
+            function resetarFornecedor() {
+                cnpjFornecedorSelecionado = null;
+                inputFornecedor.value = '';
+                alternarEstadoCampos(inputFornecedor, btnBuscarFornecedor, btnTrocarFornecedor, false);
+            }
+
+            function resetarProduto() {
+                codigoProdutoSelecionado = null;
+                inputProduto.value = '';
+                alternarEstadoCampos(inputProduto, btnBuscarProduto, btnTrocarProduto, false);
+            }
+
+            function resetarNotaFiscal() {
+                nrNotaFiscalSelecionado = null;
+                inputNrNotFiscal.value = '';
+                // A nota fiscal não tem botão de 'Trocar', mas a lógica de reset é útil.
+            }
+
+            FiberGuardian.Utils.fecharQualquerDropdownAberto(
+                [dropdownFornecedor, dropdownNrNotaFiscal, dropdownProduto],
+                [inputFornecedor, inputProduto, inputNrNotFiscal],
+                [btnBuscarFornecedor, btnBuscarProduto, btnBuscarNrNotaFiscal]
+            );
+
+            // Event listener para a busca de fornecedor
+            btnBuscarFornecedor.addEventListener('click', async function () {
+                const codigoParcial = inputFornecedor.value.trim();
+                if (!codigoParcial) {
+                    FiberGuardian.Utils.exibirMensagemModalComFoco('Digite parte do nome do fornecedor para buscar.', 'warning', inputFornecedor);
                     return;
                 }
-                const lista = await fetchData(`${urlApi}?${paramsKey}=${encodeURIComponent(valorParcial)}`);
-                if (!lista || lista.length === 0) {
-                    dropdownElement.innerHTML = `<div class="dropdown-item-text">Nenhum resultado encontrado.</div>`;
-                    dropdownElement.classList.add('show');
-                    return;
-                }
-                lista.forEach(item => {
-                    const dropdownItem = document.createElement('a');
-                    dropdownItem.className = 'dropdown-item';
-                    dropdownItem.href = '#';
-                    dropdownItem.innerHTML = itemDisplay(item);
-                    dropdownItem.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        inputElement.value = item.nome || item.numero || item.codigo;
-                        if (inputElement === inputFornecedor) fornecedorSelecionado = item;
-                        if (inputElement === inputNotaFiscal) notaFiscalSelecionada = item;
-                        if (inputElement === inputCodigoProduto) produtoSelecionado = item;
-                        dropdownElement.classList.remove('show');
-                        btnTrocar.disabled = false;
-                        btnBuscar.disabled = true;
-                        inputElement.disabled = true;
-                        verificarHabilitacaoBotoes();
+                try {
+                    const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
+                    const resposta = await fetch(`/api/fornecedores/list/recebimento?nome=${encodeURIComponent(codigoParcial)}`, {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json', 'X-XSRF-TOKEN': csrfToken },
+                        credentials: 'include',
                     });
-                    dropdownElement.appendChild(dropdownItem);
-                });
-                dropdownElement.classList.add('show');
-            });
-            btnTrocar.addEventListener('click', () => {
-                inputElement.value = '';
-                inputElement.disabled = false;
-                btnTrocar.disabled = true;
-                btnBuscar.disabled = false;
-                dropdownElement.classList.remove('show');
-                if (inputElement === inputFornecedor) {
-                    fornecedorSelecionado = null;
-                    notaFiscalSelecionada = null;
-                    produtoSelecionado = null;
-                    inputNotaFiscal.value = '';
-                    inputNotaFiscal.disabled = true;
-                    btnBuscarNotaFiscal.disabled = true;
-                    inputCodigoProduto.value = '';
-                    inputCodigoProduto.disabled = true;
-                    btnBuscarCodigoProduto.disabled = true;
-                }
-                if (inputElement === inputNotaFiscal) {
-                    notaFiscalSelecionada = null;
-                    produtoSelecionado = null;
-                    inputCodigoProduto.value = '';
-                    inputCodigoProduto.disabled = true;
-                    btnBuscarCodigoProduto.disabled = true;
-                }
-                if (inputElement === inputCodigoProduto) {
-                    produtoSelecionado = null;
-                }
-                verificarHabilitacaoBotoes();
-            });
-            document.addEventListener('click', (event) => {
-                if (!dropdownElement.contains(event.target) && event.target !== inputElement && event.target !== btnBuscar && event.target !== btnTrocar) {
-                    setTimeout(() => {
-                        if (!dropdownElement.contains(document.activeElement)) {
-                            dropdownElement.classList.remove('show');
+                    if (resposta.ok) {
+                        const listaFornecedores = await resposta.json();
+                        const { item } = await FiberGuardian.Utils.renderizarDropdownGenericoAsync({
+                            input: inputFornecedor,
+                            dropdown: dropdownFornecedor,
+                            lista: listaFornecedores,
+                            camposExibir: ['nome', 'cnpj'],
+                            titulosColunas: ['Fornecedor', 'CNPJ'],
+                            msgVazio: 'Nenhum fornecedor encontrado.',
+                        });
+                        if (item) {
+                            cnpjFornecedorSelecionado = item.cnpj;
+                            alternarEstadoCampos(inputFornecedor, btnBuscarFornecedor, btnTrocarFornecedor, true);
+                            resetarNotaFiscal();
+                            resetarProduto();
                         }
-                    }, 100);
+                    } else if (resposta.status === 403) {
+                        FiberGuardian.Utils.exibirMensagemSessaoExpirada();
+                    } else {
+                        await FiberGuardian.Utils.tratarErroFetch(resposta, inputFornecedor);
+                    }
+                } catch (erro) {
+                    FiberGuardian.Utils.exibirErroDeRede('Erro de rede ao buscar fornecedores.', inputFornecedor, erro);
                 }
             });
-        }
 
-        function verificarHabilitacaoBotoes() {
-            if (fornecedorSelecionado) {
-                inputNotaFiscal.disabled = false;
-                btnBuscarNotaFiscal.disabled = false;
-            } else {
-                inputNotaFiscal.disabled = true;
-                btnBuscarNotaFiscal.disabled = true;
-            }
-            if (notaFiscalSelecionada) {
-                inputCodigoProduto.disabled = false;
-                btnBuscarCodigoProduto.disabled = false;
-            } else {
-                inputCodigoProduto.disabled = true;
-                btnBuscarCodigoProduto.disabled = true;
-            }
-        }
+            // Event listener para o botão de troca de fornecedor
+            btnTrocarFornecedor.addEventListener('click', () => {
+                resetarFornecedor();
+                resetarNotaFiscal();
+                resetarProduto();
+            });
 
-        async function carregarDadosParaEdicao(testeId) {
-            FiberGuardian.Utils.exibirMensagemModal('Carregando dados do teste...', 'info');
-            const teste = await fetchData(`${URL_API_TESTE}/${testeId}`);
-            if (teste) {
-                testeIdParaEdicao = teste.id;
-                // Popular campos de busca
-                fornecedorSelecionado = teste.fornecedor;
-                inputFornecedor.value = teste.fornecedor.nome;
-                inputFornecedor.disabled = true;
-                btnBuscarFornecedor.disabled = true;
-                btnTrocarFornecedor.disabled = false;
-
-                notaFiscalSelecionada = teste.notaFiscal;
-                inputNotaFiscal.value = teste.notaFiscal.numero;
-                inputNotaFiscal.disabled = true;
-                btnBuscarNotaFiscal.disabled = true;
-                btnTrocarNotaFiscal.disabled = false;
-
-                produtoSelecionado = teste.produto;
-                inputCodigoProduto.value = teste.produto.codigo;
-                inputCodigoProduto.disabled = true;
-                btnBuscarCodigoProduto.disabled = true;
-                btnTrocarCodigoProduto.disabled = false;
-
-                // Popular demais campos
-                inputNumeroLote.value = teste.numeroLote;
-                inputCvm.value = teste.cvm;
-                inputPontosFinos.value = teste.pontosFinos;
-                inputPontosGrossos.value = teste.pontosGrossos;
-                inputNeps.value = teste.neps;
-                inputHPilosidade.value = teste.hPilosidade;
-                inputResistencia.value = teste.resistencia;
-                inputAlongamento.value = teste.alongamento;
-                inputTituloNe.value = teste.tituloNe;
-                inputTorcaoTm.value = teste.torcaoTm;
-                selectStatus.value = teste.status;
-                inputLiberacaoPor.value = teste.liberacaoPor;
-                textareaInfoRecebimento.value = teste.infoRecebimento;
-
-                FiberGuardian.Utils.esconderMensagemModal();
-                document.getElementById('submitButton').textContent = 'Atualizar';
-            } else {
-                FiberGuardian.Utils.exibirMensagemModal('Erro ao carregar dados do teste.', 'danger');
-            }
-        }
-
-        function configurarSubmissaoDoFormulario() {
-            form.addEventListener('submit', async function (e) {
-                e.preventDefault();
-
-                if (!fornecedorSelecionado || !notaFiscalSelecionada || !produtoSelecionado) {
-                    FiberGuardian.Utils.exibirMensagemModal('Preencha todos os campos de busca.', 'warning');
+            // Event listener para a busca de nota fiscal
+            btnBuscarNrNotaFiscal.addEventListener('click', async function () {
+                const codigoParcial = inputNrNotFiscal.value.trim();
+                if (!cnpjFornecedorSelecionado) {
+                    FiberGuardian.Utils.exibirMensagemModalComFoco('É necessário selecionar um fornecedor antes de buscar a nota fiscal.', 'warning', inputFornecedor);
                     return;
                 }
-
-                const testeData = {
-                    id: testeIdParaEdicao, // Será null para criação e terá valor para edição
-                    fornecedor: fornecedorSelecionado,
-                    notaFiscal: notaFiscalSelecionada,
-                    produto: produtoSelecionado,
-                    numeroLote: inputNumeroLote.value,
-                    cvm: parseFloat(inputCvm.value),
-                    pontosFinos: parseInt(inputPontosFinos.value),
-                    pontosGrossos: parseInt(inputPontosGrossos.value),
-                    neps: parseInt(inputNeps.value),
-                    hPilosidade: parseFloat(inputHPilosidade.value),
-                    resistencia: parseFloat(inputResistencia.value),
-                    alongamento: parseFloat(inputAlongamento.value),
-                    tituloNe: parseFloat(inputTituloNe.value),
-                    torcaoTm: parseFloat(inputTorcaoTm.value),
-                    status: selectStatus.value,
-                    liberacaoPor: inputLiberacaoPor.value,
-                    infoRecebimento: textareaInfoRecebimento.value,
-                };
-                
-                const method = testeIdParaEdicao ? 'PUT' : 'POST';
-                const url = testeIdParaEdicao ? `${URL_API_TESTE}/${testeIdParaEdicao}` : URL_API_TESTE;
-
-                const resultado = await fetchData(url, method, testeData);
-                if (resultado) {
-                    FiberGuardian.Utils.exibirMensagemModal('Teste de laboratório salvo com sucesso!', 'success');
-                    if (!testeIdParaEdicao) {
-                        form.reset();
-                        window.location.reload();
+                try {
+                    const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
+                    const url = new URL('/api/produtos/list/notasfiscais', window.location.origin);
+                    url.searchParams.append('cnpj', cnpjFornecedorSelecionado);
+                    if (codigoParcial) {
+                        url.searchParams.append('descricao', codigoParcial);
                     }
+                    const resposta = await fetch(url.toString(), {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json', 'X-XSRF-TOKEN': csrfToken },
+                        credentials: 'include',
+                    });
+                    if (resposta.ok) {
+                        const listaNotasFiscais = await resposta.json();
+                        const { item } = await FiberGuardian.Utils.renderizarDropdownGenericoAsync({
+                            input: inputNrNotFiscal,
+                            dropdown: dropdownNrNotaFiscal,
+                            lista: listaNotasFiscais,
+                            camposExibir: ['codigoNf', 'cnpj', 'descricao'],
+                            titulosColunas: ['Nota Fiscal', 'CNPJ', 'Empresa'],
+                            msgVazio: 'Nenhum produto encontrado.',
+                        });
+                        if (item) {
+                            nrNotaFiscalSelecionado = item.codigoNf;
+                        }
+                    } else if (resposta.status === 403) {
+                        FiberGuardian.Utils.exibirMensagemSessaoExpirada();
+                    } else {
+                        await FiberGuardian.Utils.tratarErroFetch(resposta, inputNrNotFiscal);
+                    }
+                } catch (erro) {
+                    FiberGuardian.Utils.exibirErroDeRede('Erro de rede ao buscar notas fiscais.', inputNrNotFiscal, erro);
                 }
             });
-        }
-        
-        function inicializar() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const testeId = urlParams.get('id');
-            if (testeId) {
-                carregarDadosParaEdicao(testeId);
-            }
-            
-            configurarDropdownGenerico(inputFornecedor, dropdownFornecedor, btnBuscarFornecedor, btnTrocarFornecedor, URL_API_FORNECEDOR, 'nome', item => `<div><strong>${item.nome}</strong></div><small class="text-muted">${item.cnpj}</small>`);
-            configurarDropdownGenerico(inputNotaFiscal, dropdownNotaFiscal, btnBuscarNotaFiscal, btnTrocarNotaFiscal, URL_API_NOTA_FISCAL, 'numero', item => `<div><strong>${item.numero}</strong></div><small class="text-muted">Fornecedor: ${item.fornecedorNome}</small>`);
-            configurarDropdownGenerico(inputCodigoProduto, dropdownCodigoProduto, btnBuscarCodigoProduto, btnTrocarCodigoProduto, URL_API_PRODUTO, 'codigo', item => `<div><strong>${item.codigo}</strong></div><small class="text-muted">Descrição: ${item.descricao}</small>`);
 
-            configurarSubmissaoDoFormulario();
-            verificarHabilitacaoBotoes();
+            // Event listener para a busca de produto
+            btnBuscarProduto.addEventListener('click', async function () {
+                const codigoParcial = inputProduto.value.trim();
+                if (!cnpjFornecedorSelecionado) {
+                    FiberGuardian.Utils.exibirMensagemModalComFoco('É necessário selecionar o fornecedor antes de selecionar o produto.', 'warning', inputFornecedor);
+                    return;
+                }
+                try {
+                    const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
+                    const url = new URL('/api/produtos/list/recebimento', window.location.origin);
+                    url.searchParams.append('cnpj', cnpjFornecedorSelecionado);
+                    if (codigoParcial) {
+                        url.searchParams.append('descricao', codigoParcial);
+                    }
+                    const resposta = await fetch(url.toString(), {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json', 'X-XSRF-TOKEN': csrfToken },
+                        credentials: 'include',
+                    });
+                    if (resposta.ok) {
+                        const listaProdutos = await resposta.json();
+                        const { item } = await FiberGuardian.Utils.renderizarDropdownGenericoAsync({
+                            input: inputProduto,
+                            dropdown: dropdownProduto,
+                            lista: listaProdutos,
+                            camposExibir: ['descricao', 'codigo'],
+                            titulosColunas: ['Produto', 'Código'],
+                            msgVazio: 'Nenhum produto encontrado.',
+                        });
+                        if (item) {
+                            codigoProdutoSelecionado = item.codigo;
+                            alternarEstadoCampos(inputProduto, btnBuscarProduto, btnTrocarProduto, true);
+                        }
+                    } else if (resposta.status === 403) {
+                        FiberGuardian.Utils.exibirMensagemSessaoExpirada();
+                    } else {
+                        await FiberGuardian.Utils.tratarErroFetch(resposta, inputProduto);
+                    }
+                } catch (erro) {
+                    FiberGuardian.Utils.exibirErroDeRede('Erro de rede ao buscar produtos.', inputProduto, erro);
+                }
+            });
+
+            // Event listener para o botão de troca de produto
+            btnTrocarProduto.addEventListener('click', () => {
+                resetarProduto();
+            });
+
+            // Event listener para o botão de sair
+            if (btnSair) {
+              btnSair.addEventListener('click', async () => {
+              const confirmacao = await FiberGuardian.Utils.confirmarAcaoAsync('Tem certeza que deseja sair?', 'Sair do Sistema');
+                 if (confirmacao) {
+                        FiberGuardian.Utils.voltarMenuPrincipal();
+                    }
+                });
+            }
+
+            // Event listener para o envio do formulário
+            if (formLaboratorio) {
+                formLaboratorio.addEventListener('submit', handleFormSubmit);
+            }
         }
 
         return {
-            init: inicializar
+            init: configurarEventos,
         };
-
     })();
-
-    document.addEventListener('DOMContentLoaded', function () {
-        if (window.FiberGuardian && FiberGuardian.TelaCadastroLaboratorio && typeof FiberGuardian.TelaCadastroLaboratorio.init === 'function') {
-            FiberGuardian.TelaCadastroLaboratorio.init();
-        } else {
-            console.error('Módulo [TelaCadastroLaboratorio] não encontrado ou sem método init(). O script fiberguardian_core.js pode não ter sido carregado corretamente.');
-        }
-    });
-
 })();

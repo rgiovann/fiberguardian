@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,40 +11,44 @@
     <link rel="stylesheet" href="assets/css/dropdown_generico.css">
     <link rel="stylesheet" href="assets/css/tela_consulta_produto.css">
 </head>
+
 <body>
     <div class="container mt-4 mb-5">
         <section class="card mb-4">
             <h4 class="mb-2 mt-2 text-center titulo-cad-recebimento">CONSULTA DE PRODUTO</h4>
-            <div class="card-header">Filtros de Busca</div>
+            <div class="card-header branco-bold"><i class="fas fa-search me-2"></i>Busca Produtos</div>
             <div class="card-body">
                 <form id="filtroForm">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="fornecedorBusca" class="form-label">Fornecedor</label>
                             <div class="input-group">
-                                <input type="text" id="fornecedorBusca" name="fornecedorBusca" class="form-control" autocomplete="off" placeholder="Digite parte do nome do fornecedor" />
-                                <button id="btnBuscarFornecedorBusca" name="btnBuscarFornecedorBusca" class="btn btn-secondary btn-custom" type="button">
+                                <input type="text" id="fornecedorBusca" name="fornecedorBusca" class="form-control"
+                                    autocomplete="off" placeholder="Digite parte do nome do fornecedor" />
+                                <button id="btnBuscarFornecedorBusca" name="btnBuscarFornecedorBusca"
+                                    class="btn btn-outline-secondary" type="button">
                                     <i class="fas fa-search me-2"></i>Buscar
                                 </button>
-                                <button id="btnTrocarFornecedorBusca" name="btnTrocarFornecedorBusca" class="btn btn-warning" type="button" disabled>
+                                <button id="btnTrocarFornecedorBusca" name="btnTrocarFornecedorBusca"
+                                    class="btn btn-outline-danger" type="button" disabled>
                                     <i class="fas fa-exchange-alt me-2"></i>Trocar
                                 </button>
                             </div>
-                            <div id="dropdownFornecedorBusca" name="dropdownFornecedorBusca" class="dropdown-menu w-100" aria-labelledby="fornecedorBusca"></div>
+                            <div id="dropdownFornecedorBusca" name="dropdownFornecedorBusca" class="dropdown-menu w-100"
+                                aria-labelledby="fornecedorBusca"></div>
                         </div>
-                    </div>
-                    <div class="text-center mt-3">
-                        <button type="reset" class="btn btn-secondary btn-custom" id="btnLimpar">
-                            <i class="fas fa-eraser me-2"></i>Limpar
-                        </button>
-                        <button type="button" class="btn btn-danger btn-custom" id="btnSair">
-                            <i class="fas fa-sign-out-alt me-2"></i>Sair
-                        </button>
-                    </div>
+                        <div class="text-center mt-3">
+                            <button type="reset" class="btn btn-secondary btn-custom" id="btnLimpar">
+                                <i class="fas fa-eraser me-2"></i>Limpar
+                            </button>
+                            <button type="button" class="btn btn-danger btn-custom" id="btnSair">
+                                <i class="fas fa-sign-out-alt me-2"></i>Sair
+                            </button>
+                        </div>
                 </form>
             </div>
         </section>
-        
+
         <section class="card mb-4 d-none" id="secaoAlteracaoProduto">
             <div class="card-header bg-primary text-white">Alterar Produto</div>
             <div class="card-body">
@@ -70,7 +75,6 @@
 
         <div id="listaProdutos" class="mt-4">
             <section class="card mb-4">
-                <h5 class="mb-3">Resultados da Busca</h5>
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped align-middle text-center">
                         <thead class="table-dark">
@@ -98,8 +102,9 @@
             </section>
         </div>
     </div>
-    
-    <div class="modal fade" id="modalMensagemSistema" tabindex="-1" aria-labelledby="modalMensagemLabel" aria-hidden="true">
+
+    <div class="modal fade" id="modalMensagemSistema" tabindex="-1" aria-labelledby="modalMensagemLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-warning text-dark">
@@ -118,5 +123,5 @@
     <script src="../webapp/assets/js/fiberguardian_core.js"></script>
     <script src="../webapp/assets/js/tela_consulta_produto.js"></script>
 </body>
-</html>
 
+</html>

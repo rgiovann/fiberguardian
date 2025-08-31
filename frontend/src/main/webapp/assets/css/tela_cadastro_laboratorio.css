@@ -1,6 +1,9 @@
-body {
-  background-color: #f4f6f9;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+///body {
+//  background-color: #f4f6f9;
+// font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+//}
+.titulo-cad-lab {
+    font-size: 1.5rem;
 }
 
 /* Estilo do card */
@@ -68,4 +71,14 @@ body {
 .header-spacing {
   margin-top: 0.5rem !important;   /* antes 2rem */
   margin-bottom: 1rem !important;  /* antes 2rem */
+}
+
+/* Para botões bloqueados manualmente */
+button.campo-desabilitado {
+  opacity: 0.65 !important;
+}
+
+/* Para toda a section “travada” dar um efeito esmaecido */
+section.card.campo-desabilitado {
+  opacity: 0.85;
 }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,27 +11,32 @@
   <link rel="stylesheet" href="assets/css/dropdown_generico.css">
   <link rel="stylesheet" href="assets/css/tela_cadastro_produto.css">
 </head>
+
 <body>
   <div class="container mt-4 mb-4">
-    
+
     <form id="produtoForm">
       <section class="card mb-4">
         <h4 class="mb-2 mt-2 text-center titulo-cad-recebimento">CADASTRO DE PRODUTO</h4>
-        <div class="card-header">Dados do Produto</div>
+        <div class="card-header branco-bold">Dados do Produto</div>
         <div class="card-body">
           <div class="row">
             <div class="col-md-6 mb-3">
               <label for="fornecedor" class="form-label">Fornecedor</label>
               <div class="input-group">
-                <input type="text" id="fornecedor" name="fornecedor" class="form-control" autocomplete="off" placeholder="Digite parte do nome/CNPJ" required />
-                <button id="btnBuscarFornecedor" name="btnBuscarFornecedor" class="btn btn-secondary btn-custom" type="button">
+                <input type="text" id="fornecedor" name="fornecedor" class="form-control" autocomplete="off"
+                  placeholder="Digite parte do nome/CNPJ" required />
+                <button id="btnBuscarFornecedor" name="btnBuscarFornecedor" class="btn btn-outline-secondary"
+                  type="button">
                   <i class="fas fa-search me-2"></i>Buscar
                 </button>
-                <button id="btnTrocarFornecedor" name="btnTrocarFornecedor" class="btn btn-outline-danger" type="button" disabled>
-                    Trocar
+                <button id="btnTrocarFornecedor" name="btnTrocarFornecedor" class="btn btn-outline-danger" type="button"
+                  disabled>
+                  <i class="fas fa-exchange-alt me-2"></i>Trocar
                 </button>
               </div>
-              <div id="dropdownFornecedor" name="dropdownFornecedor" class="dropdown-menu w-100" aria-labelledby="fornecedor"></div>
+              <div id="dropdownFornecedor" name="dropdownFornecedor" class="dropdown-menu w-100"
+                aria-labelledby="fornecedor"></div>
             </div>
             <div class="col-md-6 mb-3">
               <label id="fornecedorNomeLabel" class="form-label"></label>
@@ -39,46 +45,47 @@
             </div>
             <div class="col-md-12 mb-3">
               <label class="form-label">Descrição do Produto</label>
-              <textarea class="form-control" rows="3" id="descricaoProduto" placeholder="Descreva o produto..."></textarea>
+              <textarea class="form-control" rows="3" id="descricaoProduto"
+                placeholder="Descreva o produto..."></textarea>
             </div>
           </div>
           <div class="text-center mt-3">
-        <button type="button" class="btn btn-primary btn-custom" id="btnAdicionarALista">
-          <i class="fas fa-plus me-2"></i>Adicionar à Lista
-        </button>
-        <button type="submit" class="btn btn-success btn-custom" id="btnSalvarProduto">
-          <i class="fas fa-save me-2"></i>Gravar Produtos
-        </button>
-        <button type="button" class="btn btn-danger btn-custom" id="btnSair">
-          <i class="fas fa-sign-out-alt me-2"></i>Sair
-        </button>
-      </div>
-        </div> 
+            <button type="button" class="btn btn-primary btn-custom" id="btnAdicionarALista">
+              <i class="fas fa-plus me-2"></i>Adicionar à Lista
+            </button>
+            <button type="submit" class="btn btn-success btn-custom" id="btnSalvarProduto">
+              <i class="fas fa-save me-2"></i>Gravar Produtos
+            </button>
+            <button type="button" class="btn btn-danger btn-custom" id="btnSair">
+              <i class="fas fa-sign-out-alt me-2"></i>Sair
+            </button>
+          </div>
+        </div>
     </form>
-      </section>
+    </section>
 
-     
+
     <div id="listaProdutos" class="mt-4">
       <section class="card mb-4">
-        <h5 class="mb-3">Pré-Lista de Produtos a Serem Gravados</h5>
         <table class="table table-bordered table-striped align-middle text-center">
-        <thead class="table-dark">
-          <tr>
-            <th>Código do Produto</th>
-            <th>Descrição</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody id="produtosTableBody">
-          <tr id="noDataRow">
-            <td colspan="3" class="text-center">Nenhum produto adicionado.</td>
-          </tr>
-        </tbody>
-      </table>
-      </section> 
+          <thead class="table-dark">
+            <tr>
+              <th>Código do Produto</th>
+              <th>Descrição</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="produtosTableBody">
+            <tr id="noDataRow">
+              <td colspan="3" class="text-center">Nenhum produto adicionado.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
     </div>
 
-    <div class="modal fade" id="modalMensagemSistema" tabindex="-1" aria-labelledby="modalMensagemLabel" aria-hidden="true">
+    <div class="modal fade" id="modalMensagemSistema" tabindex="-1" aria-labelledby="modalMensagemLabel"
+      aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header bg-warning text-dark">
@@ -93,9 +100,10 @@
       </div>
     </div>
   </div>
-  
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="../webapp/assets/js/fiberguardian_core.js"></script>
   <script src="../webapp/assets/js/tela_cadastro_produto.js"></script>
 </body>
+
 </html>
