@@ -9,7 +9,6 @@ import edu.entra21.fiberguardian.jacksonview.NotaFiscalView;
 import edu.entra21.fiberguardian.model.ItemNotaFiscal;
 import edu.entra21.fiberguardian.model.NotaFiscal;
 import edu.entra21.fiberguardian.model.PdfNotaFiscal;
-import edu.entra21.fiberguardian.model.Produto;
 import edu.entra21.fiberguardian.service.NotaFiscalService;
 import edu.entra21.fiberguardian.service.PdfNotalFiscalService;
 import edu.entra21.fiberguardian.service.query.NotaFiscalFilter;
@@ -75,6 +74,17 @@ public class NotaFiscalController {
     public List<NotaFiscalCompactoDto> listarPorCodigo(@RequestParam(required = false) String codigo) {
         return notaFiscalCompactoDtoAssembler.toCollectionDto(
                 notaFiscalService.buscarPorCodigoNf(codigo)
+        );
+    }
+
+    @JsonView(NotaFiscalView.NotafiscalCompactoDto.class)
+    @GetMapping("/list/por_fornecedor/{cnpj}")
+    public List<NotaFiscalCompactoDto> listarPorFornecedorECodigo(
+            @PathVariable("cnpj") String cnpj,
+            @RequestParam(name = "codigo_nf", required = false) String codigoNf
+    ) {
+        return notaFiscalCompactoDtoAssembler.toCollectionDto(
+                notaFiscalService.buscarPorFornecedorECodigoNfParcial(cnpj, codigoNf)
         );
     }
 

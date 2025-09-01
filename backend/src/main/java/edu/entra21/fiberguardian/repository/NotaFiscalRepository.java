@@ -68,4 +68,11 @@ public interface NotaFiscalRepository extends JpaRepository<NotaFiscal,Long>, No
     // Buscar notas fiscais pelo nome do usuário que recebeu (autocomplete)
     @EntityGraph(attributePaths = {"recebidoPor"})
     List<NotaFiscal> findTop20ByRecebidoPorNomeContainingIgnoreCase(String nomeParcialUsuario);
+
+    @EntityGraph(attributePaths = {"fornecedor"})
+    List<NotaFiscal> findTop20ByFornecedor_CnpjAndCodigoNfContainingIgnoreCaseOrderByCodigoNfAsc(
+            String cnpj,
+            String codigoNf
+    );
+
 }

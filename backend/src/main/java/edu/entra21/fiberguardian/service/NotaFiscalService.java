@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.io.InputStream;
@@ -32,7 +31,6 @@ public class NotaFiscalService {
     private final ProdutoService produtoService;
     private final PdfNotaFiscalRepository pdfNotaFiscalRepository;
     private final MultiPartFileStorageService notaFiscalStorageService;
-    private final PdfNotalFiscalService pdfNotalFiscalService;
     private final LaboratorioRepository laboratorioRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(NotaFiscalService.class);
@@ -53,7 +51,6 @@ public class NotaFiscalService {
         this.produtoService = produtoService;
         this.pdfNotaFiscalRepository = pdfNotaFiscalRepository;
         this.notaFiscalStorageService = notaFiscalStorageService;
-        this.pdfNotalFiscalService = pdfNotalFiscalService;
         this.laboratorioRepository = laboratorioRepository;
     }
 
@@ -153,6 +150,24 @@ public class NotaFiscalService {
             return Collections.emptyList();
         }
         return notaFiscalRepository.findTop20ByRecebidoPorNomeContainingIgnoreCase(nomeParcialUsuario);
+    }
+
+    public List<NotaFiscal> buscarPorFornecedorECodigoNfParcial(String cnpjFornecedor, String codigoNf) {
+
+        //logger.warn("[FG] CNPJ Fornecedor : " + cnpjFornecedor);
+        //logger.warn("[FG] Código Parcial Nota Fiscal : " + codigoNf);
+
+        if (cnpjFornecedor == null || cnpjFornecedor.isBlank()) {
+            return Collections.emptyList();
+        }
+
+        // Normaliza o parâmetro para evitar NullPointerException
+        String codigoNormalizado = (codigoNf == null ? "" : codigoNf.trim());
+
+        return notaFiscalRepository.findTop20ByFornecedor_CnpjAndCodigoNfContainingIgnoreCaseOrderByCodigoNfAsc(
+                cnpjFornecedor.trim(),
+                codigoNormalizado
+        );
     }
 
     public NotaFiscal buscarOuFalhar(Long pdfNotaFiscalId ) {

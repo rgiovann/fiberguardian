@@ -40,17 +40,26 @@
             <div class="input-group">
               <input type="text" class="form-control" id="nrNotaFiscal" autocomplete="off"
                 placeholder="Digite parte do número da nota fiscal" required />
-              <button id="btnBuscarNrNotaFiscal" class="btn btn-secondary ms-2" type="button">
+              <button id="btnBuscarNrNotaFiscal" name="btnBuscarNrNotaFiscal" class="btn btn-secondary ms-2"
+                type="button">
                 <i class="fas fa-search me-2"></i>Buscar
               </button>
-              <button id="btnTrocarNrNotaFiscal" class="btn btn-outline-danger" type="button" disabled>
+              <button id="btnTrocarNrNotaFiscal" name="btnTrocarNrNotaFiscal" class="btn btn-outline-danger"
+                type="button" disabled>
                 <i class="fas fa-exchange-alt me-2"></i>Trocar
               </button>
+              <!-- Botão de download da nota fiscal -->
+              <button id="btnDownloadNrNotaFiscal" name="btnDownloadNrNotaFiscal" class="btn btn-success ms-2"
+                type="button" disabled title="Baixar PDF">
+                <i class="fas fa-file-pdf me-1"></i>PDF
+              </button>
             </div>
-            <div id="dropdownNrNotaFiscal" class="dropdown-menu w-100" aria-labelledby="nrNotaFiscal"></div>
           </div>
+          <div id="dropdownNrNotaFiscal" class="dropdown-menu w-100" aria-labelledby="nrNotaFiscal"></div>
+        </div>
+        <div class="row mt-2">
 
-          <div class="col-md-6 mb-2">
+          <div class="col-md-5 mb-2">
             <label class="form-label">Código Produto</label>
             <div class="input-group">
               <input type="text" class="form-control" id="produto" autocomplete="off"
@@ -65,114 +74,138 @@
             <div id="dropdownProduto" class="dropdown-menu w-100" aria-labelledby="produto"></div>
           </div>
 
-          <div class="col-md-6 mb-2">
-            <label class="form-label">Número Lote</label>
-            <input type="text" class="form-control" id="numeroLote" required>
+          <div class="col-md-2 mb-2">
+            <label for="numeroLote" class="form-label">Número Lote</label>
+            <input type="text" class="form-control" id="numeroLote" name="numeroLote" required>
           </div>
 
-        </div>
-      </div>
-
-      <div class="card-custom mb-3">
-        <div class="card-header">2. Teste Laboratório</div>
-        <div class="row mt-2">
-          <div class="col-md-4 mt-2">
-            <label class="form-label">CVM (%)</label>
-            <input type="number" step="0.01" class="form-control" id="cvm" required>
-          </div>
-          <div class="col-md-4 mt-2">
-            <label class="form-label">Pontos Finos</label>
-            <input type="number" class="form-control" id="pontosFinos" required>
-          </div>
-          <div class="col-md-4 mt-2">
-            <label class="form-label">Pontos Grossos</label>
-            <input type="number" class="form-control" id="pontosGrossos" required>
-          </div>
-          <div class="col-md-4 mt-2">
-            <label class="form-label">NEPs</label>
-            <input type="number" class="form-control" id="neps" required>
-          </div>
-          <div class="col-md-4 mt-2">
-            <label class="form-label">H. Pilosidade</label>
-            <input type="number" step="0.01" class="form-control" id="hPilosidade" required>
-          </div>
-          <div class="col-md-4 mt-2">
-            <label class="form-label">Resistência</label>
-            <input type="number" step="0.01" class="form-control" id="resistencia" required>
-          </div>
-          <div class="col-md-4 mt-2">
-            <label class="form-label">Alongamento</label>
-            <input type="number" step="0.01" class="form-control" id="alongamento" required>
-          </div>
-          <div class="col-md-4 mt-2">
-            <label class="form-label">Título, ne</label>
-            <input type="number" step="0.01" class="form-control" id="tituloNe" required>
-          </div>
-          <div class="col-md-4 mt-2">
-            <label class="form-label">Torção, t.m</label>
-            <input type="number" step="0.01" class="form-control" id="torcaoTm" required>
-          </div>
-          <div class="col-md-4 mt-2">
-            <label class="form-label">Status</label>
-            <select class="form-control" id="status" required>
-              <option value="" disabled selected>Selecione o status</option>
-              <option value="Aprovado">Aprovado</option>
-              <option value="Reprovado">Reprovado</option>
-            </select>
-          </div>
-          <div class="col-md-4 mt-2">
+          <div class="col-md-5 mb-2">
             <label class="form-label">Liberação por</label>
-            <input type="text" class="form-control" id="liberacaoPor" required>
+            <div class="input-group">
+              <input type="text" class="form-control" id="liberacaoPor" name="liberacaoPor" autocomplete="off"
+                placeholder="Digite parte do nome do responsável" required />
+              <button id="btnBuscarLiberacaoPor" class="btn btn-secondary ms-2" type="button">
+                <i class="fas fa-search me-2"></i>Buscar
+              </button>
+              <button id="btnTrocarLiberacaoPor" class="btn btn-outline-danger" type="button" disabled>
+                <i class="fas fa-exchange-alt me-2"></i>Trocar
+              </button>
+            </div>
+            <div id="dropdownLiberacaoPor" class="dropdown-menu w-100" aria-labelledby="liberacaoPor"></div>
           </div>
         </div>
-        <div class="mt-2">
-          <label class="form-label">Informações de Recebimento</label>
-          <textarea class="form-control" rows="3" id="infoRecebimento"></textarea>
-        </div>
-        <div class="text-center mt-3">
-          <button type="submit" class="btn btn-primary btn-custom me-2" id="submitButton">
-            <i class="fas fa-save me-2"></i>Gravar
-          </button>
-          <button type="button" class="btn btn-secondary btn-custom me-2" id="btnImprimir">
-            <i class="fas fa-print me-2"></i>Imprimir
-          </button>
-          <button type="button" class="btn btn-danger btn-custom" id="btnSair">
-            <i class="fas fa-sign-out-alt me-2"></i>Sair
-          </button>
-        </div>
       </div>
-    </form>
   </div>
 
-  <div class="modal fade" id="modalConfirmacaoGenerico" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalConfirmacaoTitulo">Confirmação</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-        </div>
-        <div class="modal-body" id="modalConfirmacaoMensagem">
-        </div>
-        <div class="modal-footer">
-          <button id="btnConfirmacaoSim" type="button" class="btn btn-primary">Sim</button>
-          <button id="btnConfirmacaoNao" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Não</button>
-        </div>
+  <div class="card-custom mb-3">
+    <div class="card-header">2. Teste Laboratório</div>
+    <div class="row mt-2">
+      <div class="col-md-4 mt-2">
+        <label for="cvm" class="form-label">CVM (%)</label>
+        <input type="number" step="0.01" class="form-control" id="cvm" name="cvm" required>
       </div>
+      <div class="col-md-4 mt-2">
+        <label for="pontosFinos" class="form-label">Pontos Finos</label>
+        <input type="number" class="form-control" id="pontosFinos" name="pontosFinos" required>
+      </div>
+      <div class="col-md-4 mt-2">
+        <label for="pontosGrossos" class="form-label">Pontos Grossos</label>
+        <input type="number" class="form-control" id="pontosGrossos" name="pontosGrossos" required>
+      </div>
+      <div class="col-md-4 mt-2">
+        <label for="neps" class="form-label">NEPs</label>
+        <input type="number" class="form-control" id="neps" name="neps" required>
+      </div>
+      <div class="col-md-4 mt-2">
+        <label for="hPilosidade" class="form-label">H. Pilosidade</label>
+        <input type="number" step="0.01" class="form-control" id="hPilosidade" name="hPilosidade" required>
+      </div>
+      <div class="col-md-4 mt-2">
+        <label for="resistencia" class="form-label">Resistência</label>
+        <input type="number" step="0.01" class="form-control" id="resistencia" name="resistencia" required>
+      </div>
+      <div class="col-md-4 mt-2">
+        <label for="alongamento" class="form-label">Alongamento</label>
+        <input type="number" step="0.01" class="form-control" id="alongamento" name="alongamento" required>
+      </div>
+      <div class="col-md-4 mt-2">
+        <label for="tituloNe" class="form-label">Título, ne</label>
+        <input type="number" step="0.01" class="form-control" id="tituloNe" name="tituloNe" required>
+      </div>
+      <div class="col-md-4 mt-2">
+        <label for="torcaoTm" class="form-label">Torção, t.m</label>
+        <input type="number" step="0.01" class="form-control" id="torcaoTm" name="torcaoTm" required>
+      </div>
+      <div class="col-md-4 mt-2">
+        <label for="status" class="form-label">Status</label>
+        <select class="form-control" id="status" name="status" required>
+          <option value="" disabled selected>Selecione o status</option>
+          <option value="Aprovado">Aprovado</option>
+          <option value="Reprovado">Reprovado</option>
+        </select>
+      </div> <!--
+          <div class="col-md-4 mt-2">
+            <label for="liberacaoPor" class="form-label">Liberação por</label>
+            <input type="text" class="form-control" id="liberacaoPor" name="liberacaoPor" required>
+          </div>
+          -->
+    </div>
+    <div class="mt-2">
+      <label for="infoRecebimento" class="form-label">Informações de Recebimento</label>
+      <textarea class="form-control" rows="3" id="infoRecebimento" name="infoRecebimento"></textarea>
+    </div>
+    <div class="text-center mt-3">
+      <button type="submit" class="btn btn-primary btn-custom me-2" id="submitButton">
+        <i class="fas fa-save me-2"></i>Gravar
+      </button>
+      <button type="button" class="btn btn-secondary btn-custom me-2" id="btnImprimir">
+        <i class="fas fa-print me-2"></i>Imprimir
+      </button>
+      <button type="button" class="btn btn-danger btn-custom" id="btnSair">
+        <i class="fas fa-sign-out-alt me-2"></i>Sair
+      </button>
     </div>
   </div>
-  <div class="modal fade" id="modalMensagem" tabindex="-1" aria-labelledby="modalMensagemLabel" aria-hidden="true">
-    <div class="modal-dialog">
+  </form>
+  </div>
+  <!-- Modal de Alerta Global -->
+  <div class="modal fade" id="modalMensagemSistema" name="modalMensagemSistema" tabindex="-1"
+    aria-labelledby="modalMensagemSistemaTitulo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalMensagemLabel">Aviso</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-header bg-warning text-dark">
+          <h5 class="modal-title" id="modalMensagemSistemaTitulo" name="modalMensagemSistemaTitulo">Aviso</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
         </div>
-        <div class="modal-body">
-          <p id="modalMensagemTexto"></p>
+        <div class="modal-body text-pre-wrap">
+          <!-- Conteúdo da mensagem será inserido via JS -->
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Confirmação Genérico -->
+  <div class="modal fade" id="modalConfirmacaoGenerico" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalConfirmacaoTitulo">Confirmação</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+
+        <div class="modal-body" id="modalConfirmacaoMensagem">
+          <!-- Mensagem será preenchida dinamicamente -->
+        </div>
+
+        <div class="modal-footer">
+          <button id="btnConfirmacaoSim" type="button" class="btn btn-primary">Sim</button>
+          <button id="btnConfirmacaoNao" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Não</button>
+        </div>
+
       </div>
     </div>
   </div>
