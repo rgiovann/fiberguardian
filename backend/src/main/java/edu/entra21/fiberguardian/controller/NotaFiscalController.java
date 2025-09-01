@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/nota-fiscal")
+@RequestMapping("/api/notas-fiscais")
 public class NotaFiscalController {
 
 

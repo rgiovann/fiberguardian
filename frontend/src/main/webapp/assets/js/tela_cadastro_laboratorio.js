@@ -242,7 +242,7 @@
                     btnBuscarLiberacaoPor,
                 ]
             );
-
+            /*
             btnDownloadNrNotaFiscal.addEventListener('click', function () {
                 if (!nrNotaFiscalSelecionado) return;
 
@@ -255,6 +255,67 @@
                 link.target = '_blank'; // abre em nova aba
                 link.download = `NotaFiscal-${nrNotaFiscalSelecionado}.pdf`;
                 link.click();
+            });
+            */
+
+            btnDownloadNrNotaFiscal.addEventListener('click', async function () {
+                if (!nrNotaFiscalSelecionado) return;
+
+                try {
+                    const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
+
+                    const url = new URL(
+                        `/api/pdf-notas-fiscais/${cnpjFornecedorSelecionado}/${nrNotaFiscalSelecionado}`,
+                        window.location.origin
+                    );
+
+                    const resposta = await fetch(url.toString(), {
+                        method: 'GET',
+                        headers: {
+                            Accept: 'application/pdf',
+                            'X-XSRF-TOKEN': csrfToken,
+                        },
+                        credentials: 'include',
+                    });
+
+                    if (resposta.ok) {
+                        // Tratar resposta binária (PDF)
+                        const contentType = resposta.headers.get('Content-Type');
+
+                        if (contentType && contentType.includes('application/pdf')) {
+                            // PDF retornado diretamente
+                            const blob = await resposta.blob();
+                            FiberGuardian.Utils.downloadArquivo(
+                                blob,
+                                `NF_${nrNotaFiscalSelecionado}.pdf`,
+                                'application/pdf'
+                            );
+                        } else if (resposta.status === 302) {
+                            // Redirecionamento para URL externa (S3, etc.)
+                            const location = resposta.headers.get('Location');
+                            if (location) {
+                                window.open(location, '_blank');
+                            } else {
+                                throw new Error(
+                                    'URL de redirecionamento não encontrada'
+                                );
+                            }
+                        }
+                    } else if (resposta.status === 403) {
+                        FiberGuardian.Utils.exibirMensagemSessaoExpirada();
+                    } else {
+                        await FiberGuardian.Utils.tratarErroFetch(
+                            resposta,
+                            inputNrNotFiscal
+                        );
+                    }
+                } catch (erro) {
+                    FiberGuardian.Utils.exibirErroDeRede(
+                        'Erro de rede ao baixar PDF da nota fiscal.',
+                        inputNrNotFiscal,
+                        erro
+                    );
+                }
             });
 
             // Event listener para a busca de fornecedor
@@ -359,7 +420,7 @@
 
                     // Monta a URL com PathVariable para o CNPJ e query param para codigo_nf
                     const url = new URL(
-                        `/api/nota-fiscal/list/por_fornecedor/${cnpjFornecedorSelecionado}`,
+                        `/api/notas-fiscais/list/por_fornecedor/${cnpjFornecedorSelecionado}`,
                         window.location.origin
                     );
                     if (codigoParcial) {

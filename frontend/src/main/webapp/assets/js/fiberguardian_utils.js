@@ -566,6 +566,32 @@
             return isNaN(parsed) ? 0 : parsed;
         }
 
+        function downloadArquivo(blob, nomeArquivo, tipoMime) {
+            try {
+                // Criar URL temporária para o blob
+                const url = window.URL.createObjectURL(blob);
+
+                // Criar link temporário para download
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = nomeArquivo;
+                link.style.display = 'none';
+
+                // Adicionar ao DOM, clicar e remover
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                // Liberar memória
+                window.URL.revokeObjectURL(url);
+
+                console.info(`Download iniciado: ${nomeArquivo}`);
+            } catch (erro) {
+                console.error('Erro ao iniciar download:', erro);
+                throw new Error('Não foi possível iniciar o download do arquivo');
+            }
+        };
+
         // Exporta apenas o necessário
         return {
             obterTokenCsrf,
@@ -585,6 +611,7 @@
             confirmarAcaoAsync,
             voltarMenuPrincipal,
             parseCurrencyToNumber,
+            downloadArquivo,
         };
     })();
 })();

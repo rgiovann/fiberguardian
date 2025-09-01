@@ -58,7 +58,7 @@
                                 await FiberGuardian.Utils.obterTokenCsrf();
 
                             const resposta = await fetch(
-                                `/api/nota-fiscal/${cnpjFornecedor}/${codigoNf}`,
+                                `/api/notas-fiscais/${cnpjFornecedor}/${codigoNf}`,
                                 {
                                     method: 'DELETE',
                                     headers: {
@@ -491,7 +491,7 @@
 
                         // Monta a URL com o parâmetro codigo
                         const url = new URL(
-                            '/api/nota-fiscal/list',
+                            '/api/notas-fiscais/list',
                             window.location.origin
                         );
 
@@ -646,7 +646,7 @@
                 console.log('Código Fornecedor : ' + cnpjFornecedorSelecionado);
 
                 // Monta URL com filtros não vazios
-                const url = new URL('/api/nota-fiscal/paged', window.location.origin);
+                const url = new URL('/api/notas-fiscais/paged', window.location.origin);
                 url.searchParams.append('page', pagina);
                 url.searchParams.append('size', tamanhoPagina);
 

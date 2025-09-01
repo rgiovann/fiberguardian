@@ -616,7 +616,7 @@
                         // === CSRF token ===
                         const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
 
-                        const resposta = await fetch('/api/nota-fiscal', {
+                        const resposta = await fetch('/api/notas-fiscais', {
                             method: 'POST',
                             headers: {
                                 'X-XSRF-TOKEN': csrfToken,

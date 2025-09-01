@@ -44,7 +44,7 @@ echo
 
 echo "==> 4. Inserindo nova nota fiscal com PDF..."
 curl -i -sk -b cookies.txt -c cookies.txt \
-  -X POST https://localhost/api/nota-fiscal \
+  -X POST https://localhost/api/notas-fiscais \
   -H "X-XSRF-TOKEN: $CSRF_TOKEN2" \
   -H "Accept: application/json" \
   -F "dadosNota=@dados.json;type=application/json" \
