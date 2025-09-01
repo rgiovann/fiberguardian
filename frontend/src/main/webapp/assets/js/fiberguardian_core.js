@@ -30,6 +30,7 @@
                 'assets/js/tela_consulta_produto.js',
             ],
             'tela_cadastro_laboratorio.html': [
+                'assets/js/fiberguardian_core.js',
                 'assets/js/fiberguardian_utils.js',
                 'assets/js/tela_cadastro_laboratorio.js',
             ],

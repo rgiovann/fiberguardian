@@ -4,8 +4,7 @@
     let codigoProdutoSelecionado = null;
     let nrNotaFiscalSelecionado = null;
     let nrNotaFiscalSelecionadoId = null;
-
-    let itensRecebimento = [];
+    let emailLiberacaoPor = null;
 
     FiberGuardian.TelaCadastroLaboratorio = (function () {
         function configurarEventos() {
@@ -14,11 +13,22 @@
             codigoProdutoSelecionado = null;
             nrNotaFiscalSelecionado = null;
             nrNotaFiscalSelecionadoId = null;
+            emailLiberacaoPor = null;
             const formLaboratorio = document.getElementById('laboratorioForm'); // Obtém o elemento do formulário
             const inputFornecedor = document.getElementById('fornecedor');
             const btnBuscarFornecedor = document.getElementById('btnBuscarFornecedor');
             const dropdownFornecedor = document.getElementById('dropdownFornecedor');
             const btnTrocarFornecedor = document.getElementById('btnTrocarFornecedor');
+
+            const inputLiberacaoPor = document.getElementById('inputLiberacaoPor');
+            const dropdownLiberacaoPor =
+                document.getElementById('dropdownLiberacaoPor');
+            const btnBuscarLiberacaoPor = document.getElementById(
+                'btnBuscarLiberacaoPor'
+            );
+            const btnTrocarLiberacaoPor = document.getElementById(
+                'btnTrocarLiberacaoPor'
+            );
 
             const inputNrNotFiscal = document.getElementById('nrNotaFiscal');
             const btnBuscarNrNotaFiscal = document.getElementById(
@@ -39,6 +49,17 @@
             const btnTrocarProduto = document.getElementById('btnTrocarProduto');
 
             const btnSair = document.getElementById('btnSair');
+            if (
+                !btnBuscarLiberacaoPor ||
+                !inputLiberacaoPor ||
+                !dropdownLiberacaoPor ||
+                !btnTrocarLiberacaoPor
+            ) {
+                console.error(
+                    'Elementos da busca de quem liberou o laudo não encontrados.'
+                );
+                return;
+            }
 
             if (
                 !btnBuscarFornecedor ||
@@ -194,13 +215,34 @@
                 );
             }
 
+            function resetarLiberacaoPor() {
+                emailLiberacaoPor = null;
+                inputLiberacaoPor.value = '';
+
+                alternarEstadoCampos(
+                    inputLiberacaoPor,
+                    btnBuscarLiberacaoPor,
+                    btnTrocarLiberacaoPor,
+                    false
+                );
+            }
+
             FiberGuardian.Utils.fecharQualquerDropdownAberto(
-                [dropdownFornecedor, dropdownNrNotaFiscal, dropdownProduto],
-                [inputFornecedor, inputProduto, inputNrNotFiscal],
-                [btnBuscarFornecedor, btnBuscarProduto, btnBuscarNrNotaFiscal]
+                [
+                    dropdownFornecedor,
+                    dropdownNrNotaFiscal,
+                    dropdownProduto,
+                    dropdownLiberacaoPor,
+                ],
+                [inputFornecedor, inputProduto, inputNrNotFiscal, inputLiberacaoPor],
+                [
+                    btnBuscarFornecedor,
+                    btnBuscarProduto,
+                    btnBuscarNrNotaFiscal,
+                    btnBuscarLiberacaoPor,
+                ]
             );
 
-            // botão de download
             btnDownloadNrNotaFiscal.addEventListener('click', function () {
                 if (!nrNotaFiscalSelecionado) return;
 
@@ -297,6 +339,10 @@
                 resetarProduto();
             });
 
+            btnTrocarLiberacaoPor.addEventListener('click', () => {
+                resetarLiberacaoPor();
+            });
+
             btnBuscarNrNotaFiscal.addEventListener('click', async function () {
                 const codigoParcial = inputNrNotFiscal.value.trim();
                 if (!cnpjFornecedorSelecionado) {
@@ -375,6 +421,77 @@
                     FiberGuardian.Utils.exibirErroDeRede(
                         'Erro de rede ao buscar notas fiscais.',
                         inputNrNotFiscal,
+                        erro
+                    );
+                }
+            });
+
+            btnBuscarLiberacaoPor.addEventListener('click', async function () {
+                const codigoParcial = inputLiberacaoPor.value.trim();
+                if (!codigoParcial) {
+                    FiberGuardian.Utils.exibirMensagemModalComFoco(
+                        'Digite parte do nome do nome do usuário para buscar.',
+                        'warning',
+                        inputLiberacaoPor
+                    );
+                    return;
+                }
+
+                try {
+                    const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
+
+                    // Monta a URL com PathVariable para o CNPJ e query param para codigo_nf
+                    const url = new URL(
+                        `/api/usuarios/list/recebimento`,
+                        window.location.origin
+                    );
+                    if (codigoParcial) {
+                        url.searchParams.append('nome', codigoParcial);
+                    }
+
+                    const resposta = await fetch(url.toString(), {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-XSRF-TOKEN': csrfToken,
+                        },
+                        credentials: 'include',
+                    });
+
+                    if (resposta.ok) {
+                        const listaUsuarios = await resposta.json();
+
+                        const { item } =
+                            await FiberGuardian.Utils.renderizarDropdownGenericoAsync({
+                                input: inputLiberacaoPor,
+                                dropdown: dropdownLiberacaoPor,
+                                lista: listaUsuarios,
+                                camposExibir: ['nome', 'email', 'setor', 'turno'],
+                                titulosColunas: ['Usuário', 'Email', 'Setor', 'Turno'],
+                                msgVazio: 'Nenhum usuário encontrado.',
+                            });
+
+                        if (item) {
+                            emailLiberacaoPor = item.email;
+                            alternarEstadoCampos(
+                                inputLiberacaoPor,
+                                btnBuscarLiberacaoPor,
+                                btnTrocarLiberacaoPor,
+                                true
+                            );
+                        }
+                    } else if (resposta.status === 403) {
+                        FiberGuardian.Utils.exibirMensagemSessaoExpirada();
+                    } else {
+                        await FiberGuardian.Utils.tratarErroFetch(
+                            resposta,
+                            inputLiberacaoPor
+                        );
+                    }
+                } catch (erro) {
+                    FiberGuardian.Utils.exibirErroDeRede(
+                        'Erro de rede ao buscar notas fiscais.',
+                        inputLiberacaoPor,
                         erro
                     );
                 }
