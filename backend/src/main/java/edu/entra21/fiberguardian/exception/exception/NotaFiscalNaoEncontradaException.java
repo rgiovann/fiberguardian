@@ -6,8 +6,12 @@ public class NotaFiscalNaoEncontradaException extends EntidadeNaoEncontradaExcep
         super(String.format("Nota Fiscal de código %d não encontrado.", nf));
     }
 
-
     public NotaFiscalNaoEncontradaException(String nf) {
         super("Nota Fiscal : " + nf +" não existe.");
     }
+
+    public NotaFiscalNaoEncontradaException(String cnpj, String nf) {
+        super("Nota Fiscal : " + nf +" não existe para fornecedor" + cnpj + ".");
+    }
+
 }

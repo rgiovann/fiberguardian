@@ -18,10 +18,15 @@
     <form id="laboratorioForm">
       <div class="card-custom mb-3">
         <h2 class="mb-2 text-center header-spacing titulo-cad-lab">CADASTRO LABORATÓRIO</h2>
-        <div class="card-header">1. Dados do Teste</div>
-        <div class="row mt-2">
+        <div class="card-header branco-bold">1. Dados do Teste</div>
+        <div class="row  mt-2">
+          <!-- Data do Laudo -->
+          <div class="col-md-2 mb-2">
+            <label for="dataLaudo" class="form-label">Data do Laudo</label>
+            <input type="date" id="dataLaudo" name="dataLaudo" class="form-control" required />
+          </div>
 
-          <div class="col-md-6 mb-2">
+          <div class="col-md-5 mb-2">
             <label class="form-label">Fornecedor</label>
             <div class="input-group">
               <input type="text" class="form-control" id="fornecedor" autocomplete="off"
@@ -36,7 +41,7 @@
             <div id="dropdownFornecedor" class="dropdown-menu w-100" aria-labelledby="fornecedor"></div>
           </div>
 
-          <div class="col-md-6 mb-2">
+          <div class="col-md-5 mb-2">
             <label class="form-label">Nota Fiscal</label>
             <div class="input-group">
               <input type="text" class="form-control" id="nrNotaFiscal" autocomplete="off"
@@ -154,8 +159,13 @@
           <button type="submit" class="btn btn-primary btn-custom me-2" id="submitButton">
             <i class="fas fa-save me-2"></i>Gravar
           </button>
+          <!--
           <button type="button" class="btn btn-secondary btn-custom me-2" id="btnImprimir">
             <i class="fas fa-print me-2"></i>Imprimir
+          </button>
+          -->
+          <button type="reset" class="btn btn-warning btn-custom me-2" id="btnLimpar">
+            <i class="fas fa-eraser me-2"></i>Limpar
           </button>
           <button type="button" class="btn btn-danger btn-custom" id="btnSair">
             <i class="fas fa-sign-out-alt me-2"></i>Sair

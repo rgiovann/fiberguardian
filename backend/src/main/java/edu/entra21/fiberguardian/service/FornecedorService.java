@@ -29,7 +29,7 @@ public class FornecedorService {
         this.fornecedorRepository = fornecedorRepository;
     }
 
-    @Transactional
+    @Transactional(readOnly = false)
     public Fornecedor salvar(Fornecedor fornecedor) {
         fornecedor.setCnpj(fornecedor.getCnpj());
         return fornecedorRepository.save(fornecedor);

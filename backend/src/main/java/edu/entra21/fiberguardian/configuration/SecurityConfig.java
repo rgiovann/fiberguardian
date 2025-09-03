@@ -114,6 +114,12 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.DELETE, "/api/nota-fiscal/**").hasAnyAuthority(Role.ADMIN.getAuthority())
 						.requestMatchers(HttpMethod.GET, "/api/nota-fiscal/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
 
+						.requestMatchers(HttpMethod.POST, "/api/laboratorios/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.LABORATORIO.getAuthority())
+						.requestMatchers(HttpMethod.PUT, "/api/laboratorios/**").hasAnyAuthority(Role.ADMIN.getAuthority())
+						.requestMatchers(HttpMethod.DELETE, "/api/laboratorios/**").hasAnyAuthority(Role.ADMIN.getAuthority())
+						.requestMatchers(HttpMethod.GET, "/api/laboratorios/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.LABORATORIO.getAuthority())
+
+
 						.requestMatchers(HttpMethod.POST, "/api/usuarios/alterar-senha").authenticated()
 						.requestMatchers(HttpMethod.GET, "/api/usuarios/buscar-por-email").authenticated().anyRequest()
 						.authenticated())

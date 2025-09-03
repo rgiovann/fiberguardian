@@ -33,7 +33,7 @@ public class ProdutoService {
         this.fornecedorService = fornecedorService;
     }
 
-    @Transactional
+    @Transactional(readOnly = false)
     public Produto salvar(String cnpj, Produto produto) {
         fornecedorService.validaFornecedor(cnpj);
         Fornecedor fornecedor = fornecedorService.buscarPorCNPJObrigatorio(cnpj);

@@ -73,7 +73,7 @@ public class UsuarioService {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = false)
     public Usuario cadastrarNovoUsuario(Usuario usuario, String repeteSenha) {
 
         // codigo defensivo, validation no controller já
@@ -138,7 +138,7 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
     }
 
-    @Transactional
+    @Transactional(readOnly = false)
     public Usuario alterarDadosUsuario(String emailUsuario, String novoNome, String novoSetor, String novoTurno) {
         Usuario usuario = buscarPorEmailObrigatorio(emailUsuario);
 
@@ -159,7 +159,7 @@ public class UsuarioService {
         }
      }
 
-    @Transactional
+    @Transactional(readOnly = false)
     public void ativarUsuario(String emailAutenticado, String emailUsuario) {
         validarMudancaStatus(emailAutenticado, emailUsuario);
         Usuario usuario = buscarPorEmailObrigatorio(emailUsuario);
@@ -167,7 +167,7 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
     }
 
-    @Transactional
+    @Transactional(readOnly = false)
     public void inativarUsuario(String emailAutenticado, String emailUsuario) {
         validarMudancaStatus(emailAutenticado, emailUsuario);
         Usuario usuario = buscarPorEmailObrigatorio(emailUsuario);
@@ -209,7 +209,7 @@ public class UsuarioService {
                 .findTop20UsuarioRecebimentoByNomeContainingIgnoreCase(nomeUsuario, rolesPermitidas);
     }
 
-    @Transactional
+    @Transactional(readOnly = false)
     public void resetarSenha(String email, String novaSenha, String repeteSenha) {
 
         Usuario usuario = buscarPorEmailObrigatorio(email);

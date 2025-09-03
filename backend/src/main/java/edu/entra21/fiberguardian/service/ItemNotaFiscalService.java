@@ -1,5 +1,7 @@
 package edu.entra21.fiberguardian.service;
 
+import edu.entra21.fiberguardian.exception.exception.ItemNotaFiscalNaoEncontradoException;
+import edu.entra21.fiberguardian.exception.exception.NegocioException;
 import edu.entra21.fiberguardian.repository.ItemNotaFiscalRepository;
 import org.springframework.stereotype.Service;
 import edu.entra21.fiberguardian.model.ItemNotaFiscal;
@@ -28,6 +30,13 @@ public class ItemNotaFiscalService {
 
         // 2. Buscar os itens usando o ID da nota
         return itemNotaFiscalRepository.findByNotaFiscalId(nota.getId());
+    }
+
+    @Transactional(readOnly = true)
+    public ItemNotaFiscal buscarPorNotaFiscalEProduto(Long notaFiscalId, Long produtoId) {
+        return itemNotaFiscalRepository
+                .findByNotaFiscalIdAndProdutoId(notaFiscalId, produtoId)
+                .orElseThrow(() -> new ItemNotaFiscalNaoEncontradoException(notaFiscalId,produtoId));
     }
 
 }

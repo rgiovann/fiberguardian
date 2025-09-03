@@ -214,7 +214,7 @@ INSERT INTO produto (codigo_produto, descricao_produto, fornecedor_id,data_cadas
 -- Fios & Tramas
 ('FET45009871', '12/1 100% CO - TG', 23,utc_timestamp),
 ('FET69007621', '12/1 PENT 100%CO-TG', 23,utc_timestamp),
-('FET69007621', '20/1 100% CO - TG', 23,utc_timestamp),
+('FET69007622', '20/1 100% CO - TG', 23,utc_timestamp),
 
 -- Algodoeira do Cerrado
 ('ADC21005431', '14/1 CARD 100%CO TG', 24,utc_timestamp),
@@ -487,6 +487,23 @@ VALUES (30, 17, 4800.00, 160, 14400.00, 30.00, NULL, utc_timestamp),
        (30, 18, 3900.00, 130, 13650.00, 35.00, NULL, utc_timestamp),
        (30, 19, 3300.00, 110, 8580.00, 26.00, NULL, utc_timestamp);
 
+-- essas NFs não tem laudos
+-- Nota Fiscal 31 (Fornecedor 5 - Tinturaria Brasil, produtos 9 e 10)
+INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
+VALUES ('338045', 5, 17, 23500.00, '2025-01-15', NULL, utc_timestamp(), NULL, NULL);
+
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
+VALUES (31, 9, 2500.00, 100, 7750.00, 3.10, NULL, utc_timestamp),
+       (31, 10, 5000.00, 200, 15750.00, 3.15, NULL, utc_timestamp);
+
+-- Nota Fiscal 32 (Fornecedor 9 - CooperFibra Paraná, produtos 17 e 18)
+INSERT INTO nota_fiscal (codigo_nf, fornecedor_id, recebido_por, valor_total, data_recebimento, criado_por, data_cadastro, data_alteracao, alterado_por)
+VALUES ('348156', 9, 21, 42200.00, '2025-01-20', NULL, utc_timestamp(), NULL, NULL);
+
+INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_caixas, valor_total_item, preco_unitario, observacao, data_cadastro)
+VALUES (32, 17, 4000.00, 150, 16800.00, 4.20, NULL, utc_timestamp),
+       (32, 18, 5000.00, 180, 25400.00, 5.08, NULL, utc_timestamp);
+
 -- Nota registros laboratorio por item de nota fiscal
 
 INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao)
@@ -548,3 +565,11 @@ VALUES (17, '60OP', 14.70, 45, 55, 340, 4.20, 13.20, 7.50, 12.30, 750, 'REPROVAD
 
 INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao)
 VALUES (19, '70PQ', 16.20, 20, 15, 270, 6.80, 17.70, 10.70, 5.20, 300, 'APROVADO', 31, utc_timestamp(),'2025-07-21');
+
+-- Laudo 1 (sobre o item da Nota 31, produto 9)
+--INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao)
+--VALUES (61, 'LQ2025A', 14.80, 40, 55, 210, 5.20, 14.90, 7.10, 9.80, 420, 'APROVADO', 17, utc_timestamp(),'2025-09-02');
+
+-- Laudo 2 (sobre o item da Nota 32, produto 17)
+--INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao)
+--VALUES (63, 'LQ2025B', 12.30, 25, 30, 150, 6.70, 18.40, 9.30, 10.90, 350, 'REPROVADO', 13, utc_timestamp(),'2025-09-02');

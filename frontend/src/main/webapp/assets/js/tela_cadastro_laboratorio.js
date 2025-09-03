@@ -19,7 +19,7 @@
             const btnBuscarFornecedor = document.getElementById('btnBuscarFornecedor');
             const dropdownFornecedor = document.getElementById('dropdownFornecedor');
             const btnTrocarFornecedor = document.getElementById('btnTrocarFornecedor');
-
+            const dateDataLaudoLab = document.getElementById('dataLaudo');
             const inputLiberacaoPor = document.getElementById('inputLiberacaoPor');
             const dropdownLiberacaoPor =
                 document.getElementById('dropdownLiberacaoPor');
@@ -242,21 +242,6 @@
                     btnBuscarLiberacaoPor,
                 ]
             );
-            /*
-            btnDownloadNrNotaFiscal.addEventListener('click', function () {
-                if (!nrNotaFiscalSelecionado) return;
-
-                // URL do endpoint que retorna o PDF
-                const url = `/api/notas-fiscais/pdf/${nrNotaFiscalSelecionado}`;
-
-                // forçar download abrindo em nova aba
-                const link = document.createElement('a');
-                link.href = url;
-                link.target = '_blank'; // abre em nova aba
-                link.download = `NotaFiscal-${nrNotaFiscalSelecionado}.pdf`;
-                link.click();
-            });
-            */
 
             btnDownloadNrNotaFiscal.addEventListener('click', async function () {
                 if (!nrNotaFiscalSelecionado) return;
@@ -403,6 +388,83 @@
             btnTrocarLiberacaoPor.addEventListener('click', () => {
                 resetarLiberacaoPor();
             });
+
+            function limparFormulario() {
+                // Resetar variáveis internas
+                cnpjFornecedorSelecionado = null;
+                codigoProdutoSelecionado = null;
+                nrNotaFiscalSelecionado = null;
+                nrNotaFiscalSelecionadoId = null;
+                emailLiberacaoPor = null;
+
+                const dateDataLaudoLab = document.getElementById('dataLaudo');
+
+                const hoje = new Date();
+                const yyyy = hoje.getFullYear();
+                const mm = String(hoje.getMonth() + 1).padStart(2, '0');
+                const dd = String(hoje.getDate()).padStart(2, '0');
+                dateDataLaudoLab.value = `${yyyy}-${mm}-${dd}`;
+
+                // Resetar campos de texto do formulário
+                const formLaboratorio = document.getElementById('laboratorioForm');
+                if (formLaboratorio) {
+                    formLaboratorio.reset();
+                }
+
+                // Fornecedor
+                if (inputFornecedor && btnBuscarFornecedor && btnTrocarFornecedor) {
+                    inputFornecedor.value = '';
+                    alternarEstadoCampos(
+                        inputFornecedor,
+                        btnBuscarFornecedor,
+                        btnTrocarFornecedor,
+                        false
+                    );
+                }
+
+                // Produto
+                if (inputProduto && btnBuscarProduto && btnTrocarProduto) {
+                    inputProduto.value = '';
+                    alternarEstadoCampos(
+                        inputProduto,
+                        btnBuscarProduto,
+                        btnTrocarProduto,
+                        false
+                    );
+                }
+
+                // Nota Fiscal
+                if (inputNrNotFiscal && btnBuscarNrNotaFiscal && btnTrocarNotaFiscal) {
+                    inputNrNotFiscal.value = '';
+                    btnDownloadNrNotaFiscal.disabled = true;
+                    alternarEstadoCampos(
+                        inputNrNotFiscal,
+                        btnBuscarNrNotaFiscal,
+                        btnTrocarNotaFiscal,
+                        false
+                    );
+                }
+
+                // LiberacaoPor
+                if (
+                    inputLiberacaoPor &&
+                    btnBuscarLiberacaoPor &&
+                    btnTrocarLiberacaoPor
+                ) {
+                    inputLiberacaoPor.value = '';
+                    alternarEstadoCampos(
+                        inputLiberacaoPor,
+                        btnBuscarLiberacaoPor,
+                        btnTrocarLiberacaoPor,
+                        false
+                    );
+                }
+            }
+
+            const btnLimpar = document.getElementById('btnLimpar');
+            if (btnLimpar) {
+                btnLimpar.addEventListener('click', limparFormulario);
+            }
 
             btnBuscarNrNotaFiscal.addEventListener('click', async function () {
                 const codigoParcial = inputNrNotFiscal.value.trim();
@@ -558,50 +620,6 @@
                 }
             });
 
-            /*
-            // Event listener para a busca de nota fiscal
-            btnBuscarNrNotaFiscal.addEventListener('click', async function () {
-                const codigoParcial = inputNrNotFiscal.value.trim();
-                if (!cnpjFornecedorSelecionado) {
-                    FiberGuardian.Utils.exibirMensagemModalComFoco('É necessário selecionar um fornecedor antes de buscar a nota fiscal.', 'warning', inputFornecedor);
-                    return;
-                }
-                try {
-                    const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
-                    const url = new URL('/api/produtos/list/notasfiscais', window.location.origin);
-                    url.searchParams.append('cnpj', cnpjFornecedorSelecionado);
-                    if (codigoParcial) {
-                        url.searchParams.append('descricao', codigoParcial);
-                    }
-                    const resposta = await fetch(url.toString(), {
-                        method: 'GET',
-                        headers: { 'Content-Type': 'application/json', 'X-XSRF-TOKEN': csrfToken },
-                        credentials: 'include',
-                    });
-                    if (resposta.ok) {
-                        const listaNotasFiscais = await resposta.json();
-                        const { item } = await FiberGuardian.Utils.renderizarDropdownGenericoAsync({
-                            input: inputNrNotFiscal,
-                            dropdown: dropdownNrNotaFiscal,
-                            lista: listaNotasFiscais,
-                            camposExibir: ['codigoNf', 'cnpj', 'descricao'],
-                            titulosColunas: ['Nota Fiscal', 'CNPJ', 'Empresa'],
-                            msgVazio: 'Nenhum produto encontrado.',
-                        });
-                        if (item) {
-                            nrNotaFiscalSelecionado = item.codigoNf;
-                        }
-                    } else if (resposta.status === 403) {
-                        FiberGuardian.Utils.exibirMensagemSessaoExpirada();
-                    } else {
-                        await FiberGuardian.Utils.tratarErroFetch(resposta, inputNrNotFiscal);
-                    }
-                } catch (erro) {
-                    FiberGuardian.Utils.exibirErroDeRede('Erro de rede ao buscar notas fiscais.', inputNrNotFiscal, erro);
-                }
-            });
-            */
-
             // Event listener para a busca de produto
             btnBuscarProduto.addEventListener('click', async function () {
                 const codigoParcial = inputProduto.value.trim();
@@ -685,6 +703,144 @@
             if (formLaboratorio) {
                 formLaboratorio.addEventListener('submit', handleFormSubmit);
             }
+            //=================================================================================================
+            //=================================================================================================
+            /*
+                        // Dentro de configurarEventos(), após bind dos outros botões:
+            const btnFinalizarNota = document.getElementById('btnFinalizarNota');
+            if (btnFinalizarNota) {
+                btnFinalizarNota.addEventListener('click', async () => {
+                    try {
+                        // Verifica se há pelo menos 1 item antes de finalizar
+                        if (!itensRecebimento || itensRecebimento.length === 0) {
+                            FiberGuardian.Utils.exibirMensagemModalComFoco(
+                                'Nota deve ter no mínimo 1 item de nota cadastrado',
+                                'warning',
+                                document.getElementById('produto')
+                            );
+                            return;
+                        }
+                        // === Coleta campos do cabeçalho ===
+                        const inputNota = document.getElementById('notaFiscal');
+                        const inputData = document.getElementById('dataRecebimento');
+                        const inputValorTotal = document.getElementById('valorTotal');
+                        const inputArquivo = document.getElementById('arquivoNota');
+
+                        // Validação defensiva mínima (usuário pode burlar travas via console)
+                        if (
+                            !inputNota.value.trim() ||
+                            !cnpjFornecedor ||
+                            !emailUsuario ||
+                            !inputArquivo.files?.length
+                        ) {
+                            FiberGuardian.Utils.exibirMensagemModalComFoco(
+                                'Preencha todos os campos obrigatórios antes de finalizar a nota.',
+                                'warning',
+                                inputNota
+                            );
+                            return;
+                        }
+
+                        // === Monta objeto da nota + itens ===
+                        const dadosNota = {
+                            nota: {
+                                codigoNf: inputNota.value.trim(),
+                                cnpj: cnpjFornecedor,
+                                recebidoPor: emailUsuario,
+                                dataRecebimento: inputData.value,
+                                valorTotal:
+                                    parseFloat(
+                                        inputValorTotal.value.replace(',', '.')
+                                    ) || 0,
+                            },
+                            itens: itensRecebimento.map((it) => ({
+                                codigoProduto: it.codigo,
+                                qtdRecebida: it.quantRecebida,
+                                nrCaixas: it.numeroCaixas,
+                                precoUnitario: it.valorUnit,
+                                observacao: it.observacao || '', // pode estar vazio
+                            })),
+                        };
+
+                        // === Monta objeto de metadados do PDF ===
+                        const pdfMeta = {
+                            descricao: `Arquivo nota fiscal ${inputNota.value.trim()} relativa ao fornecedor ${cnpjFornecedor}`,
+                        };
+
+                        // === Prepara multipart/form-data ===
+                        const formData = new FormData();
+                        formData.append(
+                            'dadosNota',
+                            new Blob([JSON.stringify(dadosNota)], {
+                                type: 'application/json',
+                            })
+                        );
+                        formData.append(
+                            'pdfMeta',
+                            new Blob([JSON.stringify(pdfMeta)], {
+                                type: 'application/json',
+                            })
+                        );
+                        formData.append('arquivo', inputArquivo.files[0]);
+
+                        // === CSRF token ===
+                        const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
+
+                        const resposta = await fetch('/api/notas-fiscais', {
+                            method: 'POST',
+                            headers: {
+                                'X-XSRF-TOKEN': csrfToken,
+                            },
+                            credentials: 'include',
+                            body: formData,
+                        });
+
+                        if (resposta.ok) {
+                            // Zera array global
+                            itensRecebimento = [];
+                            renderizarTabelaItens();
+                            limpaCabecalhoNotaFiscal();
+                            limpaItensNotaFiscal();
+
+                            FiberGuardian.Utils.exibirMensagemModalComFoco(
+                                'Nota fiscal gravada com sucesso.',
+                                'success',
+                                inputNota
+                            );
+
+                            // === Reset após sucesso ===
+                            itensRecebimento = []; // limpa array global
+                            renderizarTabelaItens(); // limpa tabela na tela
+
+                            //document.getElementById('formNotaFiscal').reset(); // se você tiver um <form>
+                            cnpjFornecedor = null;
+                            emailUsuario = null;
+
+                            return;
+                        } else if (resposta.status === 403) {
+                            FiberGuardian.Utils.exibirMensagemSessaoExpirada();
+                            FiberGuardian.Utils.voltarMenuPrincipal();
+                        } else {
+                            await FiberGuardian.Utils.tratarErroFetch(
+                                resposta,
+                                inputNota
+                            );
+                            return;
+                        }
+                    } catch (erro) {
+                        console.error('Falha na requisição:', erro);
+                        FiberGuardian.Utils.exibirErroDeRede(
+                            'Erro de rede ao finalizar nota fiscal',
+                            document.getElementById('notaFiscal'),
+                            erro
+                        );
+                        FiberGuardian.Utils.voltarMenuPrincipal();
+                    }
+                });
+            }
+            */
+
+            //=================================================================================================
         }
 
         return {

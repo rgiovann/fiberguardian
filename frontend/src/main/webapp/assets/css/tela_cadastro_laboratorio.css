@@ -17,14 +17,17 @@
     background-color: #078dfb;
     color: white;
     font-weight: bold;
-    padding: 8px; /* reduzido (antes 10px) */
-    border-radius: 6px 6px 0 0;
+    padding: 10px;
+    margin-left: 0px;
+    margin-right: 0px;
+    //padding: 8px; /* reduzido (antes 10px) */
+    //border-radius: 6px 6px 0 0;
 }
 
 /* Rótulos */
-.form-label {
-    font-weight: 500;
-}
+//.form-label {
+//    font-weight: 500;
+//}
 
 /* Botões */
 .btn-custom {

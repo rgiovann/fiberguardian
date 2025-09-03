@@ -55,7 +55,7 @@ public class NotaFiscalService {
     }
 
 
-    @Transactional
+    @Transactional(readOnly = false)
     public NotaFiscal salvarNotaComItensEPdf(NotaFiscal nota,
                                              List<ItemNotaFiscal> itens,
                                              PdfNotaFiscal pdf,
@@ -188,9 +188,7 @@ public class NotaFiscalService {
     public NotaFiscal buscarObrigatorioPorNotaECnpj(String cnpj, String notaFiscal){
         return notaFiscalRepository
                 .findByFornecedorCnpjAndCodigoNf(cnpj.trim(), notaFiscal.trim())
-                .orElseThrow(() -> new NegocioException(
-                        "Nota fiscal " + notaFiscal + " do fornecedor " + cnpj + " não existe."
-                ));
+                .orElseThrow(() -> new NotaFiscalNaoEncontradaException(cnpj,notaFiscal));
     }
 
     /**
@@ -247,13 +245,6 @@ public class NotaFiscalService {
     @Transactional(readOnly = false)
     public void excluirNotaFiscal(String cnpj, String codigoNF) {
 
-        // Busca a nota fiscal
-        //NotaFiscal notaFiscal = notaFiscalRepository
-        //        .findByFornecedorCnpjAndCodigoNf(cnpj.trim(), codigoNF.trim())
-        //        .orElseThrow(() -> new NegocioException(
-        //                "Nota fiscal " + codigoNF + " do fornecedor " + cnpj + " não existe."
-        //        ));
-
         NotaFiscal notaFiscal = buscarObrigatorioPorNotaECnpj(cnpj,codigoNF);
 
         // Verifica registros associados no laboratório
@@ -270,11 +261,11 @@ public class NotaFiscalService {
         if (notaFiscal.getPdfNotaFiscal() != null) {
             nomeArquivo = notaFiscal.getPdfNotaFiscal().getNomeArquivo();
         }
-        logger.info("[FG] Nome do arquivo.....: "+nomeArquivo);
+        //logger.info("[FG] Nome do arquivo.....: "+nomeArquivo);
 
 
         // Exclui a nota fiscal (cascade deleta o PDF automaticamente)
-        logger.info("[FG] Deletando nota fiscal.....");
+        //logger.info("[FG] Deletando nota fiscal.....");
         notaFiscalRepository.delete(notaFiscal);
         notaFiscalRepository.flush();
 

@@ -9,5 +9,5 @@ CREATE TABLE produto (
     alterado_por BIGINT NULL,
     CONSTRAINT fk_produto_fornecedor FOREIGN KEY (fornecedor_id)
         REFERENCES fornecedor(id) ON UPDATE CASCADE ON DELETE RESTRICT,
-    UNIQUE KEY uq_produto_fornecedor_codigo_desc (fornecedor_id, codigo_produto, descricao_produto)
+    UNIQUE KEY uq_produto_fornecedor_codigo_desc (fornecedor_id, codigo_produto)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
