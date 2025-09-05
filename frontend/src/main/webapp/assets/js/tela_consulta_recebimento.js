@@ -558,11 +558,13 @@
                         console.error('Erro ao buscar notas fiscais:', erro);
                         FiberGuardian.Utils.exibirErroDeRede(
                             'Erro de rede ao buscar notas fiscais.',
-                            nrNotaFiscalSelecionado,
+                            inputNrNotFiscal,
                             erro
                         );
                     }
                 });
+
+
                 btnSair.replaceWith(btnSair.cloneNode(true));
                 btnSair = document.getElementById('btnSair');
                 btnSair.addEventListener('click', async () => {
@@ -618,8 +620,9 @@
                     if (tbody) tbody.innerHTML = '';
                     document.getElementById('paginacao-container').innerHTML = '';
                 });
-            } catch {
-                console.error('[FG] erro em configurarEventos:', err);
+                
+            } catch (erro) {
+                console.error('[FG] erro em configurarEventos:', erro);
             }
         }
 

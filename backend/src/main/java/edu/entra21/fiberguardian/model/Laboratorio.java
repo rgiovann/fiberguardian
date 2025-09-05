@@ -33,7 +33,7 @@ public class Laboratorio {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_nota_fiscal_id", nullable = false,
             foreignKey = @ForeignKey(name = "fk_laboratorio_item_nota_fiscal"))
-    private ItemNotaFiscal itemNotaFiscalnotaFiscal;
+    private ItemNotaFiscal itemNotaFiscal;
 
     @Column(name = "numero_lote", nullable = false, length = 45)
     private String numeroLote;

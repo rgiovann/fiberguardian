@@ -1,5 +1,6 @@
 package edu.entra21.fiberguardian.model;
 
+import edu.entra21.fiberguardian.model.converter.UpperCaseConverter;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -31,6 +32,7 @@ public class Produto {
     private Long id;
 
     @Column(name = "codigo_produto", nullable = false, length = 100)
+    @Convert(converter =  UpperCaseConverter.class)
     private String codigo;
 
     @Column(name = "descricao_produto", length = 255)

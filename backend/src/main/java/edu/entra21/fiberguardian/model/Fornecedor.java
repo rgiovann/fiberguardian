@@ -1,5 +1,6 @@
 package edu.entra21.fiberguardian.model;
 
+import edu.entra21.fiberguardian.model.converter.UpperCaseConverter;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

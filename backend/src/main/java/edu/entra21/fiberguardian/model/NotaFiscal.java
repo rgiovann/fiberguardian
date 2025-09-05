@@ -1,5 +1,7 @@
 package edu.entra21.fiberguardian.model;
 
+import edu.entra21.fiberguardian.model.converter.LowerCaseConverter;
+import edu.entra21.fiberguardian.model.converter.UpperCaseConverter;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -42,6 +44,7 @@ public class NotaFiscal {
     private Long id;
 
     @Column(name = "codigo_nf", nullable = false, length = 100)
+    @Convert(converter =  UpperCaseConverter.class)
     private String codigoNf;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)

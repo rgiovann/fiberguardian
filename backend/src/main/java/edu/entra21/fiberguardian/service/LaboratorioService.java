@@ -1,6 +1,5 @@
 package edu.entra21.fiberguardian.service;
 
-import edu.entra21.fiberguardian.exception.exception.NegocioException;
 import edu.entra21.fiberguardian.model.*;
 import edu.entra21.fiberguardian.repository.ItemNotaFiscalRepository;
 import edu.entra21.fiberguardian.repository.LaboratorioRepository;
@@ -35,9 +34,9 @@ public class LaboratorioService {
 
     @Transactional(readOnly = false)
     public Laboratorio salvar(Laboratorio laboratorio) {
-        String cnpj = laboratorio.getItemNotaFiscalnotaFiscal().getNotaFiscal().getFornecedor().getCnpj();
-        String codigoNf = laboratorio.getItemNotaFiscalnotaFiscal().getNotaFiscal().getCodigoNf();
-        String codProduto = laboratorio.getItemNotaFiscalnotaFiscal().getProduto().getCodigo();
+        String cnpj = laboratorio.getItemNotaFiscal().getNotaFiscal().getFornecedor().getCnpj();
+        String codigoNf = laboratorio.getItemNotaFiscal().getNotaFiscal().getCodigoNf();
+        String codProduto = laboratorio.getItemNotaFiscal().getProduto().getCodigo();
 
         // a) validar fornecedor
         fornecedorService.validaFornecedor(cnpj);
@@ -56,7 +55,7 @@ public class LaboratorioService {
         Usuario usuario = usuarioService.buscarPorEmailObrigatorio(laboratorio.getLiberadoPor().getEmail());
 
         // associar entidades reais ao laboratório
-        laboratorio.setItemNotaFiscalnotaFiscal(item);
+        laboratorio.setItemNotaFiscal(item);
         laboratorio.setLiberadoPor(usuario);
 
         return laboratorioRepository.save(laboratorio);

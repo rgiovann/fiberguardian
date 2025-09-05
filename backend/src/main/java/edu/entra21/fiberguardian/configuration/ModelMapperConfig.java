@@ -72,7 +72,7 @@ public class ModelMapperConfig {
                 .addMappings(m -> {
                       // Item Nota Fiscal
                     m.using(laboratorioToItemNotaFiscal)
-                            .map(src -> src, Laboratorio::setItemNotaFiscalnotaFiscal);
+                            .map(src -> src, Laboratorio::setItemNotaFiscal);
                     // Depois, mapeia explicitamente
                     m.using(emailToUsuario)
                             .map(LaboratorioInput::getEmailLaudoLab, Laboratorio::setLiberadoPor);
@@ -105,20 +105,20 @@ public class ModelMapperConfig {
         laboratorioTypeMap.addMappings(m -> {
 
             // Fornecedor
-            m.map(src -> src.getItemNotaFiscalnotaFiscal()
+            m.map(src -> src.getItemNotaFiscal()
                             .getNotaFiscal()
                             .getFornecedor()
                             .getCnpj(),
                     LaboratorioDto::setCnpj);
 
             // Nota Fiscal
-            m.map(src -> src.getItemNotaFiscalnotaFiscal()
+            m.map(src -> src.getItemNotaFiscal()
                             .getNotaFiscal()
                             .getCodigoNf(),
                     LaboratorioDto::setCodigoNf);
 
             // Produto
-            m.map(src -> src.getItemNotaFiscalnotaFiscal()
+            m.map(src -> src.getItemNotaFiscal()
                             .getProduto()
                             .getCodigo(),
                     LaboratorioDto::setCodProduto);
