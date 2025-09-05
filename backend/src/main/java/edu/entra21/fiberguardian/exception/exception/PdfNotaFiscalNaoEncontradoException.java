@@ -12,6 +12,6 @@ public class PdfNotaFiscalNaoEncontradoException extends EntidadeNaoEncontradaEx
 
     public PdfNotaFiscalNaoEncontradoException(Long notaFiscalId ) {
         // chamando o construtor anterior;
-        this(String.format("Não existe uma Nota Fiscal com código %d", notaFiscalId));
+        this(String.format("Não existe pdf da Nota Fiscal com código %d", notaFiscalId));
     }
 }

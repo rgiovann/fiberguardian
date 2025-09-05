@@ -6,6 +6,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -153,6 +154,28 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 	}
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex, WebRequest request) {
+
+		List<String> violacoes = ex.getConstraintViolations().stream()
+				.map(violation -> String.format("Campo '%s': %s",
+						violation.getPropertyPath(),
+						violation.getMessage()))
+				.collect(Collectors.toList());
+
+		String detail = "Dados inválidos: " + String.join(", ", violacoes);
+		String userMessage = violacoes.size() == 1 ?
+				violacoes.get(0).replaceFirst("Campo '.*?': ", "") :
+				"Um ou mais campos contêm valores inválidos.";
+
+		Problem problem = createProblemBuilder(HttpStatus.BAD_REQUEST, ProblemType.DADOS_INVALIDO, detail)
+				.userMessage(userMessage)
+				.build();
+
+		return handleExceptionInternal(ex, problem, HttpHeaders.EMPTY, HttpStatus.BAD_REQUEST, request);
+	}
+
 
 	/*
 	 * Spring Boot 3.x (Spring Framework 6.x): Esse metodo foi removido da classe
@@ -324,7 +347,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 						+ "que é do tipo inválido. Corrija e informe o valor compatível com o tipo %s",
 				path, ex.getValue(), ex.getTargetType().getSimpleName());
 		Problem problem = createProblemBuilder(status, ProblemType.MENSAGEM_CORROMPIDA, detail)
-				.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL).build();
+				.userMessage(detail).build();
 		return handleExceptionInternal(ex, problem, headers, status, request);
 	}
 

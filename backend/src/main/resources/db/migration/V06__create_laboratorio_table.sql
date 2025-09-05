@@ -13,6 +13,7 @@ CREATE TABLE laboratorio (
     torcao_t_m INTEGER NOT NULL CHECK (torcao_t_m >= 0),
     status ENUM('APROVADO', 'REPROVADO') NOT NULL,
     liberado_por BIGINT NOT NULL,
+    observacao_laudo VARCHAR(255),
     data_realizacao DATE NOT NULL,
     data_cadastro DATETIME NOT NULL,
     data_alteracao DATETIME NULL,

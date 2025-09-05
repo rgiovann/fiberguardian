@@ -29,7 +29,7 @@
           <div class="col-md-5 mb-2">
             <label class="form-label">Fornecedor</label>
             <div class="input-group">
-              <input type="text" class="form-control" id="fornecedor" autocomplete="off"
+              <input type="text" class="form-control" id="fornecedor" name="fornecedor" autocomplete="off"
                 placeholder="Digite parte do nome do fornecedor" required />
               <button id="btnBuscarFornecedor" class="btn btn-secondary ms-2" type="button">
                 <i class="fas fa-search me-2"></i>Buscar
@@ -44,7 +44,7 @@
           <div class="col-md-5 mb-2">
             <label class="form-label">Nota Fiscal</label>
             <div class="input-group">
-              <input type="text" class="form-control" id="nrNotaFiscal" autocomplete="off"
+              <input type="text" class="form-control" id="nrNotaFiscal" name="nrNotaFiscal"="off"
                 placeholder="Digite parte do número da nota fiscal" required />
               <button id="btnBuscarNrNotaFiscal" name="btnBuscarNrNotaFiscal" class="btn btn-secondary ms-2"
                 type="button">
@@ -108,55 +108,61 @@
         <div class="row mt-2">
           <div class="col-md-4 mt-2">
             <label for="cvm" class="form-label">CVM (%)</label>
-            <input type="number" step="0.01" class="form-control" id="cvm" name="cvm" required>
+            <input type="number" step="0.01" class="form-control" id="cvm" name="cvm" value="0.01" min="0" required>
           </div>
           <div class="col-md-4 mt-2">
             <label for="pontosFinos" class="form-label">Pontos Finos</label>
-            <input type="number" class="form-control" id="pontosFinos" name="pontosFinos" required>
+            <input type="number" class="form-control" id="pontosFinos" name="pontosFinos" value="0" min="0" required>
           </div>
           <div class="col-md-4 mt-2">
             <label for="pontosGrossos" class="form-label">Pontos Grossos</label>
-            <input type="number" class="form-control" id="pontosGrossos" name="pontosGrossos" required>
+            <input type="number" class="form-control" id="pontosGrossos" name="pontosGrossos" value="0" min="0"
+              required>
           </div>
           <div class="col-md-4 mt-2">
             <label for="neps" class="form-label">NEPs</label>
-            <input type="number" class="form-control" id="neps" name="neps" required>
+            <input type="number" class="form-control" id="neps" name="neps" value="0" min="0" required>
           </div>
           <div class="col-md-4 mt-2">
             <label for="hPilosidade" class="form-label">H. Pilosidade</label>
-            <input type="number" step="0.01" class="form-control" id="hPilosidade" name="hPilosidade" required>
+            <input type="number" step="0.01" class="form-control" id="hPilosidade" name="hPilosidade" value="0.01"
+              min="0.01" required>
           </div>
           <div class="col-md-4 mt-2">
             <label for="resistencia" class="form-label">Resistência</label>
-            <input type="number" step="0.01" class="form-control" id="resistencia" name="resistencia" required>
+            <input type="number" step="0.01" class="form-control" id="resistencia" name="resistencia" value="0.01"
+              min="0.01" required>
           </div>
           <div class="col-md-4 mt-2">
             <label for="alongamento" class="form-label">Alongamento</label>
-            <input type="number" step="0.01" class="form-control" id="alongamento" name="alongamento" required>
+            <input type="number" step="0.01" class="form-control" id="alongamento" name="alongamento" value="0.01"
+              min="0.01" required>
           </div>
           <div class="col-md-4 mt-2">
             <label for="tituloNe" class="form-label">Título, ne</label>
-            <input type="number" step="0.01" class="form-control" id="tituloNe" name="tituloNe" required>
+            <input type="number" step="0.01" class="form-control" id="tituloNe" name="tituloNe" value="0" min="0"
+              required>
           </div>
           <div class="col-md-4 mt-2">
             <label for="torcaoTm" class="form-label">Torção, t.m</label>
-            <input type="number" step="0.01" class="form-control" id="torcaoTm" name="torcaoTm" required>
+            <input type="number" class="form-control" id="torcaoTm" name="torcaoTm" value="0" min="0" required>
           </div>
           <div class="col-md-4 mt-2">
             <label for="status" class="form-label">Status</label>
             <select class="form-control" id="status" name="status" required>
-              <option value="" disabled selected>Selecione o status</option>
-              <option value="Aprovado">Aprovado</option>
-              <option value="Reprovado">Reprovado</option>
+              <option value="" disabled>Selecione o status</option>
+              <option value="APROVADO" selected>Aprovado</option>
+              <option value="REPROVADO">Reprovado</option>
             </select>
           </div>
         </div>
         <div class="mt-2">
-          <label for="infoRecebimento" class="form-label">Informações de Recebimento</label>
-          <textarea class="form-control" rows="3" id="infoRecebimento" name="infoRecebimento"></textarea>
+          <label for="textAreaObservacaoLaudo" class="form-label">Observações Laudo Laboratório</label>
+          <textarea class="form-control" rows="3" id="textAreaObservacaoLaudo"
+            name="textAreaObservacaoLaudo"></textarea>
         </div>
         <div class="text-center mt-3">
-          <button type="submit" class="btn btn-primary btn-custom me-2" id="submitButton">
+          <button type="button" class="btn btn-primary btn-custom me-2" id="btnGravarLaudo" name="btnGravarLaudo">
             <i class="fas fa-save me-2"></i>Gravar
           </button>
           <!--
@@ -164,7 +170,7 @@
             <i class="fas fa-print me-2"></i>Imprimir
           </button>
           -->
-          <button type="reset" class="btn btn-warning btn-custom me-2" id="btnLimpar">
+          <button type="button" class="btn btn-warning btn-custom me-2" id="btnLimpar">
             <i class="fas fa-eraser me-2"></i>Limpar
           </button>
           <button type="button" class="btn btn-danger btn-custom" id="btnSair">

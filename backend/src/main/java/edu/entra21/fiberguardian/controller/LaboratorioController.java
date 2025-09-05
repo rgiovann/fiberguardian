@@ -7,6 +7,8 @@ import edu.entra21.fiberguardian.input.LaboratorioInput;
 import edu.entra21.fiberguardian.model.Laboratorio;
 import edu.entra21.fiberguardian.service.LaboratorioService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +21,7 @@ public class LaboratorioController {
     private final LaboratorioInputDisassembler laboratorioInputDisassembler;
     private final LaboratorioDtoAssembler laboratorioDtoAssembler;
     private final LaboratorioService laboratorioService;
+    private static final Logger logger = LoggerFactory.getLogger(LaboratorioController.class);
 
     public LaboratorioController(
             LaboratorioInputDisassembler laboratorioInputDisassembler,

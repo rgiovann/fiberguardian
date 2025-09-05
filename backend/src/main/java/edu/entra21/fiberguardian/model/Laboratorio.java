@@ -1,5 +1,7 @@
 package edu.entra21.fiberguardian.model;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -36,6 +38,9 @@ public class Laboratorio {
     @Column(name = "numero_lote", nullable = false, length = 45)
     private String numeroLote;
 
+    @Column(name = "observacao_laudo", nullable = false, length = 255)
+    private String observacaoLaudo;
+
     @Column(name = "cvm", nullable = false, precision = 15, scale = 2)
     private BigDecimal cvm;
 
@@ -49,19 +54,25 @@ public class Laboratorio {
     private Integer neps;
 
     @Column(name = "h_pilosidade", nullable = false, precision = 15, scale = 2)
+    @Positive(message = "A pilosidade deve ser um valor positivo")
+    @NotNull(message = "A pilosidade é obrigatória")
     private BigDecimal pilosidade;
 
     @Column(name = "resistencia", nullable = false, precision = 15, scale = 2)
+    @Positive(message = "A resistencia deve ser um valor positivo")
+    @NotNull(message = "A resistência é obrigatória")
     private BigDecimal resistencia;
 
     @Column(name = "alongamento", nullable = false, precision = 15, scale = 2)
+    @Positive(message = "O alongamento deve ser um valor positivo")
+    @NotNull(message = "O alongamento é obrigatório")
     private BigDecimal alongamento;
 
     @Column(name = "titulo_ne", nullable = false, precision = 15, scale = 2)
     private BigDecimal tituloNe;
 
     @Column(name = "torcao_t_m", nullable = false)
-    private Integer torcaoTM;
+    private Integer torcaoTm;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 10)

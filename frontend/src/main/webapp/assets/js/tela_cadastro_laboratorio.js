@@ -2,8 +2,8 @@
     window.FiberGuardian = window.FiberGuardian || {};
     let cnpjFornecedorSelecionado = null;
     let codigoProdutoSelecionado = null;
-    let nrNotaFiscalSelecionado = null;
-    let nrNotaFiscalSelecionadoId = null;
+    let codigoNotaFiscalSelecionado = null;
+    //let nrNotaFiscalSelecionadoId = null;
     let emailLiberacaoPor = null;
 
     FiberGuardian.TelaCadastroLaboratorio = (function () {
@@ -11,16 +11,20 @@
             console.log('Módulo Tela Cadastro Laboratorio inicializado.');
             cnpjFornecedorSelecionado = null;
             codigoProdutoSelecionado = null;
-            nrNotaFiscalSelecionado = null;
-            nrNotaFiscalSelecionadoId = null;
+            codigoNotaFiscalSelecionado = null;
+            //nrNotaFiscalSelecionadoId = null;
             emailLiberacaoPor = null;
-            const formLaboratorio = document.getElementById('laboratorioForm'); // Obtém o elemento do formulário
             const inputFornecedor = document.getElementById('fornecedor');
             const btnBuscarFornecedor = document.getElementById('btnBuscarFornecedor');
             const dropdownFornecedor = document.getElementById('dropdownFornecedor');
             const btnTrocarFornecedor = document.getElementById('btnTrocarFornecedor');
             const dateDataLaudoLab = document.getElementById('dataLaudo');
+
+            FiberGuardian.Utils.setCurrentDate(dateDataLaudoLab);
+
             const inputLiberacaoPor = document.getElementById('inputLiberacaoPor');
+            const btnGravarLaudo = document.getElementById('btnGravarLaudo');
+
             const dropdownLiberacaoPor =
                 document.getElementById('dropdownLiberacaoPor');
             const btnBuscarLiberacaoPor = document.getElementById(
@@ -49,6 +53,7 @@
             const btnTrocarProduto = document.getElementById('btnTrocarProduto');
 
             const btnSair = document.getElementById('btnSair');
+
             if (
                 !btnBuscarLiberacaoPor ||
                 !inputLiberacaoPor ||
@@ -58,6 +63,11 @@
                 console.error(
                     'Elementos da busca de quem liberou o laudo não encontrados.'
                 );
+                return;
+            }
+
+            if (!btnGravarLaudo) {
+                console.error('Elementos botao Gravar Laudo não encontrado.');
                 return;
             }
 
@@ -91,83 +101,6 @@
                 console.error('Elementos da busca de Nota Fiscal não encontrados.');
                 return;
             }
-
-            // Função para manipular o envio dos dados do formulário
-            async function handleFormSubmit(event) {
-                event.preventDefault(); // Impede o envio padrão do formulário
-
-                const formData = {
-                    cnpjFornecedor: cnpjFornecedorSelecionado,
-                    nrNotaFiscal: nrNotaFiscalSelecionado,
-                    codigoProduto: codigoProdutoSelecionado,
-                    numeroLote: document.getElementById('numeroLote').value,
-                    cvm: document.getElementById('cvm').value,
-                    pontosFinos: document.getElementById('pontosFinos').value,
-                    pontosGrossos: document.getElementById('pontosGrossos').value,
-                    neps: document.getElementById('neps').value,
-                    hPilosidade: document.getElementById('hPilosidade').value,
-                    resistencia: document.getElementById('resistencia').value,
-                    alongamento: document.getElementById('alongamento').value,
-                    tituloNe: document.getElementById('tituloNe').value,
-                    torcaoTm: document.getElementById('torcaoTm').value,
-                    status: document.getElementById('status').value,
-                    liberacaoPor: document.getElementById('liberacaoPor').value,
-                    infoRecebimento: document.getElementById('infoRecebimento').value,
-                };
-
-                // Valida se um número de lote, produto e nota fiscal foram selecionados/preenchidos
-                if (
-                    !cnpjFornecedorSelecionado ||
-                    !nrNotaFiscalSelecionado ||
-                    !codigoProdutoSelecionado ||
-                    !nrNotaFiscalSelecionadoId ||
-                    !formData.numeroLote
-                ) {
-                    FiberGuardian.Utils.exibirMensagemModalComFoco(
-                        'Por favor, preencha todos os campos obrigatórios na seção "Dados do Teste".',
-                        'warning',
-                        formLaboratorio
-                    );
-                    return;
-                }
-
-                try {
-                    const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
-                    const resposta = await fetch('/api/laboratorio/save', {
-                        // Ajuste o endpoint conforme necessário
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-XSRF-TOKEN': csrfToken,
-                        },
-                        body: JSON.stringify(formData),
-                        credentials: 'include',
-                    });
-
-                    if (resposta.ok) {
-                        FiberGuardian.Utils.exibirMensagemModalComFoco(
-                            'Dados do laboratório salvos com sucesso!',
-                            'success',
-                            formLaboratorio
-                        );
-                        // Opcionalmente, você pode redefinir o formulário ou redirecionar o usuário aqui
-                    } else if (resposta.status === 403) {
-                        FiberGuardian.Utils.exibirMensagemSessaoExpirada();
-                    } else {
-                        await FiberGuardian.Utils.tratarErroFetch(
-                            resposta,
-                            formLaboratorio
-                        );
-                    }
-                } catch (erro) {
-                    FiberGuardian.Utils.exibirErroDeRede(
-                        'Erro de rede ao salvar os dados do laboratório.',
-                        formLaboratorio,
-                        erro
-                    );
-                }
-            }
-
             // Função auxiliar para gerenciar o estado dos campos e botões
             function alternarEstadoCampos(input, btnBuscar, btnTrocar, isSelecionado) {
                 input.readOnly = isSelecionado;
@@ -202,8 +135,8 @@
             }
 
             function resetarNotaFiscal() {
-                nrNotaFiscalSelecionado = null;
-                nrNotaFiscalSelecionadoId = null;
+                codigoNotaFiscalSelecionado = null;
+                //nrNotaFiscalSelecionadoId = null;
                 btnDownloadNrNotaFiscal.disabled = true;
                 inputNrNotFiscal.value = '';
 
@@ -244,20 +177,20 @@
             );
 
             btnDownloadNrNotaFiscal.addEventListener('click', async function () {
-                if (!nrNotaFiscalSelecionado) return;
+                if (!codigoNotaFiscalSelecionado) return;
 
                 try {
                     const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
 
                     const url = new URL(
-                        `/api/pdf-notas-fiscais/${cnpjFornecedorSelecionado}/${nrNotaFiscalSelecionado}`,
+                        `/api/pdf-notas-fiscais/${cnpjFornecedorSelecionado}/${codigoNotaFiscalSelecionado}`,
                         window.location.origin
                     );
 
                     const resposta = await fetch(url.toString(), {
                         method: 'GET',
                         headers: {
-                            Accept: 'application/pdf',
+                            Accept: 'application/pdf, application/json',
                             'X-XSRF-TOKEN': csrfToken,
                         },
                         credentials: 'include',
@@ -272,7 +205,7 @@
                             const blob = await resposta.blob();
                             FiberGuardian.Utils.downloadArquivo(
                                 blob,
-                                `NF_${nrNotaFiscalSelecionado}.pdf`,
+                                `NF_${codigoNotaFiscalSelecionado}.pdf`,
                                 'application/pdf'
                             );
                         } else if (resposta.status === 302) {
@@ -393,23 +326,18 @@
                 // Resetar variáveis internas
                 cnpjFornecedorSelecionado = null;
                 codigoProdutoSelecionado = null;
-                nrNotaFiscalSelecionado = null;
-                nrNotaFiscalSelecionadoId = null;
+                codigoNotaFiscalSelecionado = null;
+                //nrNotaFiscalSelecionadoId = null;
                 emailLiberacaoPor = null;
-
-                const dateDataLaudoLab = document.getElementById('dataLaudo');
-
-                const hoje = new Date();
-                const yyyy = hoje.getFullYear();
-                const mm = String(hoje.getMonth() + 1).padStart(2, '0');
-                const dd = String(hoje.getDate()).padStart(2, '0');
-                dateDataLaudoLab.value = `${yyyy}-${mm}-${dd}`;
 
                 // Resetar campos de texto do formulário
                 const formLaboratorio = document.getElementById('laboratorioForm');
                 if (formLaboratorio) {
                     formLaboratorio.reset();
                 }
+
+                const dateDataLaudoLab = document.getElementById('dataLaudo');
+                FiberGuardian.Utils.setCurrentDate(dateDataLaudoLab);
 
                 // Fornecedor
                 if (inputFornecedor && btnBuscarFornecedor && btnTrocarFornecedor) {
@@ -522,7 +450,7 @@
                             });
 
                         if (item) {
-                            nrNotaFiscalSelecionado = item.codigoNf;
+                            codigoNotaFiscalSelecionado = item.codigoNf;
                             btnDownloadNrNotaFiscal.disabled = false;
                             alternarEstadoCampos(
                                 inputNrNotFiscal,
@@ -622,10 +550,9 @@
 
             // Event listener para a busca de produto
             btnBuscarProduto.addEventListener('click', async function () {
-                const codigoParcial = inputProduto.value.trim();
-                if (!cnpjFornecedorSelecionado) {
+                if (!cnpjFornecedorSelecionado || !codigoNotaFiscalSelecionado) {
                     FiberGuardian.Utils.exibirMensagemModalComFoco(
-                        'É necessário selecionar o fornecedor antes de selecionar o produto.',
+                        'É necessário selecionar a nota fiscal e fornecedor antes de selecionar o produto.',
                         'warning',
                         inputFornecedor
                     );
@@ -633,14 +560,13 @@
                 }
                 try {
                     const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
+                    // Construir URL correta para buscar itens da nota fiscal
                     const url = new URL(
-                        '/api/produtos/list/recebimento',
+                        `/api/item-notas-fiscais/list/${cnpjFornecedorSelecionado}/${codigoNotaFiscalSelecionado}`,
                         window.location.origin
                     );
-                    url.searchParams.append('cnpj', cnpjFornecedorSelecionado);
-                    if (codigoParcial) {
-                        url.searchParams.append('descricao', codigoParcial);
-                    }
+
+                    console.log('[FG] Buscando itens da nota fiscal:', url.toString());
                     const resposta = await fetch(url.toString(), {
                         method: 'GET',
                         headers: {
@@ -650,18 +576,44 @@
                         credentials: 'include',
                     });
                     if (resposta.ok) {
-                        const listaProdutos = await resposta.json();
+                        const listaItensNotaFiscal = await resposta.json();
+                        const itensFormatados = listaItensNotaFiscal.map((item) => ({
+                            codigo: item.produto.codigo,
+                            descricao: item.produto.descricao,
+                            qtdRecebida: item.qtdRecebida,
+                            nrCaixas: item.nrCaixas,
+                            observacao: item.observacao || '-',
+                            _itemOriginal: item,
+                        }));
+
+                        // Renderizar tabela com os itens da nota fiscal
                         const { item } =
                             await FiberGuardian.Utils.renderizarDropdownGenericoAsync({
                                 input: inputProduto,
                                 dropdown: dropdownProduto,
-                                lista: listaProdutos,
-                                camposExibir: ['descricao', 'codigo'],
-                                titulosColunas: ['Produto', 'Código'],
-                                msgVazio: 'Nenhum produto encontrado.',
+                                lista: itensFormatados,
+                                camposExibir: [
+                                    'codigo',
+                                    'descricao',
+                                    'qtdRecebida',
+                                    'nrCaixas',
+                                    'observacao',
+                                ],
+                                titulosColunas: [
+                                    'Código',
+                                    'Produto',
+                                    'Qtde Recebida',
+                                    'Nr Caixas',
+                                    'Observações',
+                                ],
+                                msgVazio:
+                                    'Nenhum item encontrado para esta nota fiscal.',
                             });
                         if (item) {
+                            // Armazenar as informações do item selecionado
                             codigoProdutoSelecionado = item.codigo;
+                            //itemNotaFiscalSelecionado = item; // Para ter acesso a todos os dados
+
                             alternarEstadoCampos(
                                 inputProduto,
                                 btnBuscarProduto,
@@ -698,149 +650,179 @@
                     }
                 });
             }
-
-            // Event listener para o envio do formulário
-            if (formLaboratorio) {
-                formLaboratorio.addEventListener('submit', handleFormSubmit);
-            }
-            //=================================================================================================
-            //=================================================================================================
-            /*
-                        // Dentro de configurarEventos(), após bind dos outros botões:
-            const btnFinalizarNota = document.getElementById('btnFinalizarNota');
-            if (btnFinalizarNota) {
-                btnFinalizarNota.addEventListener('click', async () => {
+            if (btnGravarLaudo) {
+                btnGravarLaudo.addEventListener('click', async (event) => {
+                    event.preventDefault(); // evita submit automático
                     try {
-                        // Verifica se há pelo menos 1 item antes de finalizar
-                        if (!itensRecebimento || itensRecebimento.length === 0) {
-                            FiberGuardian.Utils.exibirMensagemModalComFoco(
-                                'Nota deve ter no mínimo 1 item de nota cadastrado',
-                                'warning',
-                                document.getElementById('produto')
-                            );
-                            return;
-                        }
-                        // === Coleta campos do cabeçalho ===
-                        const inputNota = document.getElementById('notaFiscal');
-                        const inputData = document.getElementById('dataRecebimento');
-                        const inputValorTotal = document.getElementById('valorTotal');
-                        const inputArquivo = document.getElementById('arquivoNota');
+                        console.log('[FG] Iniciando validação e leitura de campos');
 
-                        // Validação defensiva mínima (usuário pode burlar travas via console)
+                        // Validar campos obrigatórios globais
                         if (
-                            !inputNota.value.trim() ||
-                            !cnpjFornecedor ||
-                            !emailUsuario ||
-                            !inputArquivo.files?.length
+                            !codigoProdutoSelecionado ||
+                            !cnpjFornecedorSelecionado ||
+                            !codigoNotaFiscalSelecionado ||
+                            !emailLiberacaoPor
                         ) {
                             FiberGuardian.Utils.exibirMensagemModalComFoco(
-                                'Preencha todos os campos obrigatórios antes de finalizar a nota.',
+                                'Preencha todos os campos obrigatórios antes de gravar o laudo do laboratório.',
                                 'warning',
-                                inputNota
+                                inputFornecedor
                             );
                             return;
                         }
 
-                        // === Monta objeto da nota + itens ===
-                        const dadosNota = {
-                            nota: {
-                                codigoNf: inputNota.value.trim(),
-                                cnpj: cnpjFornecedor,
-                                recebidoPor: emailUsuario,
-                                dataRecebimento: inputData.value,
-                                valorTotal:
-                                    parseFloat(
-                                        inputValorTotal.value.replace(',', '.')
-                                    ) || 0,
-                            },
-                            itens: itensRecebimento.map((it) => ({
-                                codigoProduto: it.codigo,
-                                qtdRecebida: it.quantRecebida,
-                                nrCaixas: it.numeroCaixas,
-                                precoUnitario: it.valorUnit,
-                                observacao: it.observacao || '', // pode estar vazio
-                            })),
+                        // Leitura e parsing dos campos numéricos com fallback
+                        const cvm =
+                            parseFloat(
+                                FiberGuardian.Utils.getInputValue('cvm', '0').replace(
+                                    ',',
+                                    '.'
+                                )
+                            ) || 0;
+                        const pontosFinos =
+                            parseInt(
+                                FiberGuardian.Utils.getInputValue('pontosFinos', '0')
+                            ) || 0;
+                        const pontosGrossos =
+                            parseInt(
+                                FiberGuardian.Utils.getInputValue('pontosGrossos', '0')
+                            ) || 0;
+                        const neps =
+                            parseInt(FiberGuardian.Utils.getInputValue('neps', '0')) ||
+                            0;
+                        const hPilosidade =
+                            parseFloat(
+                                FiberGuardian.Utils.getInputValue(
+                                    'hPilosidade',
+                                    '0'
+                                ).replace(',', '.')
+                            ) || 0.01;
+                        const resistencia =
+                            parseFloat(
+                                FiberGuardian.Utils.getInputValue(
+                                    'resistencia',
+                                    '0'
+                                ).replace(',', '.')
+                            ) || 0.01;
+                        const alongamento =
+                            parseFloat(
+                                FiberGuardian.Utils.getInputValue(
+                                    'alongamento',
+                                    '0'
+                                ).replace(',', '.')
+                            ) || 0.01;
+                        const tituloNe =
+                            parseFloat(
+                                FiberGuardian.Utils.getInputValue(
+                                    'tituloNe',
+                                    '0'
+                                ).replace(',', '.')
+                            ) || 0;
+                        const torcaoTm =
+                            parseInt(
+                                FiberGuardian.Utils.getInputValue('torcaoTm', '0')
+                            ) || 0;
+
+                        // Leitura de campos de texto/data
+                        const status = FiberGuardian.Utils.getInputValue(
+                            'status',
+                            'APROVADO'
+                        ); // Default se necessário
+                        const numeroLote = FiberGuardian.Utils.getInputValue(
+                            'numeroLote',
+                            ''
+                        ); // Número do lote vai para observacaoLaudo
+                        const observacaoLaudo = FiberGuardian.Utils.getInputValue(
+                            'textAreaObservacaoLaudo',
+                            ''
+                        ); // observacoes
+                        const dataRealizacao = FiberGuardian.Utils.getInputValue(
+                            'dataLaudo',
+                            ''
+                        );
+
+                        console.log('[FG] Valores lidos:', {
+                            cvm,
+                            pontosFinos,
+                            pontosGrossos,
+                            neps,
+                            hPilosidade,
+                            resistencia,
+                            alongamento,
+                            tituloNe,
+                            torcaoTm,
+                            status,
+                            numeroLote,
+                            observacaoLaudo,
+                            dataRealizacao,
+                        });
+
+                        // Montar payload final
+                        const payload = {
+                            cvm,
+                            pontosFinos,
+                            pontosGrossos,
+                            neps,
+                            pilosidade: hPilosidade,
+                            resistencia,
+                            alongamento,
+                            tituloNe,
+                            torcaoTm,
+                            status,
+                            observacaoLaudo,
+                            numeroLote,
+                            dataRealizacao,
+                            cnpj: cnpjFornecedorSelecionado,
+                            codigoNf: codigoNotaFiscalSelecionado,
+                            codProduto: codigoProdutoSelecionado,
+                            emailLaudoLab: emailLiberacaoPor,
                         };
 
-                        // === Monta objeto de metadados do PDF ===
-                        const pdfMeta = {
-                            descricao: `Arquivo nota fiscal ${inputNota.value.trim()} relativa ao fornecedor ${cnpjFornecedor}`,
-                        };
+                        console.log('[FG] Payload pronto para envio:', payload);
+                        //alert('[FG] Fazendo o fetch...');
 
-                        // === Prepara multipart/form-data ===
-                        const formData = new FormData();
-                        formData.append(
-                            'dadosNota',
-                            new Blob([JSON.stringify(dadosNota)], {
-                                type: 'application/json',
-                            })
-                        );
-                        formData.append(
-                            'pdfMeta',
-                            new Blob([JSON.stringify(pdfMeta)], {
-                                type: 'application/json',
-                            })
-                        );
-                        formData.append('arquivo', inputArquivo.files[0]);
-
-                        // === CSRF token ===
                         const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
 
-                        const resposta = await fetch('/api/notas-fiscais', {
+                        const resposta = await fetch('/api/laboratorios', {
                             method: 'POST',
                             headers: {
+                                'Content-Type': 'application/json',
                                 'X-XSRF-TOKEN': csrfToken,
                             },
                             credentials: 'include',
-                            body: formData,
+                            body: JSON.stringify(payload),
                         });
 
                         if (resposta.ok) {
-                            // Zera array global
-                            itensRecebimento = [];
-                            renderizarTabelaItens();
-                            limpaCabecalhoNotaFiscal();
-                            limpaItensNotaFiscal();
-
+                            limparFormulario();
                             FiberGuardian.Utils.exibirMensagemModalComFoco(
-                                'Nota fiscal gravada com sucesso.',
+                                'Laudo Laboratório gravado com sucesso.',
                                 'success',
-                                inputNota
+                                inputFornecedor
                             );
-
-                            // === Reset após sucesso ===
-                            itensRecebimento = []; // limpa array global
-                            renderizarTabelaItens(); // limpa tabela na tela
-
-                            //document.getElementById('formNotaFiscal').reset(); // se você tiver um <form>
-                            cnpjFornecedor = null;
-                            emailUsuario = null;
-
-                            return;
                         } else if (resposta.status === 403) {
                             FiberGuardian.Utils.exibirMensagemSessaoExpirada();
                             FiberGuardian.Utils.voltarMenuPrincipal();
                         } else {
                             await FiberGuardian.Utils.tratarErroFetch(
                                 resposta,
-                                inputNota
+                                inputFornecedor
                             );
-                            return;
                         }
                     } catch (erro) {
-                        console.error('Falha na requisição:', erro);
+                        console.error(
+                            'Falha na requisição ou montagem do payload:',
+                            erro
+                        );
                         FiberGuardian.Utils.exibirErroDeRede(
-                            'Erro de rede ao finalizar nota fiscal',
-                            document.getElementById('notaFiscal'),
+                            'Erro de rede ao gravar laudo laboratório',
+                            document.getElementById('fornecedor'),
                             erro
                         );
                         FiberGuardian.Utils.voltarMenuPrincipal();
                     }
                 });
             }
-            */
-
-            //=================================================================================================
         }
 
         return {

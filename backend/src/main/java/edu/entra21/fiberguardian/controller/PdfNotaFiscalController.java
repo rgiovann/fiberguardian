@@ -2,6 +2,8 @@ package edu.entra21.fiberguardian.controller;
 
 import edu.entra21.fiberguardian.assembler.PdfNotaFiscalDtoAssembler;
 import edu.entra21.fiberguardian.exception.exception.EntidadeNaoEncontradaException;
+import edu.entra21.fiberguardian.exception.exception.NegocioException;
+import edu.entra21.fiberguardian.exception.exception.PdfNotaFiscalNaoEncontradoException;
 import edu.entra21.fiberguardian.model.NotaFiscal;
 import edu.entra21.fiberguardian.model.PdfNotaFiscal;
 import edu.entra21.fiberguardian.service.NotaFiscalService;
@@ -27,6 +29,8 @@ public class PdfNotaFiscalController {
     private static final Logger logger = LoggerFactory.getLogger(PdfNotaFiscalController.class);
 
 
+
+
     public PdfNotaFiscalController(PdfNotalFiscalService catalogoFotoProdutoService,
                                    NotaFiscalService notaFiscalService,
                                    MultiPartFileStorageService multiPartFileStorageService, PdfNotaFiscalDtoAssembler pdfNotaFiscalDtoAssembler) {
@@ -34,10 +38,10 @@ public class PdfNotaFiscalController {
         this.notaFiscalService = notaFiscalService;
         this.multiPartFileStorageService = multiPartFileStorageService;
     }
-
+    /*
     @GetMapping(
-            value = "/{cnpj}/{codigoNF}",
-            produces = MediaType.APPLICATION_PDF_VALUE
+            value = "/{cnpj}/{codigoNF}"
+
     )    public ResponseEntity<?> servirPdfNotaFiscal(@PathVariable("cnpj") String cnpj,
                                                  @PathVariable("codigoNF") String codigoNF,
                                                  @RequestHeader(name = "accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException {
@@ -62,6 +66,7 @@ public class PdfNotaFiscalController {
                         .header(HttpHeaders.LOCATION, multiPartFileRecuperado.getUrl())
                         .build();
             }
+
             else
             {
                 return ResponseEntity
@@ -71,8 +76,56 @@ public class PdfNotaFiscalController {
             }
         }
         catch(EntidadeNaoEncontradaException e) {
-            return ResponseEntity.notFound().build();
+            throw new PdfNotaFiscalNaoEncontradoException("Nota fiscal " + codigoNF+ " nao possui pdf");
         }
+    }
+    */
+
+    @GetMapping("/{cnpj}/{codigoNF}")
+    public ResponseEntity<?> servirPdfNotaFiscal(
+            @PathVariable("cnpj") String cnpj,
+            @PathVariable("codigoNF") String codigoNF,
+            @RequestHeader(name = "accept") String acceptHeader) throws HttpMediaTypeNotAcceptableException {
+
+            // 1. Primeiro: verificar se a nota fiscal existe
+            NotaFiscal notaFiscal = notaFiscalService.buscarObrigatorioPorNotaECnpj(cnpj, codigoNF);
+
+            // 2. Segundo: verificar se o PDF existe (ponto crítico)
+            PdfNotaFiscal pdfNotaFiscal;
+            try {
+                pdfNotaFiscal = pdfNotaFiscalservice.buscarOuFalhar(notaFiscal.getId());
+            } catch (EntidadeNaoEncontradaException e) {
+                // Lança exceção customizada imediatamente quando PDF não existe
+                throw new PdfNotaFiscalNaoEncontradoException("Nota fiscal " + codigoNF + " nao possui pdf");
+            }
+
+            // 3. Terceiro: validar compatibilidade de MediaType
+            MediaType mediaTypePdf = MediaType.parseMediaType(pdfNotaFiscal.getContentType());
+            List<MediaType> mediaTypesAceitas = MediaType.parseMediaTypes(acceptHeader);
+
+            try {
+                verificarCompatibilidadeMediaType(mediaTypePdf, mediaTypesAceitas);
+            } catch (HttpMediaTypeNotAcceptableException e) {
+                // Esta também - deixa o GlobalExceptionHandler cuidar
+                throw e;
+            }
+            // 4. Quarto: recuperar e servir o arquivo
+            MultiPartFileStorageService.MultiPartFileRecuperado arquivo =
+                    multiPartFileStorageService.recuperar(pdfNotaFiscal.getNomeArquivo());
+
+            if (arquivo.temUrl()) {
+                return ResponseEntity
+                        .status(HttpStatus.FOUND)
+                        .header(HttpHeaders.LOCATION, arquivo.getUrl())
+                        .build();
+            } else {
+                return ResponseEntity
+                        .ok()
+                        .contentType(mediaTypePdf)
+                        .body(new InputStreamResource(arquivo.getInputStream()));
+            }
+
+
 
     }
 

@@ -107,6 +107,7 @@ public class ProdutoService {
 
     public Produto buscarPorCnpjECodigoObrigatorio(String cnpj, String codigoProduto) {
         fornecedorService.validaFornecedor(cnpj);
+        logger.info("[FG] ----- : --" + cnpj+ "/"+codigoProduto + "--");
         return produtoRepository.findByFornecedorCnpjAndCodigoProduto(cnpj, codigoProduto)
                 .orElseThrow(() -> new ProdutoNaoEncontradoException(cnpj, codigoProduto));
     }

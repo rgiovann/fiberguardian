@@ -62,10 +62,13 @@ public class LaboratorioInput {
     private BigDecimal tituloNe;
 
     @NotNull(message = "A torção TM é obrigatória")
-    private Integer torcaoTM;
+    private Integer torcaoTm;
 
     @NotNull(message = "O status é obrigatório")
     private StatusLaboratorio status;
+
+    @Size(max = 255, message = "O número do lote deve ter no máximo 255 caracteres")
+    private String observacaoLaudo;
 
     @NotBlank(message = "O e-mail do responsável pela liberação é obrigatório")
     @EmailValido // validador customizado que você já tem

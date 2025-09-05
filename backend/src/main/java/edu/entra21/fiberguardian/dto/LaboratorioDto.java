@@ -25,10 +25,11 @@ public class LaboratorioDto {
     private BigDecimal resistencia;
     private BigDecimal alongamento;
     private BigDecimal tituloNe;
-    private Integer torcaoTM;
+    private Integer torcaoTm;
     private StatusLaboratorio status;
     private LocalDate dataRealizacao;
     private String emailLaudoLab;
+    private String observacaoLaudo;
 
  }
 

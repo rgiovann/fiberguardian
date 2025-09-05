@@ -708,43 +708,6 @@
         } else {
             console.error('[Delegation] tbody #tabelaItens NÃO encontrado no DOM.');
         }
-        /*
-        function updateCalculations() {
-            const quantRecebida =
-                parseInt(document.getElementById('quantRecebida')?.value) || 0;
-            const numeroCaixas =
-                parseInt(document.getElementById('numeroCaixas')?.value) || 0;
-            const valorUnit =
-                parseFloat(document.getElementById('valorUnit')?.value) || 0;
-
-            const rochasPorCaixa = 300;
-            const quantRochas = numeroCaixas * rochasPorCaixa;
-
-            // ✅ CORREÇÃO: Use .value em vez de setAttribute
-            const campoQuantRochas = document.getElementById('quantRochas');
-            if (campoQuantRochas) campoQuantRochas.value = quantRochas;
-
-            const pesoMedio =
-                quantRecebida > 0 && quantRochas > 0
-                    ? (quantRecebida / quantRochas).toFixed(2)
-                    : '0,00';
-
-            const campoPesoMedio = document.getElementById('pesoMedio');
-            if (campoPesoMedio) campoPesoMedio.value = pesoMedio;
-
-            const valorTotalItem =
-                quantRecebida > 0 ? (valorUnit * quantRecebida).toFixed(2) : '0,00';
-
-            const campoValorTotal = document.getElementById('valorTotalItem');
-            if (campoValorTotal) campoValorTotal.value = valorTotalItem;
-
-            const pesoMedioCaixa =
-                numeroCaixas > 0 ? (quantRecebida / numeroCaixas).toFixed(2) : '0,00';
-
-            const campoPesoMedioCaixa = document.getElementById('pesoMedioCaixa');
-            if (campoPesoMedioCaixa) campoPesoMedioCaixa.value = pesoMedioCaixa;
-        }
-        */
 
         function updateCalculations() {
             const quantRecebida =
@@ -965,13 +928,7 @@
 
             // Reaplica data atual no calendário
 
-            if (dateDataRecebimento) {
-                const hoje = new Date();
-                const yyyy = hoje.getFullYear();
-                const mm = String(hoje.getMonth() + 1).padStart(2, '0');
-                const dd = String(hoje.getDate()).padStart(2, '0');
-                dateDataRecebimento.value = `${yyyy}-${mm}-${dd}`;
-            }
+            FiberGuardian.Utils.setCurrentDate(dateDataRecebimento);
 
             dateDataRecebimento.readOnly = false;
             dateDataRecebimento.classList.remove('campo-desabilitado');

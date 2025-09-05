@@ -590,7 +590,35 @@
                 console.error('Erro ao iniciar download:', erro);
                 throw new Error('Não foi possível iniciar o download do arquivo');
             }
-        };
+        }
+
+        /**
+         * Retorna o valor de um input pelo ID, ou um valor padrão se não encontrado.
+         * Substitui repetição de document.getElementById(...).value em formulários.
+         *
+         * @param {string} id - ID do elemento input
+         * @param {string} defaultValue - Valor padrão caso o input não exista
+         * @returns {string} - Valor do input ou defaultValue
+         */
+        function getInputValue(id, defaultValue = '') {
+            const el = document.getElementById(id);
+            return el ? el.value : defaultValue;
+        }
+
+        function setCurrentDate(inputElement) {
+            if (!inputElement) {
+                console.warn(
+                    '[FG] FiberGuardian.Utils.setCurrentDate: elemento não fornecido'
+                );
+                return;
+            }
+
+            const hoje = new Date();
+            const yyyy = hoje.getFullYear();
+            const mm = String(hoje.getMonth() + 1).padStart(2, '0');
+            const dd = String(hoje.getDate()).padStart(2, '0');
+            inputElement.value = `${yyyy}-${mm}-${dd}`;
+        }
 
         // Exporta apenas o necessário
         return {
@@ -612,6 +640,8 @@
             voltarMenuPrincipal,
             parseCurrencyToNumber,
             downloadArquivo,
+            getInputValue,
+            setCurrentDate,
         };
     })();
 })();
