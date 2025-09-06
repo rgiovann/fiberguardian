@@ -57,11 +57,11 @@ public class LaboratorioQueryServiceImplJPQL implements LaboratorioQueryService 
             String usuarioEmail = filtro.getEmailEmitidoPorNormalizedLowerCase();
             // datas
             if (filtro.getDataRecebimentoInicio() != null) {
-                where.append(" and nf.dataRecebimento >= :dataInicio");
+                where.append(" and l.dataRealizacao >= :dataInicio");
                 params.put("dataInicio", filtro.getDataRecebimentoInicio());
             }
             if (filtro.getDataRecebimentoFim() != null) {
-                where.append(" and nf.dataRecebimento <= :dataFim");
+                where.append(" and l.dataRealizacao <= :dataFim");
                 params.put("dataFim", filtro.getDataRecebimentoFim());
             }
             // codigo NF (LIKE)

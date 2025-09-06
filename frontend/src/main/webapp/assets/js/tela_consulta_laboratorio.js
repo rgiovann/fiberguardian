@@ -6,7 +6,7 @@
     //let codigoProdutoSelecionado = null;
     let codigoNotFiscalSelecionada = null;
     let emailUsuarioSelecionado = null;
-
+    let selectResultado = null;
     const formPesquisa = document.getElementById('formPesquisa');
 
     let paginaAtual = 0;
@@ -18,12 +18,45 @@
             return document.querySelector('.table-container table tbody');
         }
 
+        // Gera o HTML da badge de status com fallback seguro
+        function badgeStatusHtml(statusRaw) {
+            const raw = (statusRaw ?? '').toString().trim();
+            if (!raw) return ''; // sem status -> célula vazia (mantém comportamento atual)
+
+            const s = raw.toUpperCase();
+            const cls =
+                s === 'APROVADO'
+                    ? 'bg-success'
+                    : s === 'REPROVADO'
+                    ? 'bg-danger'
+                    : 'bg-secondary'; // fallback neutro p/ valores inesperados
+
+            // Escape para evitar XSS (OWASP: output encoding)
+            return `<span class="badge ${cls}">${escapeHtml(raw)}</span>`;
+        }
+
+        // Escape básico para texto injetado em innerHTML
+        function escapeHtml(str) {
+            return str.replace(
+                /[&<>"']/g,
+                (m) =>
+                    ({
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        '"': '&quot;',
+                        "'": '&#39;',
+                    }[m])
+            );
+        }
+
         function configurarEventos() {
             try {
                 cnpjFornecedorSelecionado = null;
                 //codigoProdutoSelecionado = null;
                 codigoNotFiscalSelecionada = null;
                 emailUsuarioSelecionado = null;
+                selectResultado = null;
                 paginaAtual = 0;
                 const tbody = getTabelaBody();
                 if (tbody) {
@@ -660,7 +693,7 @@
                                 );
 
                             // Armazena do objeto recebido o código ou descrição
-                            codigoNotFiscalSelecionada = item.codigo;
+                            codigoNotFiscalSelecionada = item.codigoNf;
                         } else if (resposta.status === 403) {
                             FiberGuardian.Utils.exibirMensagemSessaoExpirada();
                         } else {
@@ -705,6 +738,8 @@
                 btnLimpar.addEventListener('click', () => {
                     cnpjFornecedorSelecionado = null;
                     codigoNotFiscalSelecionada = null;
+                    emailUsuarioSelecionado = null;
+                    selectResultado = null;
 
                     document.getElementById('dataInicial').value = '';
                     document.getElementById('dataFinal').value = '';
@@ -816,29 +851,84 @@
             dados.content.forEach((lab) => {
                 const linha = document.createElement('tr');
 
-                // dataRealizacao já vem em ISO (yyyy-MM-dd)
+                // dataRealizacao em (dd-mm-yy)
                 const dataFormatada = lab.dataRealizacao
-                    ? new Date(lab.dataRealizacao).toLocaleDateString('pt-BR')
+                    ? new Date(lab.dataRealizacao).toLocaleDateString('pt-BR', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: '2-digit',
+                      })
                     : '';
 
                 linha.innerHTML = `
-            <td>${lab.numeroNf ?? ''}</td>
-            <td>${lab.cnpj ?? ''}</td>
-            <td>${lab.empresa ?? ''}</td>
-            <td>${lab.codigoProduto ?? ''}</td>
-            <td>${lab.descricao ?? ''}</td>
-            <td>${lab.numeroLote ?? ''}</td>
-            <td>${lab.emailEmitidoPor ?? ''}</td>
-            <td>${dataFormatada}</td>
-            <td>${lab.observacoes ?? ''}</td>
-            <td>${lab.status ?? ''}</td>
+            <td style="max-width:80px;">${escapeHtml(lab.numeroNf ?? '')}</td>
+            <td class="align-middle">
+            <div class="text-truncate" style="max-width:60px;" title="${escapeHtml(
+                lab.cnpj ?? ''
+            )}" aria-label="${escapeHtml(lab.cnpj ?? '')}">
+                ${escapeHtml(lab.cnpj ?? '')}
+            </div>
+            </td>
+            <td class="align-middle">
+            <div class="text-truncate" style="max-width:90px;" title="${escapeHtml(
+                lab.empresa ?? ''
+            )}" aria-label="${escapeHtml(lab.empresa ?? '')}">
+                ${escapeHtml(lab.empresa ?? '')}
+            </div>
+            </td>
+            <td class="align-middle">
+            <div class="text-truncate" style="max-width:60px;" title="${escapeHtml(
+                lab.codigoProduto ?? ''
+            )}" aria-label="${escapeHtml(lab.codigoProduto ?? '')}">
+                ${escapeHtml(lab.codigoProduto ?? '')}
+            </div>
+            </td>
+            <td class="align-middle">
+            <div class="text-truncate" style="max-width:90px;" title="${escapeHtml(
+                lab.descricao ?? ''
+            )}" aria-label="${escapeHtml(lab.descricao ?? '')}">
+                ${escapeHtml(lab.descricao ?? '')}
+            </div>
+            </td>
+            <td style="max-width:120px;">${escapeHtml(lab.numeroLote ?? '')}</td>
+            <td class="align-middle">
+            <div class="text-truncate" style="max-width:120px;" title="${escapeHtml(
+                lab.emailEmitidoPor ?? ''
+            )}" aria-label="${escapeHtml(lab.emailEmitidoPor ?? '')}">
+                ${escapeHtml(lab.emailEmitidoPor ?? '')}
+            </div>
+            </td>
+            <td style="max-width:120px;">${escapeHtml(dataFormatada ?? '')}</td>
+            <td class="align-middle">
+            <div class="text-truncate" style="max-width:130px;" title="${escapeHtml(
+                lab.observacoes ?? ''
+            )}" aria-label="${escapeHtml(lab.observacoes ?? '')}">
+                ${escapeHtml(lab.observacoes ?? '')}
+            </div>
+            </td>
+            <td style="max-width:90px;" class="text-center">${badgeStatusHtml(
+                lab.status
+            )}</td>
             <td>
-                <button class="btn btn-sm btn-danger me-1 btn-excluir" type="button">
+            <div class="dropdown" style="position: relative;">
+                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-ellipsis-v"></i> <!-- ícone de "mais opções" -->
+                Ações
+                </button>
+                <ul class="dropdown-menu dropdown-menu-auto">
+                <li>
+                    <a class="dropdown-item btn-excluir" href="#">
                     <i class="fas fa-trash"></i> Excluir
-                </button>
-                <button class="btn btn-sm btn-info btn-gerar-pdf" type="button">
-                    <i class="fas fa-file-pdf"></i> PDF Laudo
-                </button>
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item btn-gerar-pdf" href="#">
+                    <i class="fas fa-file-pdf"></i> Baixar PDF
+                    </a>
+                </li>
+                </ul>
+            </div>
             </td>
         `;
 

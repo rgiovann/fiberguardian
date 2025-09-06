@@ -1,59 +1,30 @@
-body {
-    background-color: #f4f6f9;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+.table-container {
+    width: 100%;
+    margin-top: 1rem;
+    max-height: 500px; /* define altura máxima da tabela */
+    overflow-y: auto; /* scroll só no corpo */
 }
 
-.container {
-    max-width: 98%;
+.table-container table {
+    margin-bottom: 0; /* evita espaço extra antes da paginação */
+}
+
+.table-container thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: #212529;
+    color: white;
+}
+
+.dropdown-menu-auto {
+    min-width: 0 !important; /* remove min-width padrão */
+    width: auto !important; /* largura do conteúdo */
+    white-space: nowrap; /* sem quebra de linha */
+    position: absolute; /* garante que saia da célula */
+    background-color: rgb(203, 216, 228);
+}
+
+td {
     width: auto;
-}
-
-.card-custom {
-    background-color: #eaf4fb;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-}
-
-.card-header {
-    background-color: #078dfb;
-    color: white;
-    font-weight: bold;
-    padding: 10px;
-    border-radius: 6px 6px 0 0;
-}
-
-.form-label {
-    font-weight: 500;
-}
-
-.dropdown-menu.show {
-    display: block;
-}
-
-.dropdown-menu .dropdown-item {
-    padding: 8px 16px;
-    white-space: normal;
-}
-
-.dropdown-menu .dropdown-item:hover {
-    background-color: #078dfb;
-    color: white;
-}
-
-/* Força cor diferenciada nos inputs/textareas */
-.form-control.campo-desabilitado {
-    background-color: #dee2e6 !important; /* tom mais escuro que o readonly normal */
-    color: #6c757d; /* texto um pouco apagado */
-}
-
-/* Para botões bloqueados manualmente */
-button.campo-desabilitado {
-    opacity: 0.65 !important;
-}
-
-/* Para toda a section “travada” dar um efeito esmaecido */
-section.card.campo-desabilitado {
-    opacity: 0.85;
 }

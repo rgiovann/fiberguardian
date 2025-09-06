@@ -11,7 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/tela_cadastro_recebimento.css" />
-  <link rel="stylesheet" href="assets/css/tela_consulta_recebimento.css" />
+  <link rel="stylesheet" href="assets/css/tela_consulta_laboratorio.css" />
 
   <link rel="stylesheet" href="assets/css/dropdown_generico.css" />
 
@@ -101,9 +101,9 @@
             <!-- Status -->
             <div class="col-md-4 mb-3">
               <label for="status" class="form-label">Status</label>
-              <select class="form-control" id="status" name="status" required>
-                <option value="" disabled>Selecione o status</option>
-                <option value="APROVADO" selected>Aprovado</option>
+              <select class="form-control" id="status" name="status">
+                <option value="">-- Selecione o status --</option>
+                <option value="APROVADO">Aprovado</option>
                 <option value="REPROVADO">Reprovado</option>
               </select>
             </div>
@@ -127,15 +127,15 @@
           <table class="table table-bordered table-striped align-middle text-center">
             <thead class="table-dark">
               <tr>
-                <th>Nr. Nota Fiscal</th>
+                <th>NF</th>
                 <th>CNPJ</th>
                 <th>Empresa</th>
-                <th>Cod. Produto</th>
+                <th>Produto</th>
                 <th>Descrição</th>
-                <th>Nr. Lote</th>
-                <th>Laudo emitido por</th>
-                <th>Data Emissão</th>
-                <th>Observações</th>
+                <th>Lote</th>
+                <th>Laudo</th>
+                <th>Data</th>
+                <th>Obs.</th>
                 <th>Status</th>
                 <th>Ações</th>
               </tr>
