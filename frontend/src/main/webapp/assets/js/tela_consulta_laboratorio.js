@@ -7,6 +7,7 @@
     let codigoNotFiscalSelecionada = null;
     let emailUsuarioSelecionado = null;
     let selectResultado = null;
+
     const formPesquisa = document.getElementById('formPesquisa');
 
     let paginaAtual = 0;
@@ -78,11 +79,13 @@
 
                     if (btnExcluir) {
                         const linha = btnExcluir.closest('tr');
+                        const laboratorioId = linha.dataset.id;
                         const codigoNf = linha.children[0].textContent.trim();
-                        const cnpjFornecedor = linha.children[2].textContent.trim();
+                        const codigoProduto = linha.children[3].textContent.trim();
 
                         const confirmado = await FiberGuardian.Utils.confirmarAcaoAsync(
-                            `Deseja realmente excluir a nota fiscal ${codigoNf}?`,
+                            `Deseja realmente excluir o teste de laboratorio relativo a Nota
+                            Fiscal ${codigoNf} produto ${codigoProduto} ?`,
                             'Confirmação de Exclusão'
                         );
 
@@ -93,7 +96,7 @@
                                 await FiberGuardian.Utils.obterTokenCsrf();
 
                             const resposta = await fetch(
-                                `/api/notas-fiscais/${cnpjFornecedor}/${codigoNf}`,
+                                `/api/laboratorios/${laboratorioId}`,
                                 {
                                     method: 'DELETE',
                                     headers: {
@@ -106,7 +109,7 @@
 
                             if (resposta.ok) {
                                 FiberGuardian.Utils.exibirMensagemModal(
-                                    `Nota fiscal ${codigoNf} excluída com sucesso.`,
+                                    `Teste de laboratório excluído com sucesso.`,
                                     'success'
                                 );
                                 buscarLaudos(paginaAtual);
@@ -813,7 +816,7 @@
                 if (resposta.ok) {
                     const dados = await resposta.json();
                     renderizarTabela(dados);
-                    paginaAtual = dados.pageNumber ?? pagina; // depende do teu PageDto
+                    paginaAtual = dados.pageNumber ?? pagina;
                     atualizarPaginacao(dados);
                 } else if (resposta.status === 403) {
                     FiberGuardian.Utils.exibirMensagemSessaoExpirada();
@@ -850,6 +853,7 @@
 
             dados.content.forEach((lab) => {
                 const linha = document.createElement('tr');
+                linha.dataset.id = lab.id;
 
                 // dataRealizacao em (dd-mm-yy)
                 const dataFormatada = lab.dataRealizacao

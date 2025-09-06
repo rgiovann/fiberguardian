@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -75,6 +76,13 @@ public class LaboratorioController {
 
         Page<LaboratorioListagemPagedDto> result = laboratorioQueryService.buscarLaudoPorFiltro(filtro, pageable);
         return new PageDto<>(result);
+    }
+
+    @DeleteMapping("/{laboratorioId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletar(@PathVariable Long laboratorioId)
+    {
+        laboratorioService.excluirLaboratorio(laboratorioId);
     }
 
 }

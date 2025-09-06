@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LaboratorioListagemPagedDto {
+    private Long id;
     private String numeroNf;
     private String cnpj;
     private String empresa;

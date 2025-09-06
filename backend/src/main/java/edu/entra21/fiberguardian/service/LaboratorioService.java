@@ -1,10 +1,16 @@
 package edu.entra21.fiberguardian.service;
 
+import edu.entra21.fiberguardian.exception.exception.EntidadeEmUsoException;
+import edu.entra21.fiberguardian.exception.exception.LaboratorioNaoEncontradoException;
+import edu.entra21.fiberguardian.exception.exception.NegocioException;
 import edu.entra21.fiberguardian.model.*;
+import edu.entra21.fiberguardian.repository.EngenhariaRepository;
 import edu.entra21.fiberguardian.repository.ItemNotaFiscalRepository;
 import edu.entra21.fiberguardian.repository.LaboratorioRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
 @Transactional(readOnly = true) //  //  todos os métodos sao SÓ de leitura, a menos declarado o contrario
@@ -17,12 +23,14 @@ public class LaboratorioService {
     private final ItemNotaFiscalService itemNotaFiscalService;
     private final ItemNotaFiscalRepository itemNotaFiscalRepository;
     private final UsuarioService usuarioService;
+    private final EngenhariaService engenhariaService;
+    private static final String MSG_LABORATORIO_EM_USO = "Não é possível deletar, existe um laudo de engenharia associado a esse laudo de laboratório.";
 
     public LaboratorioService(LaboratorioRepository laboratorioRepository,
                               FornecedorService fornecedorService,
                               NotaFiscalService notaFiscalService,
                               ProdutoService produtoService,
-                              ItemNotaFiscalService itemNotaFiscalService, ItemNotaFiscalRepository itemNotaFiscalRepository, UsuarioService usuarioService) {
+                              ItemNotaFiscalService itemNotaFiscalService, ItemNotaFiscalRepository itemNotaFiscalRepository, UsuarioService usuarioService, EngenhariaService engenhariaService) {
         this.laboratorioRepository = laboratorioRepository;
         this.fornecedorService = fornecedorService;
         this.notaFiscalService = notaFiscalService;
@@ -30,6 +38,7 @@ public class LaboratorioService {
         this.itemNotaFiscalService = itemNotaFiscalService;
         this.itemNotaFiscalRepository = itemNotaFiscalRepository;
         this.usuarioService = usuarioService;
+        this.engenhariaService = engenhariaService;
     }
 
     @Transactional(readOnly = false)
@@ -60,6 +69,45 @@ public class LaboratorioService {
 
         return laboratorioRepository.save(laboratorio);
     }
+
+    /**
+     * Verifica se o laboratório existe pelo id.
+     * @param idLaboratorio ID do laboratório
+     * @return true se existir
+     * @throws LaboratorioNaoEncontradoException se não existir
+     */
+    public boolean verificarExistenciaOuFalhar(Long idLaboratorio) {
+        boolean exists = laboratorioRepository.existsById(idLaboratorio);
+        if (!exists) {
+            throw new LaboratorioNaoEncontradoException(
+                    "Laudo de laboratório de id " + idLaboratorio + " não encontrado."
+            );
+        }
+        return true;
+    }
+
+
+    @Transactional(readOnly = false)
+    public void excluirLaboratorio(Long laboratorioId) {
+
+        verificarExistenciaOuFalhar(laboratorioId);
+
+        if (engenhariaService.existeLaboratorioAssociado(laboratorioId)) {
+            throw new NegocioException(
+                    "Existe um registros de laudo de engenharia associado a esse teste de laboratório,  " +
+                            " exclua esse registro antes de deletar esse registro."
+            );
+        }
+
+        try {
+            laboratorioRepository.deleteById(laboratorioId);
+            laboratorioRepository.flush();
+        } catch (DataIntegrityViolationException e) {
+            throw new EntidadeEmUsoException(String.format(MSG_LABORATORIO_EM_USO ));
+        }
+    }
+
+
 
 }
 

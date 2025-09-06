@@ -35,7 +35,7 @@ public class LaboratorioQueryServiceImplJPQL implements LaboratorioQueryService 
 
         String select =
                 "select new edu.entra21.fiberguardian.dto.LaboratorioListagemPagedDto(" +
-                        "  nf.codigoNf, f.cnpj, f.nomeFornecedor, p.codigo, p.descricao, l.numeroLote, u.email, l.dataRealizacao, l.observacaoLaudo, l.status" +
+                        " l.id, nf.codigoNf, f.cnpj, f.nomeFornecedor, p.codigo, p.descricao, l.numeroLote, u.email, l.dataRealizacao, l.observacaoLaudo, l.status" +
                         ")";
 
         String from =
