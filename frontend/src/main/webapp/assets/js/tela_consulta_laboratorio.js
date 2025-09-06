@@ -76,7 +76,7 @@
                                     `Nota fiscal ${codigoNf} excluída com sucesso.`,
                                     'success'
                                 );
-                                buscarNotas(paginaAtual);
+                                buscarLaudos(paginaAtual);
                             } else {
                                 await FiberGuardian.Utils.tratarErroFetch(resposta);
                             }
@@ -697,7 +697,7 @@
 
                 btnConsultarLaudo.replaceWith(btnConsultarLaudo.cloneNode(true));
                 btnConsultarLaudo = document.getElementById('btnConsultarLaudo');
-                btnConsultarLaudo.addEventListener('click', () => buscarNotas(0));
+                btnConsultarLaudo.addEventListener('click', () => buscarLaudos(0));
 
                 btnLimpar.replaceWith(btnLimpar.cloneNode(true));
                 btnLimpar = document.getElementById('btnLimpar');
@@ -728,18 +728,23 @@
                 console.error('[FG] erro em configurarEventos:', erro);
             }
         }
-
-        async function buscarNotas(pagina = 0) {
+        //----------------------------------------------------------------------------------------------------------------------
+        async function buscarLaudos(pagina = 0) {
             try {
                 const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
 
                 const dataInicialValor = document.getElementById('dataInicial').value;
                 const dataFinalValor = document.getElementById('dataFinal').value;
-                const nfCodigo = document.getElementById('nrNotaFiscal').value.trim();
-                const fornecedor = cnpjFornecedorSelecionado; // já vem do fluxo do fornecedor
-                //const produto = codigoProdutoSelecionado;
+                const notafiscal = codigoNotFiscalSelecionada ?? '';
+                const fornecedor = cnpjFornecedorSelecionado ?? '';
+                const email = emailUsuarioSelecionado ?? '';
+                const status = document.getElementById('status').value;
 
-                if (dataInicialValor > dataFinalValor) {
+                if (
+                    dataInicialValor &&
+                    dataFinalValor &&
+                    dataInicialValor > dataFinalValor
+                ) {
                     FiberGuardian.Utils.exibirMensagemModalComFoco(
                         'Data Inicial não pode ser maior que Data Final.',
                         'warning',
@@ -748,19 +753,18 @@
                     return;
                 }
 
-                console.log('Código Fornecedor : ' + cnpjFornecedorSelecionado);
-
-                // Monta URL com filtros não vazios
-                const url = new URL('/api/notas-fiscais/paged', window.location.origin);
-                url.searchParams.append('page', pagina);
-                url.searchParams.append('size', tamanhoPagina);
+                // Monta URL com filtros
+                const url = new URL('/api/laboratorios/paged', window.location.origin);
+                url.searchParams.append('page', pagina ?? 0);
+                url.searchParams.append('size', tamanhoPagina ?? 20);
 
                 if (dataInicialValor)
                     url.searchParams.append('dataini', dataInicialValor);
                 if (dataFinalValor) url.searchParams.append('datafim', dataFinalValor);
-                if (nfCodigo) url.searchParams.append('nfCodigo', nfCodigo);
+                if (notafiscal) url.searchParams.append('notafiscal', notafiscal);
                 if (fornecedor) url.searchParams.append('cnpj', fornecedor);
-                //if (produto) url.searchParams.append('produtoCodigo', produto);
+                if (email) url.searchParams.append('email', email);
+                if (status) url.searchParams.append('status', status);
 
                 const resposta = await fetch(url.toString(), {
                     method: 'GET',
@@ -782,9 +786,9 @@
                     await FiberGuardian.Utils.tratarErroFetch(resposta, formPesquisa);
                 }
             } catch (erro) {
-                console.error('Erro ao buscar notas fiscais:', erro);
+                console.error('Erro ao buscar laudos:', erro);
                 FiberGuardian.Utils.exibirErroDeRede(
-                    'Erro de rede ao buscar notas fiscais.',
+                    'Erro de rede ao buscar laudos.',
                     formPesquisa,
                     erro
                 );
@@ -805,36 +809,35 @@
 
             if (!dados.content || dados.content.length === 0) {
                 tabelaBody.innerHTML =
-                    '<tr><td colspan="7" class="text-center">Nenhuma nota encontrada.</td></tr>';
+                    '<tr><td colspan="11" class="text-center">Nenhum laudo encontrado.</td></tr>';
                 return;
             }
 
-            dados.content.forEach((nota) => {
+            dados.content.forEach((lab) => {
                 const linha = document.createElement('tr');
 
-                // Formatando valores
-                const valorFormatado = nota.valorTotal.toLocaleString('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL',
-                });
-
-                const dataFormatada = new Date(nota.dataRecebimento).toLocaleDateString(
-                    'pt-BR'
-                );
+                // dataRealizacao já vem em ISO (yyyy-MM-dd)
+                const dataFormatada = lab.dataRealizacao
+                    ? new Date(lab.dataRealizacao).toLocaleDateString('pt-BR')
+                    : '';
 
                 linha.innerHTML = `
-            <td>${nota.codigoNf}</td>
-            <td>${nota.nomeFornecedor}</td>
-            <td>${nota.cnpjFornecedor}</td>
-            <td>${nota.emailUsuario}</td>
+            <td>${lab.numeroNf ?? ''}</td>
+            <td>${lab.cnpj ?? ''}</td>
+            <td>${lab.empresa ?? ''}</td>
+            <td>${lab.codigoProduto ?? ''}</td>
+            <td>${lab.descricao ?? ''}</td>
+            <td>${lab.numeroLote ?? ''}</td>
+            <td>${lab.emailEmitidoPor ?? ''}</td>
             <td>${dataFormatada}</td>
-            <td>${valorFormatado}</td>
+            <td>${lab.observacoes ?? ''}</td>
+            <td>${lab.status ?? ''}</td>
             <td>
                 <button class="btn btn-sm btn-danger me-1 btn-excluir" type="button">
                     <i class="fas fa-trash"></i> Excluir
                 </button>
                 <button class="btn btn-sm btn-info btn-gerar-pdf" type="button">
-                    <i class="fas fa-list"></i> PDF Laudo
+                    <i class="fas fa-file-pdf"></i> PDF Laudo
                 </button>
             </td>
         `;
@@ -861,24 +864,25 @@
         }>Próxima</button>
     `;
 
-            //document.querySelector('.table-container').appendChild(paginacaoDiv);
             const container = document.getElementById('paginacao-container');
-            container.innerHTML = ''; // limpa elementos antigos
+            container.innerHTML = '';
             container.appendChild(paginacaoDiv);
 
             document.getElementById('btnAnterior').addEventListener('click', () => {
                 if (paginaAtual > 0) {
-                    // evita ir para negativo
-                    buscarNotas(paginaAtual - 1);
+                    buscarLaudos(paginaAtual - 1);
                 }
             });
 
             document.getElementById('btnProxima').addEventListener('click', () => {
                 if (!dados.last) {
-                    buscarNotas(paginaAtual + 1);
+                    buscarLaudos(paginaAtual + 1);
                 }
             });
         }
+
+        //----------------------------------------------------------------------------------------------------------------------
+
         return {
             init: configurarEventos,
         };
