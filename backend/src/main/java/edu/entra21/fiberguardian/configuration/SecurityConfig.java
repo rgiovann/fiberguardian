@@ -25,6 +25,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import edu.entra21.fiberguardian.service.CustomUserDetailsService;
+import org.springframework.web.filter.ForwardedHeaderFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -132,13 +133,21 @@ public class SecurityConfig {
 		return http.build();
 	}
 
+	// 07.09.2025
+	@Bean
+	ForwardedHeaderFilter forwardedHeaderFilter() {
+		return new ForwardedHeaderFilter();
+	}
+
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOrigins(List.of("https://localhost:443", // Origem do frontend via Caddy
 				"https://localhost:8080", // Para testes diretos no frontend
 				"https://127.0.0.1:8080", //  Para testes diretos no frontend
-				"https://fiberguardian.local" // docker-compose
+				"https://fiberguardian.local", // docker-compose virtual box
+				"https://20.80.234.41", // vm azure
+				"https://fiberguardian.duckdns.org"
 
 		));
 		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
