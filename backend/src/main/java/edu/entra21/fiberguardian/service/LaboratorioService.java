@@ -9,9 +9,7 @@ import edu.entra21.fiberguardian.model.*;
 import edu.entra21.fiberguardian.repository.EngenhariaRepository;
 import edu.entra21.fiberguardian.repository.ItemNotaFiscalRepository;
 import edu.entra21.fiberguardian.repository.LaboratorioRepository;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -129,23 +127,21 @@ public class LaboratorioService {
 
     public byte[] gerarRelatorioPDF(LaboratorioRelatorioInput dados) {
         try {
-            // Carrega o template compilado (.jasper)
-            InputStream templateStream = new ClassPathResource("/reports/fiberguardian-01.jasper").getInputStream();
+            // Com .jrxml + compilação runtime
+            InputStream templateStream = new ClassPathResource("/reports/fiberguardian-01.jrxml").getInputStream();
+            JasperReport jasperReport = JasperCompileManager.compileReport(templateStream);
 
-            // Parâmetros básicos
             Map<String, Object> parametros = new HashMap<>();
             parametros.put("TITULO", "Relatório Testes de Laboratório");
 
-            // Fonte de dados (lista com um elemento)
             JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(List.of(dados));
 
-            // Gera o relatório
-            JasperPrint jasperPrint = JasperFillManager.fillReport(templateStream, parametros, dataSource);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, dataSource);
 
-            // Exporta para PDF
             return JasperExportManager.exportReportToPdf(jasperPrint);
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("Erro ao gerar relatório: " + e.getMessage(), e);
         }
     }

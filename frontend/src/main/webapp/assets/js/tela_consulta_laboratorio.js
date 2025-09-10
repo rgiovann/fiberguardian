@@ -743,7 +743,7 @@
             <td style="max-width:90px;" class="text-center">${badgeStatusHtml(
                 lab.status
             )}</td>
-            <td>
+            <td class="actions-col">
             <div class="dropdown" style="position: relative;">
                 <button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
