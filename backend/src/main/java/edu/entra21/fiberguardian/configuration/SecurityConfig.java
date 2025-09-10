@@ -78,8 +78,7 @@ public class SecurityConfig {
 						.csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
 						.ignoringRequestMatchers(
 								"/csrf-token",         // Para obter o token CSRF inicial
-								"/sessao/valida",
-								"/api/notasfiscais/**"// Verificação sem autenticação
+								"/sessao/valida"
 						)
 				)
 				// Força HTTPS
@@ -110,10 +109,10 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.DELETE, "/api/produtos/**").hasAnyAuthority(Role.ADMIN.getAuthority())
 						.requestMatchers(HttpMethod.GET, "/api/produtos/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
 
-						.requestMatchers(HttpMethod.POST, "/api/nota-fiscal/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
-						.requestMatchers(HttpMethod.PUT, "/api/nota-fiscal/**").hasAnyAuthority(Role.ADMIN.getAuthority())
-						.requestMatchers(HttpMethod.DELETE, "/api/nota-fiscal/**").hasAnyAuthority(Role.ADMIN.getAuthority())
-						.requestMatchers(HttpMethod.GET, "/api/nota-fiscal/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
+						.requestMatchers(HttpMethod.POST, "/api/notas-fiscais/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
+						.requestMatchers(HttpMethod.PUT, "/api/notas-fiscais/**").hasAnyAuthority(Role.ADMIN.getAuthority())
+						.requestMatchers(HttpMethod.DELETE, "/api/notas-fiscais/**").hasAnyAuthority(Role.ADMIN.getAuthority())
+						.requestMatchers(HttpMethod.GET, "/api/notas-fiscais/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
 
 						.requestMatchers(HttpMethod.POST, "/api/laboratorios/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.LABORATORIO.getAuthority())
 						.requestMatchers(HttpMethod.PUT, "/api/laboratorios/**").hasAnyAuthority(Role.ADMIN.getAuthority())

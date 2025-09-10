@@ -493,11 +493,18 @@
 
                     // Monta a URL com PathVariable para o CNPJ e query param para codigo_nf
                     const url = new URL(
-                        `/api/usuarios/list/recebimento`,
+                        `/api/usuarios/lista-usuario-por-role`,
                         window.location.origin
                     );
-                    if (codigoParcial) {
-                        url.searchParams.append('nome', codigoParcial);
+
+                    url.searchParams.append('nome', codigoParcial);
+
+                    // adiciona o filtro de role (sempre em caixa alta)
+                    if (FiberGuardian?.UsuarioLogado?.role) {
+                        url.searchParams.append(
+                            'role',
+                            FiberGuardian.UsuarioLogado.role.toUpperCase()
+                        );
                     }
 
                     const resposta = await fetch(url.toString(), {

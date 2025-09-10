@@ -139,7 +139,7 @@
       <ul class="nav nav-pills flex-column" id="menu">
         <li class="nav-item">
           <a class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" onclick="return false;"
-            data-bs-target="#submenu-recebimentos">Recebimentos</a>
+            data-bs-target="#submenu-recebimentos" data-role-allowed="ADMIN,USUARIO">Recebimentos</a>
           <div class="collapse" id="submenu-recebimentos">
             <ul class="nav flex-column ms-3">
               <li class="nav-item">
@@ -160,7 +160,7 @@
 
         <li class="nav-item">
           <a class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false"
-            data-bs-target="#submenu-fornecimentos">Fornecedor</a>
+            data-bs-target="#submenu-fornecimentos" data-role-allowed="ADMIN,USUARIO">Fornecedor</a>
           <div class="collapse" id="submenu-fornecimentos">
             <ul class="nav flex-column ms-3">
               <li class="nav-item">
@@ -178,7 +178,7 @@
 
         <li class="nav-item">
           <a class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false"
-            data-bs-target="#submenu-produtos">Produto</a>
+            data-bs-target="#submenu-produtos" data-role-allowed="ADMIN,USUARIO">Produto</a>
           <div class="collapse" id="submenu-produtos">
             <ul class="nav flex-column ms-3">
               <li class="nav-item">
@@ -197,7 +197,7 @@
         <!-- Menu Laboratório -->
         <li class="nav-item">
           <a class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false"
-            data-bs-target="#menu-laboratorio">Laboratório</a>
+            data-bs-target="#menu-laboratorio" data-role-allowed="ADMIN,LABORATORIO,ENG_LAB">Laboratório</a>
           <div class="collapse" id="menu-laboratorio">
             <ul class="nav flex-column ms-3">
               <li class="nav-item">
@@ -214,7 +214,7 @@
 
         <li class="nav-item">
           <a class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false"
-            data-bs-target="#menu-engenharia">Engenharia</a>
+            data-bs-target="#menu-engenharia" data-role-allowed="ADMIN,ENGENHARIA,ENG_LAB">Engenharia</a>
           <div class="collapse" id="menu-engenharia">
             <ul class="nav flex-column ms-3">
               <li class="nav-item">
@@ -275,6 +275,30 @@
     <i class="fas fa-box"></i>
     Projeto final turma 2025 do curso <b>Entra21</b> da Blusoft [hash] 680d2e0.
   </footer>
+
+  <!-- Modal de Confirmação Genérico -->
+  <div class="modal fade" id="modalConfirmacaoGenerico" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalConfirmacaoTitulo">Confirmação</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+
+        <div class="modal-body" id="modalConfirmacaoMensagem">
+          <!-- Mensagem será preenchida dinamicamente -->
+        </div>
+
+        <div class="modal-footer">
+          <button id="btnConfirmacaoSim" type="button" class="btn btn-primary">Sim</button>
+          <button id="btnConfirmacaoNao" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Não</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
   <script defer src="assets/js/fiberguardian_utils.js"></script>
   <script defer src="assets/js/fiberguardian_core.js"></script>
   <script defer src="assets/js/fiberguardian_api.js"></script>

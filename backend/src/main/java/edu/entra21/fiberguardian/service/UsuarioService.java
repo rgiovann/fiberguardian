@@ -1,5 +1,6 @@
 package edu.entra21.fiberguardian.service;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -200,13 +201,28 @@ public class UsuarioService {
      * Autocomplete por código parcial do fornecedor.
      * Retorna no máximo 20 resultados.
      */
-    public List<Usuario> buscaTop20ByNomeUsuarioRecebimentoContendoStringIgnoraCase(String nomeUsuario) {
+    public List<Usuario> buscaTop20ByNomeUsuarioRecebimentoContendoStringIgnoraCase(String nomeUsuario, String role) {
         if (nomeUsuario == null || nomeUsuario.isBlank()) {
             return Collections.emptyList();
         }
-        List<String> rolesPermitidas = List.of("USUARIO", "ADMIN");
+        Role.validarRole(role);
+
+        // monta a lista de roles para o filtro, se ADMIN é todos
+        List<String> rolesFiltro;
+        if (Role.ADMIN.name().equals(role)) {
+            rolesFiltro = Arrays.stream(Role.values())
+                    .map(Enum::name)
+                    .toList();
+        } else if (Role.ENG_LAB.name().equals(role))
+        {
+            rolesFiltro = List.of(Role.LABORATORIO.name(),Role.ENGENHARIA.name());
+        }
+        else{
+            rolesFiltro = List.of(role);
+        }
+
         return usuarioRepository
-                .findTop20UsuarioRecebimentoByNomeContainingIgnoreCase(nomeUsuario, rolesPermitidas);
+                .findTop20UsuarioRecebimentoByNomeContainingIgnoreCase(nomeUsuario, rolesFiltro);
     }
 
     @Transactional(readOnly = false)

@@ -68,3 +68,15 @@ button.campo-desabilitado {
 section.card.campo-desabilitado {
     opacity: 0.85;
 }
+
+.dropdown-menu-auto {
+    min-width: 0 !important; /* remove min-width padrão */
+    width: auto !important; /* largura do conteúdo */
+    white-space: nowrap; /* sem quebra de linha */
+    position: absolute; /* garante que saia da célula */
+    background-color: rgb(203, 216, 228);
+}
+
+td {
+    width: auto;
+}

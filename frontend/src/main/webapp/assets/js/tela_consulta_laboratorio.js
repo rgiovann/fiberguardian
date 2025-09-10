@@ -6,7 +6,6 @@
     //let codigoProdutoSelecionado = null;
     let codigoNotFiscalSelecionada = null;
     let emailUsuarioSelecionado = null;
-    let selectResultado = null;
 
     const formPesquisa = document.getElementById('formPesquisa');
 
@@ -57,7 +56,6 @@
                 //codigoProdutoSelecionado = null;
                 codigoNotFiscalSelecionada = null;
                 emailUsuarioSelecionado = null;
-                selectResultado = null;
                 paginaAtual = 0;
                 const tbody = getTabelaBody();
                 if (tbody) {
@@ -125,119 +123,64 @@
                             );
                         }
                     }
-
                     if (btnGerarPdf) {
                         const linha = btnGerarPdf.closest('tr');
-                        const codigoNf = linha.children[0].textContent.trim();
-                        const cnpjFornecedor = linha.children[2].textContent.trim();
+                        const laboratorioId = linha.dataset.id;
 
-                        console.log('[FG] Código NF : ' + codigoNf);
-                        console.log('[FG] CNPJ : ' + cnpjFornecedor);
+                        // pegar a data da célula da tabela (assumindo DD/MM/YY)
+                        // O LocalDate do Java espera, por padrão, o formato ISO-8601 yyyy-MM-dd
+                        const dataRaw = linha.children[7]?.textContent.trim() ?? '';
+                        const [dia, mes, ano] = dataRaw.split('/');
+                        const dataFormatada = `20${ano}-${mes}-${dia}`; // 20 + YY para gerar YYYY
+
+                        const jsonBody = {
+                            numeroNf: linha.children[0]?.textContent.trim() ?? '',
+                            cnpj: linha.children[1]?.textContent.trim() ?? '',
+                            empresa: linha.children[2]?.textContent.trim() ?? '',
+                            codigoProduto: linha.children[3]?.textContent.trim() ?? '',
+                            descricao: linha.children[4]?.textContent.trim() ?? '',
+                            numeroLote: linha.children[5]?.textContent.trim() ?? '',
+                            emailEmitidoPor:
+                                linha.children[6]?.textContent.trim() ?? '',
+                            dataRealizacaoNaFormatado: dataFormatada, //
+                            observacoes: linha.children[8]?.textContent.trim() ?? '',
+                            status: linha.children[9]?.textContent.trim() ?? '',
+                        };
 
                         try {
                             const csrfToken =
                                 await FiberGuardian.Utils.obterTokenCsrf();
-                            const response = await fetch(
-                                `/api/item-notas-fiscais/list/${cnpjFornecedor}/${codigoNf}`,
+
+                            const resposta = await fetch(
+                                `/api/laboratorios/pdf/${laboratorioId}`,
                                 {
-                                    method: 'GET',
+                                    method: 'POST',
                                     headers: {
-                                        Accept: 'application/json',
+                                        'Content-Type': 'application/json',
                                         'X-XSRF-TOKEN': csrfToken,
                                     },
                                     credentials: 'include',
+                                    body: JSON.stringify(jsonBody),
                                 }
                             );
 
-                            if (!response.ok) {
-                                await FiberGuardian.Utils.tratarErroFetch(response); // corrigido: usar 'response'
-                                return;
+                            if (resposta.ok) {
+                                const blob = await resposta.blob(); // recebe o PDF como Blob
+                                const url = window.URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = `Laudo_${jsonBody.cnpj}_${jsonBody.numeroNf}.pdf`; // nome do arquivo para download
+                                document.body.appendChild(a);
+                                a.click();
+                                a.remove();
+                                window.URL.revokeObjectURL(url);
+                            } else {
+                                await FiberGuardian.Utils.tratarErroFetch(resposta);
                             }
-
-                            const itens = await response.json();
-
-                            if (!Array.isArray(itens) || itens.length === 0) {
-                                FiberGuardian.Utils.exibirMensagemModal(
-                                    'Nenhum item encontrado para esta Nota Fiscal.',
-                                    'info',
-                                    'Itens da Nota Fiscal'
-                                );
-                                return;
-                            }
-
-                            // monta html da mesma forma que o mock original, com formatação
-                            let htmlTabela = `
-                <div class="table-responsive">
-                <table class="table table-sm table-bordered align-middle">
-                    <thead class="table-light">
-                    <tr>
-                        <th>Cod. Produto</th>
-                        <th>Descrição</th>
-                        <th class="text-end">Quantidade</th>
-                        <th class="text-end">Nº Caixas</th>
-                        <th class="text-end">Preço Unitário</th>
-                        <th class="text-end">Valor Total</th>
-                        <th>Observação</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-                            itens.forEach((item) => {
-                                const codigo = item.produto?.codigo ?? '';
-                                const descricao = item.produto?.descricao ?? '';
-                                const qtd =
-                                    typeof item.qtdRecebida === 'number'
-                                        ? item.qtdRecebida.toLocaleString('pt-BR')
-                                        : item.qtdRecebida ?? '';
-                                const nrCaixas = item.nrCaixas ?? '';
-                                const precoUnit =
-                                    typeof item.precoUnitario === 'number'
-                                        ? item.precoUnitario.toLocaleString('pt-BR', {
-                                              style: 'currency',
-                                              currency: 'BRL',
-                                          })
-                                        : item.precoUnitario ?? '';
-                                const valorTotal =
-                                    typeof item.valorTotalItem === 'number'
-                                        ? item.valorTotalItem.toLocaleString('pt-BR', {
-                                              style: 'currency',
-                                              currency: 'BRL',
-                                          })
-                                        : item.valorTotalItem ?? '';
-                                const obs = item.observacao ?? '';
-
-                                htmlTabela += `
-                                    <tr>
-                                        <td>${codigo}</td>
-                                        <td>${descricao}</td>
-                                        <td class="text-end">${qtd}</td>
-                                        <td class="text-end">${nrCaixas}</td>
-                                        <td class="text-end">${precoUnit}</td>
-                                        <td class="text-end">${valorTotal}</td>
-                                        <td>${obs}</td>
-                                    </tr>
-                                `;
-                            });
-
-                            htmlTabela += `
-                                    </tbody>
-                                </table>
-                                </div>
-                            `;
-
-                            FiberGuardian.Utils.exibirMensagemModal(
-                                { html: htmlTabela, tamanho: 'xl' },
-                                'info',
-                                'Itens da Nota Fiscal'
-                            );
                         } catch (erro) {
-                            console.error(
-                                'Erro ao carregar itens da Nota Fiscal:',
-                                erro
-                            );
+                            console.error('Erro ao gerar PDF:', erro);
                             FiberGuardian.Utils.exibirErroDeRede(
-                                'Erro de rede ao carregar os itens da nota fiscal.',
+                                'Erro de rede ao gerar o PDF.',
                                 null,
                                 erro
                             );
@@ -314,30 +257,6 @@
 
                 const dataInicial = document.getElementById('dataInicial');
 
-                /*
-            LEMBRAR === VALOR TOTAL
-                const valorInput = document.getElementById('valorTotal').value; // "12,34"
-                const valorParaJson = valorInput.replace(',', '.');             // "12.34"
-
-                const json = {
-                valorTotal: Number(valorParaJson), // ou parseFloat(valorParaJson)
-                // outros campos...
-                };
-
-                fetch('/api/notas', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(json)
-                });
-
-            */
-
-                //FiberGuardian.Utils.fecharQualquerDropdownAberto(
-                //    [dropdownFornecedor, dropdownNrNotaFiscal, dropdownProduto],
-                //    [inputFornecedor, inputProduto, inputNrNotFiscal],
-                //    [btnBuscarFornecedor, btnBuscarProduto, btnBuscarNrNotaFiscal]
-                //);
-
                 FiberGuardian.Utils.fecharQualquerDropdownAberto(
                     [dropdownFornecedor, dropdownNrNotaFiscal, dropdownEmitidoPor],
                     [inputFornecedor, inputNrNotFiscal, inputEmitidoPor],
@@ -356,23 +275,33 @@
                         );
                         return;
                     }
+                    // Monta a URL com PathVariable para o CNPJ e query param para codigo_nf
+                    const url = new URL(
+                        `/api/usuarios/lista-usuario-por-role`,
+                        window.location.origin
+                    );
+
+                    url.searchParams.append('nome', codigoParcial);
+
+                    // adiciona o filtro de role (sempre em caixa alta)
+                    if (FiberGuardian?.UsuarioLogado?.role) {
+                        url.searchParams.append(
+                            'role',
+                            FiberGuardian.UsuarioLogado.role.toUpperCase()
+                        );
+                    }
 
                     try {
                         const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
 
-                        const resposta = await fetch(
-                            `/api/usuarios/list/recebimento?nome=${encodeURIComponent(
-                                codigoParcial
-                            )}`,
-                            {
-                                method: 'GET',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-XSRF-TOKEN': csrfToken,
-                                },
-                                credentials: 'include',
-                            }
-                        );
+                        const resposta = await fetch(url.toString(), {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-XSRF-TOKEN': csrfToken,
+                            },
+                            credentials: 'include',
+                        });
 
                         if (resposta.ok) {
                             const listaUsuarios = await resposta.json();
@@ -536,104 +465,6 @@
                     }
                 });
 
-                /*
-                btnBuscarProduto.addEventListener('click', async function () {
-                    const codigoParcial = inputProduto.value.trim();
-
-                    if (!cnpjFornecedorSelecionado) {
-                        FiberGuardian.Utils.exibirMensagemModalComFoco(
-                            'É necessario selecionar o produto antes de selecionar o produto.',
-                            'warning',
-                            inputFornecedor
-                        );
-                        return;
-                    }
-
-                    try {
-                        const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
-
-                        // Monta a URL com os dois parâmetros
-                        const url = new URL(
-                            '/api/produtos/list/recebimento',
-                            window.location.origin
-                        );
-                        url.searchParams.append('cnpj', cnpjFornecedorSelecionado);
-
-                        if (codigoParcial) {
-                            url.searchParams.append('descricao', codigoParcial);
-                        }
-
-                        const resposta = await fetch(url.toString(), {
-                            method: 'GET',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-XSRF-TOKEN': csrfToken,
-                            },
-                            credentials: 'include',
-                        });
-
-                        if (resposta.ok) {
-                            const listaProdutos = await resposta.json();
-
-                            const { index, item } =
-                                await FiberGuardian.Utils.renderizarDropdownGenericoAsync(
-                                    {
-                                        input: inputProduto,
-                                        dropdown: dropdownProduto,
-                                        lista: listaProdutos,
-                                        camposExibir: ['descricao', 'codigo'],
-                                        titulosColunas: ['Produto', 'Código'],
-                                        msgVazio: 'Nenhum produto encontrado.',
-                                    }
-                                );
-
-                            // Armazena do objeto recebido o código ou descrição
-                            codigoProdutoSelecionado = item.codigo;
-
-                            // trava campo Produto
-                            inputProduto.readOnly = true;
-                            inputProduto.classList.add('campo-desabilitado');
-
-                            // desabilita botão Buscar
-                            btnBuscarProduto.disabled = true;
-                            btnBuscarProduto.classList.add('campo-desabilitado');
-
-                            // habilita botão Trocar
-                            btnTrocarProduto.disabled = false;
-                            btnTrocarProduto.classList.remove('campo-desabilitado');
-
-                            // evento de trocar
-                            btnTrocarProduto.addEventListener('click', () => {
-                                codigoProdutoSelecionado = null;
-                                inputProduto.value = '';
-                                inputProduto.readOnly = false;
-                                inputProduto.classList.remove('campo-desabilitado');
-
-                                btnBuscarProduto.disabled = false;
-                                btnBuscarProduto.classList.remove('campo-desabilitado');
-
-                                btnTrocarProduto.disabled = true;
-                                btnTrocarProduto.classList.add('campo-desabilitado');
-                            });
-                        } else if (resposta.status === 403) {
-                            FiberGuardian.Utils.exibirMensagemSessaoExpirada();
-                        } else {
-                            await FiberGuardian.Utils.tratarErroFetch(
-                                resposta,
-                                inputProduto
-                            );
-                        }
-                    } catch (erro) {
-                        console.error('Erro ao buscar produtos:', erro);
-                        FiberGuardian.Utils.exibirErroDeRede(
-                            'Erro de rede ao buscar produtos.',
-                            inputProduto,
-                            erro
-                        );
-                    }
-                });
-                */
-
                 btnBuscarNrNotaFiscal.addEventListener('click', async function () {
                     const codigoParcial = inputNrNotFiscal.value.trim();
 
@@ -742,7 +573,6 @@
                     cnpjFornecedorSelecionado = null;
                     codigoNotFiscalSelecionada = null;
                     emailUsuarioSelecionado = null;
-                    selectResultado = null;
 
                     document.getElementById('dataInicial').value = '';
                     document.getElementById('dataFinal').value = '';
@@ -766,7 +596,7 @@
                 console.error('[FG] erro em configurarEventos:', erro);
             }
         }
-        //----------------------------------------------------------------------------------------------------------------------
+
         async function buscarLaudos(pagina = 0) {
             try {
                 const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
@@ -974,8 +804,6 @@
                 }
             });
         }
-
-        //----------------------------------------------------------------------------------------------------------------------
 
         return {
             init: configurarEventos,

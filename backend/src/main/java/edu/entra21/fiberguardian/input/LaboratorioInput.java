@@ -71,12 +71,10 @@ public class LaboratorioInput {
     private String observacaoLaudo;
 
     @NotBlank(message = "O e-mail do responsável pela liberação é obrigatório")
-    @EmailValido // validador customizado que você já tem
+    @EmailValido
     private String emailLaudoLab;
 
     @NotNull(message = "A data de realização é obrigatória")
     @PastOrPresent(message = "A data de realização não pode ser futura")
     private LocalDate dataRealizacao;
-
-    // Getters e Setters (ou use Lombok @Data / @Getter / @Setter)
 }

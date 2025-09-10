@@ -45,8 +45,7 @@ public class UsuarioController /*implements UsuarioControllerOpenApi */{
 	private final UsuarioNovoInputDisassembler UsuarioCriarUsuarioInputDisassembler;
  	private static final Logger logger = LoggerFactory.getLogger(UsuarioController.class);
 
-	private static final int TAMANHO_PAGINA_PADRAO = 10;
- 	private static final Sort ORDENACAO_PADRAO =
+  	private static final Sort ORDENACAO_PADRAO =
 			Sort.by(Sort.Order.desc("ativo"), Sort.Order.asc("nome"));
 
 	public UsuarioController(UsuarioService usuarioService, UsuarioDtoAssembler usuarioDtoAssembler,
@@ -87,10 +86,10 @@ public class UsuarioController /*implements UsuarioControllerOpenApi */{
       Ex. "Mar" vai listar todas os nome que contem MAR por exemplo Mario, Marcio, Marciana etc
       o json retorna com nome, email, setor e turno entretanto.
      */
-	@GetMapping(path = "/list/recebimento")
+	@GetMapping(path = "/lista-usuario-por-role")
 	@JsonView(UsuarioView.CompletoMenosRole.class)
-	public List<UsuarioDto> listarFiltroPorNome(@RequestParam String nome) {
-		List<Usuario> fornecedores = usuarioService.buscaTop20ByNomeUsuarioRecebimentoContendoStringIgnoraCase(nome);
+	public List<UsuarioDto> listarFiltroPorNome(@RequestParam String nome, @RequestParam String role) {
+		List<Usuario> fornecedores = usuarioService.buscaTop20ByNomeUsuarioRecebimentoContendoStringIgnoraCase(nome,role.toUpperCase());
 		return usuarioDtoAssembler.toCollectionDto(fornecedores);
 	}
 
@@ -108,9 +107,6 @@ public class UsuarioController /*implements UsuarioControllerOpenApi */{
 	public UsuarioDto adicionar(@RequestBody @Valid UsuarioaAdicionaNovoUsuarioInput usuarioNomeInput) {
 
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		logger.debug("Usuário autenticado: " + auth.getName());
-		logger.debug("Authorities: " + auth.getAuthorities());
-
 		return usuarioDtoAssembler.toDto(
 				usuarioService.cadastrarNovoUsuario(UsuarioCriarUsuarioInputDisassembler.toEntity(usuarioNomeInput),usuarioNomeInput.getRepeteSenha()));
 

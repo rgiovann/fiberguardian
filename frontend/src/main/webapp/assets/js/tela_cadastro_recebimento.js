@@ -338,22 +338,33 @@
                     return;
                 }
 
+                // Monta a URL com PathVariable para o CNPJ e query param para codigo_nf
+                const url = new URL(
+                    `/api/usuarios/lista-usuario-por-role`,
+                    window.location.origin
+                );
+
+                url.searchParams.append('nome', codigoParcial);
+
+                // adiciona o filtro de role (sempre em caixa alta)
+                if (FiberGuardian?.UsuarioLogado?.role) {
+                    url.searchParams.append(
+                        'role',
+                        FiberGuardian.UsuarioLogado.role.toUpperCase()
+                    );
+                }
+
                 try {
                     const csrfToken = await FiberGuardian.Utils.obterTokenCsrf();
 
-                    const resposta = await fetch(
-                        `/api/usuarios/list/recebimento?nome=${encodeURIComponent(
-                            codigoParcial
-                        )}`,
-                        {
-                            method: 'GET',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-XSRF-TOKEN': csrfToken,
-                            },
-                            credentials: 'include',
-                        }
-                    );
+                    const resposta = await fetch(url.toString(), {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-XSRF-TOKEN': csrfToken,
+                        },
+                        credentials: 'include',
+                    });
 
                     if (resposta.ok) {
                         const listaUsuarios = await resposta.json();
@@ -511,6 +522,20 @@
                         inputProduto,
                         erro
                     );
+                }
+            });
+
+            const inputArquivo = document.getElementById('arquivoNota');
+            inputArquivo.addEventListener('change', () => {
+                const file = inputArquivo.files[0];
+                if (file && file.type !== 'application/pdf') {
+                    FiberGuardian.Utils.exibirMensagemModalComFoco(
+                        'Somente arquivos tipo pdf são permitidos.',
+                        'warning',
+                        document.getElementById('arquivoNota')
+                    );
+                    inputArquivo.value = ''; // limpa o input
+                    return;
                 }
             });
 

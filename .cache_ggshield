@@ -1,1 +1,1 @@
-{"last_found_secrets": [{"match": "e497784f8c61bdf7bc8e7f12ca4d4a0d9fb7752da698463258d7cafa8d66b52b", "name": "Generic Private Key - commit://3084687f12074d36d83faaf0b7f4197635b3e1ad/frontend/cert/key.pem"}]}
+{"last_found_secrets": [{"match": "6b8cb0ff14fd1957cdb029d77cafa48ffb7aff3d2a1490b719e3627333c1a777", "name": "Generic Password - commit://f1ddf8ee8ba89d7d562dc99957930a4994cca90d/backend/src/main/resources/application.properties"}]}

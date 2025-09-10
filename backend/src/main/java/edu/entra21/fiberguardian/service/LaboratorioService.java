@@ -1,15 +1,27 @@
 package edu.entra21.fiberguardian.service;
 
+import edu.entra21.fiberguardian.dto.RelatorioTesteDTO;
 import edu.entra21.fiberguardian.exception.exception.EntidadeEmUsoException;
 import edu.entra21.fiberguardian.exception.exception.LaboratorioNaoEncontradoException;
 import edu.entra21.fiberguardian.exception.exception.NegocioException;
+import edu.entra21.fiberguardian.input.LaboratorioRelatorioInput;
 import edu.entra21.fiberguardian.model.*;
 import edu.entra21.fiberguardian.repository.EngenhariaRepository;
 import edu.entra21.fiberguardian.repository.ItemNotaFiscalRepository;
 import edu.entra21.fiberguardian.repository.LaboratorioRepository;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -108,6 +120,34 @@ public class LaboratorioService {
     }
 
 
+    public Laboratorio buscarOuFalhar(Long idLaboratorio) {
+        return laboratorioRepository.findById(idLaboratorio)
+                .orElseThrow(() -> new LaboratorioNaoEncontradoException(
+                        "Laudo de laboratório de id " + idLaboratorio + " não encontrado."
+                ));
+    }
 
+    public byte[] gerarRelatorioPDF(LaboratorioRelatorioInput dados) {
+        try {
+            // Carrega o template compilado (.jasper)
+            InputStream templateStream = new ClassPathResource("/reports/fiberguardian-01.jasper").getInputStream();
+
+            // Parâmetros básicos
+            Map<String, Object> parametros = new HashMap<>();
+            parametros.put("TITULO", "Relatório Testes de Laboratório");
+
+            // Fonte de dados (lista com um elemento)
+            JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(List.of(dados));
+
+            // Gera o relatório
+            JasperPrint jasperPrint = JasperFillManager.fillReport(templateStream, parametros, dataSource);
+
+            // Exporta para PDF
+            return JasperExportManager.exportReportToPdf(jasperPrint);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao gerar relatório: " + e.getMessage(), e);
+        }
+    }
 }
 

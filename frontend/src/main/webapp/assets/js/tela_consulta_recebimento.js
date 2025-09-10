@@ -564,7 +564,6 @@
                     }
                 });
 
-
                 btnSair.replaceWith(btnSair.cloneNode(true));
                 btnSair = document.getElementById('btnSair');
                 btnSair.addEventListener('click', async () => {
@@ -620,7 +619,6 @@
                     if (tbody) tbody.innerHTML = '';
                     document.getElementById('paginacao-container').innerHTML = '';
                 });
-                
             } catch (erro) {
                 console.error('[FG] erro em configurarEventos:', erro);
             }
@@ -743,12 +741,25 @@
             <td>${dataFormatada}</td>
             <td>${valorFormatado}</td>
             <td>
-                <button class="btn btn-sm btn-danger me-1 btn-excluir" type="button">
+            <div class="dropdown" style="position: relative;">
+                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-ellipsis-v"></i> <!-- ícone de "mais opções" -->
+                Ações
+                </button>
+                <ul class="dropdown-menu dropdown-menu-auto">
+                <li>
+                    <a class="dropdown-item btn-excluir" href="#">
                     <i class="fas fa-trash"></i> Excluir
-                </button>
-                <button class="btn btn-sm btn-info btn-ver-itens" type="button">
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item btn-ver-itens" href="#">
                     <i class="fas fa-list"></i> Ver Itens
-                </button>
+                    </a>
+                </li>
+                </ul>
+            </div>
             </td>
         `;
 

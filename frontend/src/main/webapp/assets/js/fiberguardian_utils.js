@@ -50,7 +50,7 @@
 
         function exibirMensagemSessaoExpirada() {
             exibirMensagemModal(
-                'Sua sessão expirou. Por favor, faça login novamente.',
+                'Acesso negado. Sua sessão expirou ou você não tem permissão.. Por favor, faça login novamente.',
                 'danger'
             );
             setTimeout(() => {
@@ -301,22 +301,29 @@
         }
 
         async function realizarLogout() {
-            try {
-                const csrfToken = await obterTokenCsrf();
-                const resp = await fetch('/api/fg-logout', {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'X-XSRF-TOKEN': csrfToken,
-                    },
-                });
+            const confirmado = await FiberGuardian.Utils.confirmarAcaoAsync(
+                'Deseja realmente sair do sistema?',
+                'Sair do Sistema'
+            );
 
-                if (!resp.ok) throw new Error('Erro ao encerrar sessão');
+            if (confirmado) {
+                try {
+                    const csrfToken = await obterTokenCsrf();
+                    const resp = await fetch('/api/fg-logout', {
+                        method: 'POST',
+                        credentials: 'include',
+                        headers: {
+                            'X-XSRF-TOKEN': csrfToken,
+                        },
+                    });
 
-                sessionStorage.removeItem('usuario');
-                window.location.href = 'login.html';
-            } catch (e) {
-                exibirMensagemModal('Erro no logout: ' + e.message, 'danger');
+                    if (!resp.ok) throw new Error('Erro ao encerrar sessão');
+
+                    sessionStorage.removeItem('usuario');
+                    window.location.href = 'login.html';
+                } catch (e) {
+                    exibirMensagemModal('Erro no logout: ' + e.message, 'danger');
+                }
             }
         }
 

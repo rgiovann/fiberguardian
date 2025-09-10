@@ -30,7 +30,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 """, nativeQuery = true)
 	List<Usuario> findTop20UsuarioRecebimentoByNomeContainingIgnoreCase(
 			@Param("nomeParcial") String nomeParcial,
-			@Param("roles") List<String> roles
+			@Param("roles")   List<String> role
 	);
 
 	@Query("SELECT COUNT(u) > 0 FROM Usuario u WHERE u.email = :email")

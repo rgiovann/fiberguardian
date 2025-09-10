@@ -419,7 +419,7 @@
             btnSair.addEventListener('click', async () => {
                 const confirmado = await FiberGuardian.Utils.confirmarAcaoAsync(
                     'Deseja realmente voltar ao Menu Principal?',
-                    'Sair do Sistema'
+                    'Voltar menu principal'
                 );
 
                 if (confirmado) {
