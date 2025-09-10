@@ -87,12 +87,18 @@ public class SecurityConfig {
 				.authorizeHttpRequests(authz -> authz.requestMatchers(HttpMethod.POST, "/api/fg-login").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/csrf-token").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/usuarios/validar-admin").permitAll() // checar sem token-csrf
+
+						// ESPECÍFICAS PRIMEIRO - antes das regras gerais
+						.requestMatchers(HttpMethod.GET, "/api/fornecedores/list/recebimento/**").hasAnyAuthority(Role.LABORATORIO.getAuthority(), Role.ENG_LAB.getAuthority())
+						.requestMatchers(HttpMethod.GET, "/api/notas-fiscais/list/por_fornecedor/**").hasAnyAuthority(Role.LABORATORIO.getAuthority(), Role.ENG_LAB.getAuthority())
+						.requestMatchers(HttpMethod.GET, "/api/item-notas-fiscais/list/**").hasAnyAuthority(Role.LABORATORIO.getAuthority(), Role.ENG_LAB.getAuthority())
+						.requestMatchers(HttpMethod.GET, "/api/notas-fiscais/list/**").hasAnyAuthority(Role.LABORATORIO.getAuthority(), Role.ENG_LAB.getAuthority())
+
 						.requestMatchers(HttpMethod.POST, "/api/usuarios/reset-senha").hasAuthority(Role.ADMIN.getAuthority())
 						.requestMatchers(HttpMethod.POST, "/api/usuarios").hasAuthority(Role.ADMIN.getAuthority())
 						.requestMatchers(HttpMethod.GET, "/api/usuarios").hasAuthority(Role.ADMIN.getAuthority())
 						.requestMatchers(HttpMethod.PUT, "/api/ativo").hasAuthority(Role.ADMIN.getAuthority())
 						.requestMatchers(HttpMethod.DELETE, "/api/ativo").hasAuthority(Role.ADMIN.getAuthority())
-						.requestMatchers(HttpMethod.POST, "/api/fg-logout").authenticated()
 						.requestMatchers(HttpMethod.GET, "/api/usuarios/nomes").hasAnyAuthority(
 								Role.ADMIN.getAuthority(),
 								Role.LABORATORIO.getAuthority(),
@@ -114,12 +120,13 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.DELETE, "/api/notas-fiscais/**").hasAnyAuthority(Role.ADMIN.getAuthority())
 						.requestMatchers(HttpMethod.GET, "/api/notas-fiscais/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
 
-						.requestMatchers(HttpMethod.POST, "/api/laboratorios/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.LABORATORIO.getAuthority())
-						.requestMatchers(HttpMethod.PUT, "/api/laboratorios/**").hasAnyAuthority(Role.ADMIN.getAuthority())
-						.requestMatchers(HttpMethod.DELETE, "/api/laboratorios/**").hasAnyAuthority(Role.ADMIN.getAuthority())
-						.requestMatchers(HttpMethod.GET, "/api/laboratorios/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.LABORATORIO.getAuthority())
+						.requestMatchers(HttpMethod.POST, "/api/laboratorios/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.LABORATORIO.getAuthority(), Role.ENG_LAB.getAuthority())
+						.requestMatchers(HttpMethod.PUT, "/api/laboratorios/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.LABORATORIO.getAuthority(),  Role.ENG_LAB.getAuthority())
+						.requestMatchers(HttpMethod.DELETE, "/api/laboratorios/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.LABORATORIO.getAuthority(),  Role.ENG_LAB.getAuthority())
+						.requestMatchers(HttpMethod.GET, "/api/laboratorios/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.LABORATORIO.getAuthority(), Role.ENG_LAB.getAuthority())
 
 
+						.requestMatchers(HttpMethod.POST, "/api/fg-logout").authenticated()
 						.requestMatchers(HttpMethod.POST, "/api/usuarios/alterar-senha").authenticated()
 						.requestMatchers(HttpMethod.GET, "/api/usuarios/buscar-por-email").authenticated().anyRequest()
 						.authenticated())
