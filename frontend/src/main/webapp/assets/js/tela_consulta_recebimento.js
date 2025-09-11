@@ -635,7 +635,11 @@
                 const fornecedor = cnpjFornecedorSelecionado; // já vem do fluxo do fornecedor
                 const produto = codigoProdutoSelecionado;
 
-                if (dataInicialValor > dataFinalValor) {
+                if (
+                    dataInicialValor &&
+                    dataFinalValor &&
+                    dataInicialValor > dataFinalValor
+                ) {
                     FiberGuardian.Utils.exibirMensagemModalComFoco(
                         'Data Inicial não pode ser maior que Data Final.',
                         'warning',

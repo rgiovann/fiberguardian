@@ -33,6 +33,23 @@ public class SecurityConfig {
 
 	private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 	private final CustomUserDetailsService userDetailsService;
+	private static final String[] ROLE_ADMIN_USUARIO = {
+			Role.ADMIN.getAuthority(),
+			Role.USUARIO.getAuthority()
+	};
+
+	private static final String[] ROLE_LISTAGEM = {
+			Role.ADMIN.getAuthority(),
+			Role.USUARIO.getAuthority(),
+			Role.LABORATORIO.getAuthority(),
+			Role.ENG_LAB.getAuthority()
+	};
+
+	private static final String[] ROLE_ADM_LABORATORIO_ENG_LAB = {
+			Role.ADMIN.getAuthority(),
+			Role.LABORATORIO.getAuthority(),
+			Role.ENG_LAB.getAuthority()
+	};
 
 	SecurityConfig(CustomUserDetailsService userDetailsService) {
 		this.userDetailsService = userDetailsService;
@@ -89,41 +106,38 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.POST, "/api/usuarios/validar-admin").permitAll() // checar sem token-csrf
 
 						// ESPECÍFICAS PRIMEIRO - antes das regras gerais
-						.requestMatchers(HttpMethod.GET, "/api/fornecedores/list/recebimento/**").hasAnyAuthority(Role.LABORATORIO.getAuthority(), Role.ENG_LAB.getAuthority())
-						.requestMatchers(HttpMethod.GET, "/api/notas-fiscais/list/por_fornecedor/**").hasAnyAuthority(Role.LABORATORIO.getAuthority(), Role.ENG_LAB.getAuthority())
-						.requestMatchers(HttpMethod.GET, "/api/item-notas-fiscais/list/**").hasAnyAuthority(Role.LABORATORIO.getAuthority(), Role.ENG_LAB.getAuthority())
-						.requestMatchers(HttpMethod.GET, "/api/notas-fiscais/list/**").hasAnyAuthority(Role.LABORATORIO.getAuthority(), Role.ENG_LAB.getAuthority())
+						.requestMatchers(HttpMethod.GET, "/api/fornecedores/list/recebimento/**").hasAnyAuthority(ROLE_LISTAGEM)
+						.requestMatchers(HttpMethod.GET, "/api/notas-fiscais/list/por_fornecedor/**").hasAnyAuthority(ROLE_LISTAGEM)
+						.requestMatchers(HttpMethod.GET, "/api/item-notas-fiscais/list/**").hasAnyAuthority(ROLE_LISTAGEM)
+						.requestMatchers(HttpMethod.GET, "/api/notas-fiscais/list/**").hasAnyAuthority(ROLE_LISTAGEM)
+						.requestMatchers(HttpMethod.GET, "/api/usuarios/lista-usuario-por-role").hasAnyAuthority(ROLE_LISTAGEM)
 
 						.requestMatchers(HttpMethod.POST, "/api/usuarios/reset-senha").hasAuthority(Role.ADMIN.getAuthority())
 						.requestMatchers(HttpMethod.POST, "/api/usuarios").hasAuthority(Role.ADMIN.getAuthority())
 						.requestMatchers(HttpMethod.GET, "/api/usuarios").hasAuthority(Role.ADMIN.getAuthority())
 						.requestMatchers(HttpMethod.PUT, "/api/ativo").hasAuthority(Role.ADMIN.getAuthority())
 						.requestMatchers(HttpMethod.DELETE, "/api/ativo").hasAuthority(Role.ADMIN.getAuthority())
-						.requestMatchers(HttpMethod.GET, "/api/usuarios/nomes").hasAnyAuthority(
-								Role.ADMIN.getAuthority(),
-								Role.LABORATORIO.getAuthority(),
-								Role.ENG_LAB.getAuthority()
-						)
+
 						// Padrão seguro para cada recurso
- 						.requestMatchers(HttpMethod.POST, "/api/fornecedores/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
+ 						.requestMatchers(HttpMethod.POST, "/api/fornecedores/**").hasAnyAuthority(ROLE_ADMIN_USUARIO)
 						.requestMatchers(HttpMethod.PUT, "/api/fornecedores/**").hasAnyAuthority(Role.ADMIN.getAuthority())
 						.requestMatchers(HttpMethod.DELETE, "/api/fornecedores/**").hasAnyAuthority(Role.ADMIN.getAuthority())
-						.requestMatchers(HttpMethod.GET, "/api/fornecedores/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
+						.requestMatchers(HttpMethod.GET, "/api/fornecedores/**").hasAnyAuthority(ROLE_ADMIN_USUARIO)
 
-						.requestMatchers(HttpMethod.POST, "/api/produtos/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
+						.requestMatchers(HttpMethod.POST, "/api/produtos/**").hasAnyAuthority(ROLE_ADMIN_USUARIO)
 						.requestMatchers(HttpMethod.PUT, "/api/produtos/**").hasAnyAuthority(Role.ADMIN.getAuthority())
 						.requestMatchers(HttpMethod.DELETE, "/api/produtos/**").hasAnyAuthority(Role.ADMIN.getAuthority())
-						.requestMatchers(HttpMethod.GET, "/api/produtos/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
+						.requestMatchers(HttpMethod.GET, "/api/produtos/**").hasAnyAuthority(ROLE_ADMIN_USUARIO)
 
-						.requestMatchers(HttpMethod.POST, "/api/notas-fiscais/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
+						.requestMatchers(HttpMethod.POST, "/api/notas-fiscais/**").hasAnyAuthority(ROLE_ADMIN_USUARIO)
 						.requestMatchers(HttpMethod.PUT, "/api/notas-fiscais/**").hasAnyAuthority(Role.ADMIN.getAuthority())
 						.requestMatchers(HttpMethod.DELETE, "/api/notas-fiscais/**").hasAnyAuthority(Role.ADMIN.getAuthority())
-						.requestMatchers(HttpMethod.GET, "/api/notas-fiscais/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.USUARIO.getAuthority())
+						.requestMatchers(HttpMethod.GET, "/api/notas-fiscais/**").hasAnyAuthority(ROLE_ADMIN_USUARIO)
 
-						.requestMatchers(HttpMethod.POST, "/api/laboratorios/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.LABORATORIO.getAuthority(), Role.ENG_LAB.getAuthority())
-						.requestMatchers(HttpMethod.PUT, "/api/laboratorios/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.LABORATORIO.getAuthority(),  Role.ENG_LAB.getAuthority())
-						.requestMatchers(HttpMethod.DELETE, "/api/laboratorios/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.LABORATORIO.getAuthority(),  Role.ENG_LAB.getAuthority())
-						.requestMatchers(HttpMethod.GET, "/api/laboratorios/**").hasAnyAuthority(Role.ADMIN.getAuthority(),Role.LABORATORIO.getAuthority(), Role.ENG_LAB.getAuthority())
+						.requestMatchers(HttpMethod.POST, "/api/laboratorios/**").hasAnyAuthority(ROLE_ADM_LABORATORIO_ENG_LAB)
+						.requestMatchers(HttpMethod.PUT, "/api/laboratorios/**").hasAnyAuthority(ROLE_ADM_LABORATORIO_ENG_LAB)
+						.requestMatchers(HttpMethod.DELETE, "/api/laboratorios/**").hasAnyAuthority(ROLE_ADM_LABORATORIO_ENG_LAB)
+						.requestMatchers(HttpMethod.GET, "/api/laboratorios/**").hasAnyAuthority(ROLE_ADM_LABORATORIO_ENG_LAB)
 
 
 						.requestMatchers(HttpMethod.POST, "/api/fg-logout").authenticated()
