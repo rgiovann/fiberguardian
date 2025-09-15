@@ -2,7 +2,7 @@
 
 # FiberGuardian – Backend
 
-## 📌 Visão Geral
+##  Visão Geral
 
 O **FiberGuardian** é um sistema backend desenvolvido em **Spring Boot**
 para gestão de fornecedores, produtos, notas fiscais e laudos
@@ -14,7 +14,7 @@ contra CSRF, gerenciamento de sessão e auditoria.
 
 ------------------------------------------------------------------------
 
-## 🏗️ Arquitetura
+##  Arquitetura
 
 - **Spring Boot** como framework principal.
 
@@ -31,7 +31,7 @@ contra CSRF, gerenciamento de sessão e auditoria.
 
 ------------------------------------------------------------------------
 
-## 🔒 Segurança
+##  Segurança
 
 - **Login/Logout seguro** via `AuthController`, com sessões gerenciadas
   e `HttpOnly cookies`.
@@ -48,7 +48,7 @@ contra CSRF, gerenciamento de sessão e auditoria.
 
 ------------------------------------------------------------------------
 
-## 📂 Principais Módulos
+##  Principais Módulos
 
 - **Controllers**
 
@@ -66,9 +66,9 @@ contra CSRF, gerenciamento de sessão e auditoria.
   - `LaboratorioController` → Cadastro de laudos, geração de relatórios
     em PDF.
 
-- **Assemblers/Disassemblers**  
+- **Assemblers/Disassemblers**
   Convertem objetos de entrada (`Input`) para entidades e entidades para
-  DTOs.  
+  DTOs.
   → Ex: `FornecedorInputDisassembler`, `FornecedorDtoAssembler`.
 
 - **Configurações**
@@ -84,7 +84,7 @@ contra CSRF, gerenciamento de sessão e auditoria.
 
 ------------------------------------------------------------------------
 
-## ⚙️ Endpoints Principais
+##  Endpoints Principais
 
 - `POST /api/fg-login` → Autenticação (gera sessão + CSRF token).
 
@@ -102,7 +102,7 @@ contra CSRF, gerenciamento de sessão e auditoria.
 
 ------------------------------------------------------------------------
 
-## 🚀 Como Executar
+##  Como Executar
 
 1.  **Pré-requisitos**
 
@@ -135,7 +135,7 @@ contra CSRF, gerenciamento de sessão e auditoria.
 
 ------------------------------------------------------------------------
 
-## 🧪 Testes
+##  Testes
 
 - Teste endpoints com `curl`, `Postman`, existem scripts prontos em bash
   em `\backend\src\test\scripts_bash`
@@ -165,7 +165,7 @@ integração segura com Spring Boot.
 - **Sessão**: Cookies HttpOnly com `credentials: 'include'`
 - **Logout Seguro**: Endpoint `/api/fg-logout` com confirmação
 
-## 📁 Estrutura
+##  Estrutura
 
     frontend/
     ├── assets/
