@@ -1,6 +1,0 @@
-- gitgnore não salva caddy.exe
-- executar o caddy em /fiberguardian/frontend/cert
-- caddy start para iniciar e caddy stop para parar
-- http-server (não vamos mais trabalhar com live-server)
-- npx http-server "E:\ENTRA21\projetos\fiberguardian\frontend\src\main\webapp" --ssl --cert cert.pem --key key.pem (diretório muda dependendo da maquina)
-
