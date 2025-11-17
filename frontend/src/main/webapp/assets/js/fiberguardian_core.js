@@ -36,11 +36,13 @@
             ],
             'tela_consulta_laboratorio.html': [
                 'assets/js/fiberguardian_utils.js',
+                'assets/js/fiberguardian_core.js',
                 'assets/js/tela_consulta_laboratorio.js',
             ],
-            'tela_teste_reprovados.html': [
+            'tela_consulta_testes_reprovados.html': [
                 'assets/js/fiberguardian_utils.js',
-                'assets/js/tela_teste_reprovados.js',
+                'assets/js/fiberguardian_core.js',
+                'assets/js/tela_consulta_testes_reprovados.js',
             ],
             'tela_cadastro_parecer_engenharia.html': [
                 'assets/js/fiberguardian_utils.js',
