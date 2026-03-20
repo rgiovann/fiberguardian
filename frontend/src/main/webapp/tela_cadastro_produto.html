@@ -23,7 +23,7 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-6 mb-3">
-              <label for="fornecedor" class="form-label">Fornecedor</label>
+              <label for="fornecedor" class="form-label">Fornecedor <span class="text-danger">*</span></label>
               <div class="input-group">
                 <input type="text" id="fornecedor" name="fornecedor" class="form-control" autocomplete="off"
                   placeholder="Digite parte do nome" />
@@ -40,14 +40,14 @@
                 aria-labelledby="fornecedor"></div>
             </div>
             <div class="col-md-6 mb-3">
-              <!--  <label id="fornecedorNomeLabel" class="form-label"></label> -->
-              <label class="form-label">Código do Produto</label>
+              <label class="form-label">Código do Produto <span class="text-danger">*</span></label>
               <input type="text" class="form-control" id="codigoProduto" required placeholder="Ex.: PROD123">
             </div>
             <div class="col-md-12 mb-3">
               <label class="form-label">Descrição do Produto</label>
               <textarea class="form-control" rows="3" id="descricaoProduto"
                 placeholder="Descreva o produto..."></textarea>
+
               <!-- ================= CLASSIFICAÇÃO TÉCNICA ================= -->
               <div class="card mt-4">
                 <div class="card-header branco-bold">
@@ -55,43 +55,66 @@
                 </div>
 
                 <div class="card-body">
+
+                  <!-- Lookup de Fio Técnico -->
+                  <label class="form-label">Especificação Técnica do Fio</label>
+                  <div class="row align-items-end mb-2">
+                    <div class="col-md-3 mb-3">
+                      <label for="buscaFibraFio" class="form-label">Fibra Principal <span
+                          class="text-danger">*</span></label>
+                      <select id="buscaFibraFio" class="form-select">
+                        <option value="">Selecione...</option>
+                        <option value="CO">CO — Algodão</option>
+                        <option value="PES">PES — Poliéster</option>
+                        <option value="CV">CV — Viscose</option>
+                        <option value="PA">PA — Poliamida (Nylon)</option>
+                        <option value="WO">WO — Lã</option>
+                        <option value="LI">LI — Linho</option>
+                        <option value="AC">AC — Acetato</option>
+                        <option value="EL">EL — Elastano</option>
+                      </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <label for="buscaSistemaTitulo" class="form-label">Sistema de Título <span
+                          class="text-danger">*</span></label>
+                      <select id="buscaSistemaTitulo" class="form-select">
+                        <option value="">Selecione...</option>
+                        <option value="NE">NE — Number English</option>
+                        <option value="NM">NM — Number Metric</option>
+                        <option value="DTEX">DTEX — Decitex</option>
+                        <option value="DEN">DEN — Denier</option>
+                      </select>
+                    </div>
+                    <div class="col-md-2 mb-3">
+                      <label for="buscaTituloValor" class="form-label">Título <span
+                          class="text-muted small">(opcional)</span></label>
+                      <input type="number" id="buscaTituloValor" class="form-control" step="1" min="0"
+                        placeholder="Ex.: 30">
+                    </div>
+                    <div class="col-md-auto mb-3 d-flex gap-2">
+                      <button id="btnBuscarFioTecnico" type="button" class="btn btn-outline-secondary">
+                        <i class="fas fa-search me-2"></i>Buscar
+                      </button>
+                      <button id="btnTrocarFioTecnico" type="button" class="btn btn-outline-danger" disabled>
+                        <i class="fas fa-exchange-alt me-2"></i>Trocar
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Fio selecionado (somente leitura) -->
+                  <div class="row mb-3">
+                    <div class="col-md-12">
+                      <input type="text" id="fioTecnicoLabel" class="form-control campo-desabilitado" readonly
+                        placeholder="Nenhuma especificação selecionada">
+                      <input type="hidden" id="fioTecnicoId" name="fio_tecnico_id">
+                    </div>
+                  </div>
+
                   <div class="row">
 
-                    <!-- Titulação -->
-                    <div class="col-md-3 mb-3">
-                      <label class="form-label">Titulação</label>
-                      <input type="text" class="form-control" id="titulacao"
-                        placeholder="Ex: 30/1, 30/2, 40 Ne, 150D/48F">
-                    </div>
-
-                    <!-- Tipo de Fiação -->
-                    <div class="col-md-3 mb-3">
-                      <label class="form-label">Tipo de Fiação</label>
-                      <select id="tipoFiacao" class="form-select">
-                        <option value="">Selecione...</option>
-                        <option>OE</option>
-                        <option>CARDADO</option>
-                        <option>PENTEADO</option>
-                        <option>OPEN END</option>
-                        <option>FIADO</option>
-                      </select>
-                    </div>
-
-                    <!-- Composição -->
-                    <div class="col-md-3 mb-3">
-                      <label class="form-label">Composição</label>
-                      <select id="composicao" class="form-select">
-                        <option value="">Selecione...</option>
-                        <option>100% CO</option>
-                        <option>100% ALG</option>
-                        <option>100% PES</option>
-                        <option>CO + PES</option>
-                      </select>
-                    </div>
-
                     <!-- Aplicação -->
-                    <div class="col-md-3 mb-3">
-                      <label class="form-label">Aplicação</label>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Aplicação <span class="text-danger">*</span></label>
                       <select id="aplicacao" class="form-select">
                         <option value="">Selecione...</option>
                         <option>Malharia</option>
@@ -103,7 +126,7 @@
 
                     <!-- Acabamento -->
                     <div class="col-md-6 mb-3">
-                      <label class="form-label">Acabamento</label>
+                      <label class="form-label">Acabamento <span class="text-danger">*</span></label>
                       <select id="acabamento" class="form-select">
                         <option value="">Selecione...</option>
                         <option>Mercerizado</option>
@@ -112,13 +135,6 @@
                         <option>Gazeado</option>
                         <option>Sem acabamento</option>
                       </select>
-                    </div>
-
-                    <!-- Observação técnica -->
-                    <div class="col-md-6 mb-3">
-                      <label class="form-label">Observação Técnica</label>
-                      <input type="text" class="form-control" id="observacaoTecnica"
-                        placeholder="Informações adicionais do fio">
                     </div>
 
                   </div>
@@ -150,18 +166,15 @@
               <th>Fornecedor</th>
               <th>Código</th>
               <th>Descrição</th>
-              <th>Titulação</th>
-              <th>Tipo</th>
-              <th>Composição</th>
+              <th>Fio Técnico</th>
               <th>Aplicação</th>
               <th>Acabamento</th>
-              <th>Obs. Técnica</th>
               <th>Ações</th>
             </tr>
           </thead>
           <tbody id="produtosTableBody">
             <tr id="noDataRow">
-              <td colspan="10" class="text-center">Nenhum produto adicionado.</td>
+              <td colspan="7" class="text-center">Nenhum produto adicionado.</td>
             </tr>
           </tbody>
         </table>
