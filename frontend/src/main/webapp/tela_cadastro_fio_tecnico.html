@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Fio Técnico</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="assets/css/tela_cadastro_recebimento.css">
+  <link rel="stylesheet" href="assets/css/tela_cadastro_fio_tecnico.css">
+</head>
+
+<body>
+  <div class="container mt-4 mb-4">
+
+    <form id="fioTecnicoForm">
+      <section class="card mb-4">
+        <h4 class="mb-2 mt-2 text-center titulo-cad-recebimento">CADASTRO DE FIO TÉCNICO</h4>
+
+        <!-- ===== COMPOSIÇÃO FIBROSA ===== -->
+        <div class="card-header branco-bold">Composição Fibrosa</div>
+        <div class="card-body">
+
+          <!-- Pares 1 e 2 -->
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label for="fibra1" class="form-label">Fibra 1 <span class="text-danger">*</span></label>
+              <select id="fibra1" name="fibra_1" class="form-select" required>
+                <option value="">Selecione...</option>
+                <option value="CO">CO — Algodão</option>
+                <option value="PES">PES — Poliéster</option>
+                <option value="CV">CV — Viscose</option>
+                <option value="PA">PA — Poliamida (Nylon)</option>
+                <option value="WO">WO — Lã</option>
+                <option value="LI">LI — Linho</option>
+                <option value="AC">AC — Acetato</option>
+                <option value="EL">EL — Elastano</option>
+              </select>
+            </div>
+            <div class="col-md-2 mb-3">
+              <label for="percentual1" class="form-label">% <span class="text-danger">*</span></label>
+              <input type="number" id="percentual1" name="percentual_1" class="form-control" step="0.01" min="0.01"
+                max="100" placeholder="0.00" required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label for="fibra2" class="form-label">Fibra 2</label>
+              <select id="fibra2" name="fibra_2" class="form-select">
+                <option value="">Selecione...</option>
+                <option value="CO">CO — Algodão</option>
+                <option value="PES">PES — Poliéster</option>
+                <option value="CV">CV — Viscose</option>
+                <option value="PA">PA — Poliamida (Nylon)</option>
+                <option value="WO">WO — Lã</option>
+                <option value="LI">LI — Linho</option>
+                <option value="AC">AC — Acetato</option>
+                <option value="EL">EL — Elastano</option>
+              </select>
+            </div>
+            <div class="col-md-2 mb-3">
+              <label for="percentual2" class="form-label">%</label>
+              <input type="number" id="percentual2" name="percentual_2" class="form-control" step="0.01" min="0.01"
+                max="100" placeholder="0.00">
+            </div>
+          </div>
+
+          <hr class="composicao-separator">
+
+          <!-- Pares 3 e 4 -->
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label for="fibra3" class="form-label">Fibra 3</label>
+              <select id="fibra3" name="fibra_3" class="form-select">
+                <option value="">Selecione...</option>
+                <option value="CO">CO — Algodão</option>
+                <option value="PES">PES — Poliéster</option>
+                <option value="CV">CV — Viscose</option>
+                <option value="PA">PA — Poliamida (Nylon)</option>
+                <option value="WO">WO — Lã</option>
+                <option value="LI">LI — Linho</option>
+                <option value="AC">AC — Acetato</option>
+                <option value="EL">EL — Elastano</option>
+              </select>
+            </div>
+            <div class="col-md-2 mb-3">
+              <label for="percentual3" class="form-label">%</label>
+              <input type="number" id="percentual3" name="percentual_3" class="form-control" step="0.01" min="0.01"
+                max="100" placeholder="0.00">
+            </div>
+            <div class="col-md-4 mb-3">
+              <label for="fibra4" class="form-label">Fibra 4</label>
+              <select id="fibra4" name="fibra_4" class="form-select">
+                <option value="">Selecione...</option>
+                <option value="CO">CO — Algodão</option>
+                <option value="PES">PES — Poliéster</option>
+                <option value="CV">CV — Viscose</option>
+                <option value="PA">PA — Poliamida (Nylon)</option>
+                <option value="WO">WO — Lã</option>
+                <option value="LI">LI — Linho</option>
+                <option value="AC">AC — Acetato</option>
+                <option value="EL">EL — Elastano</option>
+              </select>
+            </div>
+            <div class="col-md-2 mb-3">
+              <label for="percentual4" class="form-label">%</label>
+              <input type="number" id="percentual4" name="percentual_4" class="form-control" step="0.01" min="0.01"
+                max="100" placeholder="0.00">
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ===== TITULAGEM ===== -->
+        <div class="card-header branco-bold">Titulagem</div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label for="sistemaTitulo" class="form-label">Sistema de Título <span class="text-danger">*</span></label>
+              <select id="sistemaTitulo" name="sistema_titulo" class="form-select" required>
+                <option value="NE" selected>NE — Number English</option>
+                <option value="NM">NM — Number Metric</option>
+                <option value="DTEX">DTEX — Decitex</option>
+                <option value="DEN">DEN — Denier</option>
+              </select>
+            </div>
+            <div class="col-md-3 mb-3">
+              <label for="tituloValor" class="form-label">Valor do Título <span class="text-danger">*</span></label>
+              <input type="number" id="tituloValor" name="titulo_valor" class="form-control" step="0.01" min="0"
+                value="0.00" required>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== ESTRUTURA E PROCESSO ===== -->
+        <div class="card-header branco-bold">Estrutura e Processo</div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-2 mb-3">
+              <label for="numeroCabos" class="form-label">Nº de Cabos <span class="text-danger">*</span></label>
+              <input type="number" id="numeroCabos" name="numero_cabos" class="form-control" min="1" max="255" value="1"
+                required>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label for="preparacao" class="form-label">Preparação <span class="text-danger">*</span></label>
+              <select id="preparacao" name="preparacao" class="form-select" required>
+                <option value="N/A" selected>N/A — Não Aplicável</option>
+                <option value="CARDED">CARDED — Cardado</option>
+                <option value="COMBED">COMBED — Penteado</option>
+              </select>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label for="sistemaFiacao" class="form-label">Sistema de Fiação <span class="text-danger">*</span></label>
+              <select id="sistemaFiacao" name="sistema_fiacao" class="form-select" required>
+                <option value="OUTRO" selected>OUTRO — Não especificado</option>
+                <option value="RING">RING — Fiação a anel</option>
+                <option value="COMPACT">COMPACT — Ring compacto</option>
+                <option value="OE">OE — Open-End (rotor)</option>
+                <option value="AIRJET">AIRJET — Jato de ar</option>
+                <option value="VORTEX">VORTEX</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== TORÇÃO ===== -->
+        <div class="card-header branco-bold">Torção</div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-3 mb-3">
+              <label for="torcaoDirecao" class="form-label">Direção <span class="text-danger">*</span></label>
+              <select id="torcaoDirecao" name="torcao_direcao" class="form-select" required>
+                <option value="Z" selected>Z — Horário (padrão)</option>
+                <option value="S">S — Anti-horário</option>
+              </select>
+            </div>
+            <div class="col-md-3 mb-3">
+              <label for="torcaoNominalTpm" class="form-label">Torção Nominal (tpm)</label>
+              <input type="number" id="torcaoNominalTpm" name="torcao_nominal_tpm" class="form-control" step="0.01"
+                min="0" placeholder="Opcional">
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== OBSERVAÇÕES ===== -->
+        <div class="card-header branco-bold">Observações</div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <label for="observacaoTecnica" class="form-label">Observação Técnica</label>
+              <input type="text" id="observacaoTecnica" name="observacao_tecnica" class="form-control" maxlength="255"
+                placeholder="Informações técnicas adicionais (ex.: contagem de filamentos)">
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== BOTÕES ===== -->
+        <div class="text-center mt-3 mb-3">
+          <button type="submit" class="btn btn-success btn-custom" id="btnSalvar">
+            <i class="fas fa-save me-2"></i>Salvar
+          </button>
+          <button type="button" class="btn btn-secondary btn-custom" id="btnLimpar">
+            <i class="fas fa-eraser me-2"></i>Limpar
+          </button>
+          <button type="button" class="btn btn-danger btn-custom" id="btnSair">
+            <i class="fas fa-sign-out-alt me-2"></i>Sair
+          </button>
+        </div>
+
+      </section>
+    </form>
+
+
+    <!-- Modal de Alerta Global -->
+    <div class="modal fade" id="modalMensagemSistema" tabindex="-1" aria-labelledby="modalMensagemSistemaTitulo"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-warning text-dark">
+            <h5 class="modal-title" id="modalMensagemSistemaTitulo">Aviso</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            <!-- Conteúdo da mensagem será inserido via JS -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+              OK
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Confirmação Genérico -->
+    <div class="modal fade" id="modalConfirmacaoGenerico" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalConfirmacaoTitulo">Confirmação</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+
+          <div class="modal-body" id="modalConfirmacaoMensagem">
+            <!-- Mensagem será preenchida dinamicamente -->
+          </div>
+
+          <div class="modal-footer">
+            <button id="btnConfirmacaoSim" type="button" class="btn btn-primary">Sim</button>
+            <button id="btnConfirmacaoNao" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Não</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+
+</html>

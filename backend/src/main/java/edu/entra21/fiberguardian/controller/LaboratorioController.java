@@ -8,7 +8,7 @@ import edu.entra21.fiberguardian.dto.PageDto;
 import edu.entra21.fiberguardian.input.LaboratorioInput;
 import edu.entra21.fiberguardian.input.LaboratorioRelatorioInput;
 import edu.entra21.fiberguardian.model.Laboratorio;
-import edu.entra21.fiberguardian.model.StatusLaboratorio;
+import edu.entra21.fiberguardian.model.DecisaoLaboratorio;
 import edu.entra21.fiberguardian.service.LaboratorioService;
 import edu.entra21.fiberguardian.service.query.LaboratorioFilter;
 import edu.entra21.fiberguardian.service.query.LaboratorioQueryService;
@@ -121,7 +121,7 @@ public class LaboratorioController {
             @RequestParam(required = false) String notafiscal,
             @RequestParam(required = false) String cnpj,
             @RequestParam(required = false) String email,
-            @RequestParam(required = false) StatusLaboratorio status,
+            @RequestParam(required = false) DecisaoLaboratorio status,
             @PageableDefault(size = 20, page=0) Pageable pageable
 
     ) {

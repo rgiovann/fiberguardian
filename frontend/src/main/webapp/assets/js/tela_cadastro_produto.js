@@ -20,12 +20,12 @@
             if (!nomeParcial) {
                 FiberGuardian.Utils.exibirMensagemModal(
                     'Digite parte do nome do fornecedor para buscar.',
-                    'warning'
+                    'warning',
                 );
                 return [];
             }
             return await fetchData(
-                `${URL_LISTAR_FORNECEDORES}?nome=${encodeURIComponent(nomeParcial)}`
+                `${URL_LISTAR_FORNECEDORES}?nome=${encodeURIComponent(nomeParcial)}`,
             );
         }
 
@@ -37,7 +37,7 @@
                 if (!csrf) {
                     FiberGuardian.Utils.exibirMensagemModal(
                         'Erro: Token CSRF não encontrado.',
-                        'danger'
+                        'danger',
                     );
                     return [];
                 }
@@ -75,7 +75,7 @@
                 if (!Array.isArray(lista)) {
                     FiberGuardian.Utils.exibirMensagemModal(
                         'Erro: Formato inválido dos dados recebidos.',
-                        'danger'
+                        'danger',
                     );
                     return [];
                 }
@@ -84,7 +84,7 @@
                 FiberGuardian.Utils.exibirErroDeRede(
                     'Erro de rede na requisição.',
                     null,
-                    erro
+                    erro,
                 );
                 return null;
             }
@@ -97,7 +97,7 @@
             inputId,
             dropdownId,
             buscarFuncao,
-            onSelectCallback
+            onSelectCallback,
         ) {
             const btnBuscar = document.getElementById(btnBuscarId);
             const input = document.getElementById(inputId);
@@ -208,9 +208,8 @@
                     input.dataset.cnpj = fornecedorCnpj;
                     input.dataset.selectedValue = item.nome;
 
-                    document.getElementById(
-                        'fornecedorNomeLabel'
-                    ).textContent = `Fornecedor: ${item.nome}`;
+                    //document.getElementById('fornecedorNomeLabel').textContent =
+                    //     `Fornecedor: ${item.nome}`;
                     input.classList.remove('is-invalid');
                     dropdown.classList.remove('show');
 
@@ -233,12 +232,12 @@
                             input.classList.remove('campo-desabilitado', 'is-invalid');
                             delete input.dataset.cnpj;
                             delete input.dataset.selectedValue;
-                            document.getElementById('fornecedorNomeLabel').textContent =
-                                '';
+                            //document.getElementById('fornecedorNomeLabel').textContent =
+                            //     '';
                             if (btnBuscarFornecedor) {
                                 btnBuscarFornecedor.disabled = false;
                                 btnBuscarFornecedor.classList.remove(
-                                    'campo-desabilitado'
+                                    'campo-desabilitado',
                                 );
                             }
                             btnTrocarFornecedor.disabled = true;
@@ -251,7 +250,7 @@
                     // Limpa a lista de produtos temporários ao selecionar um novo fornecedor
                     produtosEmMemoria = [];
                     preencherTabelaProdutos();
-                }
+                },
             );
         }
 
@@ -299,7 +298,7 @@
                 campoFornecedor.classList.add('is-invalid');
                 FiberGuardian.Utils.exibirMensagemModal(
                     'Por favor, selecione um fornecedor.',
-                    'danger'
+                    'danger',
                 );
                 return;
             }
@@ -308,7 +307,7 @@
                 document.getElementById('codigoProduto').classList.add('is-invalid');
                 FiberGuardian.Utils.exibirMensagemModal(
                     'O campo Código do Produto é obrigatório.',
-                    'danger'
+                    'danger',
                 );
                 return;
             }
@@ -317,18 +316,18 @@
                 document.getElementById('descricaoProduto').classList.add('is-invalid');
                 FiberGuardian.Utils.exibirMensagemModal(
                     'O campo Descrição do Produto é obrigatório.',
-                    'danger'
+                    'danger',
                 );
                 return;
             }
 
             const produtoExistente = produtosEmMemoria.find(
-                (p) => p.codigo.toLowerCase() === codigoProduto.toLowerCase()
+                (p) => p.codigo.toLowerCase() === codigoProduto.toLowerCase(),
             );
             if (produtoExistente) {
                 FiberGuardian.Utils.exibirMensagemModal(
                     'Este produto já foi adicionado à lista. Remova-o e adicione-o novamente se necessário.',
-                    'warning'
+                    'warning',
                 );
                 return;
             }
@@ -346,7 +345,7 @@
             document.getElementById('codigoProduto').focus();
             FiberGuardian.Utils.exibirMensagemModal(
                 'Produto adicionado à lista com sucesso!',
-                'success'
+                'success',
             );
         }
 
@@ -358,7 +357,7 @@
             if (produtosEmMemoria.length === 0) {
                 FiberGuardian.Utils.exibirMensagemModal(
                     'Nenhum produto na lista para ser gravado.',
-                    'warning'
+                    'warning',
                 );
                 return;
             }
@@ -379,7 +378,7 @@
 
                 FiberGuardian.Utils.exibirMensagemModal(
                     'Todos os produtos foram gravados com sucesso!',
-                    'success'
+                    'success',
                 );
 
                 produtosEmMemoria = [];
@@ -391,7 +390,7 @@
                 FiberGuardian.Utils.exibirErroDeRede(
                     'Erro ao tentar gravar os produtos.',
                     null,
-                    erro
+                    erro,
                 );
             }
         }
@@ -404,7 +403,7 @@
                 const tr = document.createElement('tr');
                 tr.id = 'noDataRow';
                 tr.innerHTML =
-                    '<td colspan="3" class="text-center">Nenhum produto adicionado.</td>';
+                    '<td colspan="10" class="text-center">Nenhum produto adicionado.</td>';
                 produtosTableBody.appendChild(tr);
                 return;
             }
@@ -426,7 +425,7 @@
                     const index = e.target.getAttribute('data-index');
                     const confirmar = await FiberGuardian.Utils.confirmarAcaoAsync(
                         'Deseja realmente remover este produto da lista?',
-                        'Confirmação'
+                        'Confirmação',
                     );
 
                     if (confirmar) {
@@ -434,7 +433,7 @@
                         preencherTabelaProdutos();
                         FiberGuardian.Utils.exibirMensagemModal(
                             'Produto removido da lista.',
-                            'success'
+                            'success',
                         );
                     }
                 });
@@ -444,7 +443,7 @@
         async function sair() {
             const confirmar = await FiberGuardian.Utils.confirmarAcaoAsync(
                 'Deseja sair? A lista de produtos não gravados será perdida.',
-                'Confirmação'
+                'Confirmação',
             );
 
             if (confirmar) {

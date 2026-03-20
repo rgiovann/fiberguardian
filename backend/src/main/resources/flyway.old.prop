@@ -3,6 +3,6 @@
 # flyway.password=root
 
 # Flyway
-flyway.url=${FLYWAY_URL:jdbc:mysql://mariadb:3306/fiberguardian?createDatabaseIfNotExist=true&serverTimezone=UTC}
+flyway.url=${FLYWAY_URL:jdbc:mysql://localhost:3306/fiberguardian?createDatabaseIfNotExist=true&serverTimezone=UTC}
 flyway.user=${FLYWAY_USER:root}
 flyway.password=${FLYWAY_PASSWORD:root}

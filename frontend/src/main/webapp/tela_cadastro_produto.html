@@ -40,7 +40,7 @@
                 aria-labelledby="fornecedor"></div>
             </div>
             <div class="col-md-6 mb-3">
-              <label id="fornecedorNomeLabel" class="form-label"></label>
+              <!--  <label id="fornecedorNomeLabel" class="form-label"></label> -->
               <label class="form-label">Código do Produto</label>
               <input type="text" class="form-control" id="codigoProduto" required placeholder="Ex.: PROD123">
             </div>
@@ -48,6 +48,82 @@
               <label class="form-label">Descrição do Produto</label>
               <textarea class="form-control" rows="3" id="descricaoProduto"
                 placeholder="Descreva o produto..."></textarea>
+              <!-- ================= CLASSIFICAÇÃO TÉCNICA ================= -->
+              <div class="card mt-4">
+                <div class="card-header branco-bold">
+                  Classificação Técnica do Produto
+                </div>
+
+                <div class="card-body">
+                  <div class="row">
+
+                    <!-- Titulação -->
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">Titulação</label>
+                      <input type="text" class="form-control" id="titulacao"
+                        placeholder="Ex: 30/1, 30/2, 40 Ne, 150D/48F">
+                    </div>
+
+                    <!-- Tipo de Fiação -->
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">Tipo de Fiação</label>
+                      <select id="tipoFiacao" class="form-select">
+                        <option value="">Selecione...</option>
+                        <option>OE</option>
+                        <option>CARDADO</option>
+                        <option>PENTEADO</option>
+                        <option>OPEN END</option>
+                        <option>FIADO</option>
+                      </select>
+                    </div>
+
+                    <!-- Composição -->
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">Composição</label>
+                      <select id="composicao" class="form-select">
+                        <option value="">Selecione...</option>
+                        <option>100% CO</option>
+                        <option>100% ALG</option>
+                        <option>100% PES</option>
+                        <option>CO + PES</option>
+                      </select>
+                    </div>
+
+                    <!-- Aplicação -->
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">Aplicação</label>
+                      <select id="aplicacao" class="form-select">
+                        <option value="">Selecione...</option>
+                        <option>Malharia</option>
+                        <option>Trama</option>
+                        <option>Urdume</option>
+                        <option>Geral</option>
+                      </select>
+                    </div>
+
+                    <!-- Acabamento -->
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Acabamento</label>
+                      <select id="acabamento" class="form-select">
+                        <option value="">Selecione...</option>
+                        <option>Mercerizado</option>
+                        <option>Soft</option>
+                        <option>Zero Twist</option>
+                        <option>Gazeado</option>
+                        <option>Sem acabamento</option>
+                      </select>
+                    </div>
+
+                    <!-- Observação técnica -->
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Observação Técnica</label>
+                      <input type="text" class="form-control" id="observacaoTecnica"
+                        placeholder="Informações adicionais do fio">
+                    </div>
+
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="text-center mt-3">
@@ -71,14 +147,21 @@
         <table class="table table-bordered table-striped align-middle text-center">
           <thead class="table-dark">
             <tr>
-              <th>Código do Produto</th>
+              <th>Fornecedor</th>
+              <th>Código</th>
               <th>Descrição</th>
+              <th>Titulação</th>
+              <th>Tipo</th>
+              <th>Composição</th>
+              <th>Aplicação</th>
+              <th>Acabamento</th>
+              <th>Obs. Técnica</th>
               <th>Ações</th>
             </tr>
           </thead>
           <tbody id="produtosTableBody">
             <tr id="noDataRow">
-              <td colspan="3" class="text-center">Nenhum produto adicionado.</td>
+              <td colspan="10" class="text-center">Nenhum produto adicionado.</td>
             </tr>
           </tbody>
         </table>

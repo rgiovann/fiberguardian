@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 public interface EngenhariaRepository extends JpaRepository<Engenharia, Long> {
 
     @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END " +
-            "FROM Engenharia e WHERE e.testeLaboratorio.id = :labId")
+            "FROM Engenharia e WHERE e.laudoLaboratorio.id= :labId")
     boolean existsByTesteLaboratorioId(@Param("labId") Long labId);
 
 }

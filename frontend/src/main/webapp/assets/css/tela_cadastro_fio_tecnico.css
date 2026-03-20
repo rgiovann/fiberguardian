@@ -1,0 +1,12 @@
+/* tela_cadastro_fio_tecnico.css
+   Estilos específicos desta tela.
+   Estilos base (card, card-header, btn-custom, form-select, etc.)
+   estão em tela_cadastro_recebimento.css
+*/
+
+/* Separador visual entre os pares de composição 1-2 e 3-4 */
+.composicao-separator {
+  border: none;
+  border-top: 1px dashed #b3d4f7;
+  margin: 0 0 1rem 0;
+}

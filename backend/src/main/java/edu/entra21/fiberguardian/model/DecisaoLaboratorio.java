@@ -1,6 +1,6 @@
 package edu.entra21.fiberguardian.model;
 
-public enum StatusLaboratorio {
+public enum DecisaoLaboratorio {
     APROVADO,
     REPROVADO
 }

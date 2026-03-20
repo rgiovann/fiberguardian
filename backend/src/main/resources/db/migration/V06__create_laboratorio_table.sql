@@ -11,7 +11,7 @@ CREATE TABLE laboratorio (
     alongamento DECIMAL(15,2) NOT NULL CHECK (alongamento > 0),
     titulo_ne DECIMAL(15,2) NOT NULL CHECK (titulo_ne >= 0),
     torcao_t_m INTEGER NOT NULL CHECK (torcao_t_m >= 0),
-    status ENUM('APROVADO', 'REPROVADO') NOT NULL,
+    decisao ENUM('APROVADO', 'REPROVADO') NOT NULL,
     liberado_por BIGINT NOT NULL,
     observacao_laudo VARCHAR(255),
     data_realizacao DATE NOT NULL,

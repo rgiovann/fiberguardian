@@ -75,8 +75,8 @@ public class Laboratorio {
     private Integer torcaoTm;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 10)
-    private StatusLaboratorio status;
+    @Column(name = "decisao", nullable = false, length = 10)
+    private DecisaoLaboratorio decisao;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "liberado_por", nullable = false,

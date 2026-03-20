@@ -10,6 +10,7 @@ CREATE TABLE nota_fiscal (
     data_cadastro DATETIME NOT NULL,
     data_alteracao DATETIME NULL,
     alterado_por BIGINT NULL,
+    ativo BOOLEAN NOT NULL DEFAULT TRUE,
 
     CONSTRAINT uk_nota_fiscal_fornecedor_codigo_nf UNIQUE (fornecedor_id, codigo_nf),
     CONSTRAINT fk_nota_fiscal_fornecedor FOREIGN KEY (fornecedor_id) REFERENCES fornecedor(id),

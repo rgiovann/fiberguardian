@@ -1,6 +1,6 @@
 package edu.entra21.fiberguardian.input;
 
-import edu.entra21.fiberguardian.model.StatusLaboratorio;
+import edu.entra21.fiberguardian.model.DecisaoLaboratorio;
 import edu.entra21.fiberguardian.validation.CnpjNotInvalid;
 import edu.entra21.fiberguardian.validation.EmailValido;
 import jakarta.validation.constraints.*;
@@ -65,7 +65,7 @@ public class LaboratorioInput {
     private Integer torcaoTm;
 
     @NotNull(message = "O status é obrigatório")
-    private StatusLaboratorio status;
+    private DecisaoLaboratorio status;
 
     @Size(max = 255, message = "O número do lote deve ter no máximo 255 caracteres")
     private String observacaoLaudo;

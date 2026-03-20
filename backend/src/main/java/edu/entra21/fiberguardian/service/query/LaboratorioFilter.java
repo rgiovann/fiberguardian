@@ -1,6 +1,6 @@
 package edu.entra21.fiberguardian.service.query;
 
-import edu.entra21.fiberguardian.model.StatusLaboratorio;
+import edu.entra21.fiberguardian.model.DecisaoLaboratorio;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -16,7 +16,7 @@ public class LaboratorioFilter {
     private String cnpj;
     private String codigoProduto;
     private String email;
-    private StatusLaboratorio status;
+    private DecisaoLaboratorio status;
 
     /**
      * Agora é e-mail do usuário que emitiu o laudo (campo da tabela Usuario).

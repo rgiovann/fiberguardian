@@ -8,6 +8,7 @@ delete from nota_item;
 delete from laboratorio;
 delete from engenharia;
 delete from pdf_nota_fiscal;
+delete from fio_tecnico;
 
 set foreign_key_checks = 1;
 
@@ -16,9 +17,10 @@ alter table fornecedor        auto_increment=1;
 alter table produto           auto_increment=1;
 alter table nota_fiscal       auto_increment=1;
 alter table nota_item         auto_increment=1;
-alter table laboratorio         auto_increment=1;
+alter table laboratorio       auto_increment=1;
 alter table engenharia        auto_increment=1;
 alter table pdf_nota_fiscal   auto_increment=1;
+alter table fio_tecnico       auto_increment=1;
 
 -- afterMigrate.sql
 -- Insere usuários com diferentes valores paras os campos (testes de desenvolvimento)
@@ -119,131 +121,319 @@ INSERT INTO fornecedor (nome_fornecedor, cnpj, data_cadastro, telefone, email) V
 ('TexBrasil Insumos', '68755877000126', utc_timestamp, '(21) 96999-6677', 'comercial@texbrasilinsumos.com.br'),
 ('Fiação Modelo', '60417787000113', utc_timestamp, '(41) 96888-7788', 'contato@fiaacaomodelo.com.br');
 
+INSERT INTO fio_tecnico (
+    fibra_1, percentual_1,
+    fibra_2, percentual_2,
+    fibra_3, percentual_3,
+    fibra_4, percentual_4,
+    sistema_titulo, titulo_valor,
+    numero_cabos,
+    preparacao, sistema_fiacao,
+    torcao_direcao, torcao_nominal_tpm,
+    observacao_tecnica,
+    ativo,
+    data_cadastro,
+    criado_por
+) VALUES
+-- 1: Algodão puro penteado ring Ne 30/1 — o fio mais comum em malharia
+('CO', 100.00, NULL, NULL, NULL, NULL, NULL, NULL, 'NE', 30.00, 1, 'COMBED', 'RING',    'Z', 820.00, NULL,                                   TRUE, NOW(), 1),
+-- 2: Algodão puro cardado OE Ne 20/1 — jeans e tecidos grossos
+('CO', 100.00, NULL, NULL, NULL, NULL, NULL, NULL, 'NE', 20.00, 1, 'CARDED', 'OE',      'Z', 480.00, NULL,                                   TRUE, NOW(), 1),
+-- 3: Algodão puro penteado compact Ne 40/1 — camisaria fina
+('CO', 100.00, NULL, NULL, NULL, NULL, NULL, NULL, 'NE', 40.00, 1, 'COMBED', 'COMPACT', 'Z', 950.00, NULL,                                   TRUE, NOW(), 1),
+-- 4: Algodão puro penteado compact Ne 60/1 — artigos de altíssima qualidade
+('CO', 100.00, NULL, NULL, NULL, NULL, NULL, NULL, 'NE', 60.00, 1, 'COMBED', 'COMPACT', 'Z', 1100.00, NULL,                                  TRUE, NOW(), 1),
+-- 5: Algodão puro cardado OE Ne 16/1 — malha pesada
+('CO', 100.00, NULL, NULL, NULL, NULL, NULL, NULL, 'NE', 16.00, 1, 'CARDED', 'OE',      'Z', 380.00, NULL,                                   TRUE, NOW(), 1),
+-- 6: Poliéster puro penteado compact Ne 40/1
+('PES', 100.00, NULL, NULL, NULL, NULL, NULL, NULL, 'NE', 40.00, 1, 'COMBED', 'COMPACT','Z', 900.00, NULL,                                   TRUE, NOW(), 1),
+-- 7: Poliéster puro Ne 30/1 airjet
+('PES', 100.00, NULL, NULL, NULL, NULL, NULL, NULL, 'NE', 30.00, 1, 'COMBED', 'AIRJET', 'Z', NULL,   'Fio airjet para tecido plano',         TRUE, NOW(), 1),
+-- 8: Poliamida texturizada dtex 78/1
+('PA',  100.00, NULL, NULL, NULL, NULL, NULL, NULL, 'DTEX', 78.00, 1, 'N/A',  'OUTRO',  'Z', NULL,   'Fio texturizado falso torção',         TRUE, NOW(), 1),
+-- 9: Linho puro Nm 20/1 ring
+('LI',  100.00, NULL, NULL, NULL, NULL, NULL, NULL, 'NM', 20.00, 1, 'N/A',   'RING',    'Z', 340.00, NULL,                                   TRUE, NOW(), 1),
+-- 10: Viscose pura Nm 40/1 ring
+('CV',  100.00, NULL, NULL, NULL, NULL, NULL, NULL, 'NM', 40.00, 1, 'N/A',   'RING',    'S', 720.00, NULL,                                   TRUE, NOW(), 1),
+-- 11: Lã pura Nm 28/2 ring — tricô
+('WO',  100.00, NULL, NULL, NULL, NULL, NULL, NULL, 'NM', 28.00, 2, 'COMBED', 'RING',   'S', 280.00, 'Lã penteada para tricô',               TRUE, NOW(), 1),
+-- 12: PES/CO 65/35 Ne 30/1 ring penteado — blend clássico camisaria
+('PES', 65.00, 'CO', 35.00, NULL, NULL, NULL, NULL, 'NE', 30.00, 1, 'COMBED', 'RING',   'Z', 810.00, NULL,                                   TRUE, NOW(), 1),
+-- 13: PES/CO 67/33 Ne 20/1 ring cardado — blend popular malha
+('PES', 67.00, 'CO', 33.00, NULL, NULL, NULL, NULL, 'NE', 20.00, 1, 'CARDED', 'RING',   'Z', 500.00, NULL,                                   TRUE, NOW(), 1),
+-- 14: CO/PES 50/50 Ne 20/1 ring cardado
+('CO',  50.00, 'PES', 50.00, NULL, NULL, NULL, NULL, 'NE', 20.00, 1, 'CARDED', 'RING',  'Z', 490.00, NULL,                                   TRUE, NOW(), 1),
+-- 15: CO/EL 95/5 Ne 30/1 ring penteado — malha com elastano
+('CO',  95.00, 'EL',  5.00, NULL, NULL, NULL, NULL, 'NE', 30.00, 1, 'COMBED', 'RING',   'Z', 780.00, 'Core-spun com elastano',               TRUE, NOW(), 1),
+-- 16: CO/PES 85/15 Ne 20/1 ring cardado
+('CO',  85.00, 'PES', 15.00, NULL, NULL, NULL, NULL, 'NE', 20.00, 1, 'CARDED', 'RING',  'Z', 470.00, NULL,                                   TRUE, NOW(), 1),
+-- 17: WO/PA 80/20 Nm 30/1 ring — lã reforçada com poliamida
+('WO',  80.00, 'PA', 20.00, NULL, NULL, NULL, NULL, 'NM', 30.00, 1, 'COMBED', 'RING',   'S', 310.00, 'Reforço PA para meias e tecidos técnicos', TRUE, NOW(), 1),
+-- 18: LI/CO 55/45 Nm 28/1 ring — blend linho algodão
+('LI',  55.00, 'CO', 45.00, NULL, NULL, NULL, NULL, 'NM', 28.00, 1, 'N/A',   'RING',    'Z', 350.00, NULL,                                   TRUE, NOW(), 1),
+-- 19: CV/PES 50/50 Ne 30/1 ring — blend viscose poliéster
+('CV',  50.00, 'PES', 50.00, NULL, NULL, NULL, NULL, 'NE', 30.00, 1, 'N/A',  'RING',    'S', 750.00, NULL,                                   TRUE, NOW(), 1),
+-- 20: CO/PES/CV 45/35/20 Ne 20/1 ring cardado — blend triplo
+('CO',  45.00, 'PES', 35.00, 'CV', 20.00, NULL, NULL, 'NE', 20.00, 1, 'CARDED', 'RING', 'Z', 460.00, 'Blend triplo para malha popular',     TRUE, NOW(), 1);
 
-INSERT INTO produto (codigo_produto, descricao_produto, fornecedor_id,data_cadastro) VALUES
--- CopperFibra
-('CF110018411', '36/1 OE 100%CO', 1,utc_timestamp),
-('CF220045210', '14/1 OE 100%CO', 1,utc_timestamp),
+INSERT INTO fio_tecnico (
+    fibra_1, percentual_1,
+    fibra_2, percentual_2,
+    sistema_titulo, titulo_valor,
+    numero_cabos,
+    preparacao, sistema_fiacao,
+    torcao_direcao, torcao_nominal_tpm,
+    observacao_tecnica,
+    ativo, data_cadastro, criado_por
+) VALUES
+-- id=21: Ne 36/1 CO OE
+('CO',100.00,NULL,NULL,'NE',36.00,1,'CARDED','OE','Z',NULL,NULL,TRUE,NOW(),1),
 
--- Cocari
-('CCB1800411', '40/1 PENTEADO 100%ALG', 2,utc_timestamp),
-('CCB13270067', '20/1 OE 100%A T.MALHARIA', 2,utc_timestamp),
+-- id=22: Ne 14/1 CO OE
+('CO',100.00,NULL,NULL,'NE',14.00,1,'CARDED','OE','Z',NULL,NULL,TRUE,NOW(),1),
 
--- Fiação São Bento
-('FSB520018562', '30/1 OE 100%CO', 3,utc_timestamp),
-('FSB32008765', '16/1 CARD 52%CO + 48%PES', 3,utc_timestamp),
+-- id=23: Ne 30/1 CO OE — difere do id=1 que é COMBED RING
+('CO',100.00,NULL,NULL,'NE',30.00,1,'CARDED','OE','Z',NULL,NULL,TRUE,NOW(),1),
 
--- Tecelagem Aurora
-('TAU41009873', '2/34 CARD.MERC. 100%CO', 4,utc_timestamp),
-('TAU65005421', '16/1 OPEN END 100%ALG', 4,utc_timestamp),
+-- id=24: Ne 16/1 CO 52% PES 48% CARDED RING
+('CO',52.00,'PES',48.00,'NE',16.00,1,'CARDED','RING','Z',NULL,NULL,TRUE,NOW(),1),
 
--- Tinturaria Brasil
-('TBR31002751', '12/1 PENT.EGIPCIO 100%A', 5,utc_timestamp),
-('TBR92006732', '12/1 CARD 100%ALG', 5,utc_timestamp),
+-- id=25: Ne 34/2 CO CARDED RING
+('CO',100.00,NULL,NULL,'NE',34.00,2,'CARDED','RING','Z',NULL,NULL,TRUE,NOW(),1),
 
--- Fibras Unidas
-('FBU54009210', '150/48 HIM 100%PES', 6,utc_timestamp),
-('FBU72001156', '150D048FX2 TEXT AE 100%', 6,utc_timestamp),
+-- id=26: Ne 12/1 CO COMBED RING
+('CO',100.00,NULL,NULL,'NE',12.00,1,'COMBED','RING','Z',NULL,NULL,TRUE,NOW(),1),
 
--- Algodoeira Nacional
-('ALN87009843', '10/1 OE 100% ALG', 7,utc_timestamp),
-('ALN66005412', '6/1 OE COCARI 100% CO', 7,utc_timestamp),
+-- id=27: Ne 12/1 CO CARDED RING
+('CO',100.00,NULL,NULL,'NE',12.00,1,'CARDED','RING','Z',NULL,NULL,TRUE,NOW(),1),
 
--- Malharia Tropical
-('MTB45002317', '6/1 OE 100%CO', 8,utc_timestamp),
-('MTB78005643', '30/1 PENT 100% ALG', 8,utc_timestamp),
+-- id=28: PES DEN 150 filamento contínuo, 1 cabo
+('PES',100.00,NULL,NULL,'DEN',150.00,1,'N/A','AIRJET','Z',NULL,
+    '150 DEN / 48 filamentos',TRUE,NOW(),1),
 
--- CooperFibra Paraná
-('CFP21008761', '14/1 OE 50% CO + 50% PES', 9,utc_timestamp),
-('CFP33004520', '12/1 PENTEADO 100%ALG', 9,utc_timestamp),
-('FCT89004811', '2/40 SOFT PENT 100% CO', 9,utc_timestamp),
+-- id=29: Ne 10/1 CO CARDED OE
+('CO',100.00,NULL,NULL,'NE',10.00,1,'CARDED','OE','Z',NULL,NULL,TRUE,NOW(),1),
 
--- Fios Catarinenses
-('FCT71001194', '14/1 OE 100% CO', 10,utc_timestamp),
-('FCT89004511', '2/40 SOFT PENT 100% CO', 10,utc_timestamp),
+-- id=30: Ne 6/1 CO CARDED OE
+('CO',100.00,NULL,NULL,'NE',6.00,1,'CARDED','OE','Z',NULL,NULL,TRUE,NOW(),1),
 
--- Textil Horizonte
-('THO31004591', '12/1 100% CO', 11,utc_timestamp),
-('THO56007841', '12/1 PENT 100%CO', 11,utc_timestamp),
+-- id=31: Ne 14/1 CO 50% PES 50% CARDED OE
+-- Percentuais iguais: CO listado primeiro por convenção
+('CO',50.00,'PES',50.00,'NE',14.00,1,'CARDED','OE','Z',NULL,NULL,TRUE,NOW(),1),
 
--- Linhas Sul América
-('LSA22008931', '14/1 CARD 100% CO', 12,utc_timestamp),
-('LSA33002114', '16/1 100% CO', 12,utc_timestamp),
+-- id=32: Ne 40/2 CO COMBED RING — fio 2/40
+('CO',100.00,NULL,NULL,'NE',40.00,2,'COMBED','RING','Z',NULL,NULL,TRUE,NOW(),1),
 
--- PoliFios Brasil
-('PFB91007741', '20/1 100% CO', 13,utc_timestamp),
-('PFB64003217', '24/1 100% CO', 13,utc_timestamp),
+-- id=33: Ne 12/1 CO N/A RING — processo não especificado
+('CO',100.00,NULL,NULL,'NE',12.00,1,'N/A','RING','Z',NULL,NULL,TRUE,NOW(),1),
 
--- Tintas e Corantes Alfa
-('TCA81004311', '24/1 PENT 100%CO', 14,utc_timestamp),
-('TCA93006720', '14/1 CARD.COMP 100% CO', 14,utc_timestamp),
+-- id=34: Ne 20/1 CO N/A RING — processo não especificado
+('CO',100.00,NULL,NULL,'NE',20.00,1,'N/A','RING','Z',NULL,NULL,TRUE,NOW(),1),
 
--- Tecidos Planalto
-('TPL51008971', '36/1 PENT COMP 100% CO', 15,utc_timestamp),
-('TPL72005411', '16/1 OE F 100% CO', 15,utc_timestamp),
+-- id=35: Ne 16/1 CO N/A RING — processo não especificado
+('CO',100.00,NULL,NULL,'NE',16.00,1,'N/A','RING','Z',NULL,NULL,TRUE,NOW(),1),
 
--- Cooperativa Algodoeira Paulista
-('CAP31004510', '6/1 OE 100% CO', 16,utc_timestamp),
-('CAP42006780', '10/1 OE 100% CO', 16,utc_timestamp),
+-- id=36: Ne 20/2 CO N/A RING
+('CO',100.00,NULL,NULL,'NE',20.00,2,'N/A','RING','Z',NULL,NULL,TRUE,NOW(),1),
 
--- Fibras do Vale
-('FDV86009214', '20/1 OE 100%CO', 17,utc_timestamp),
-('FDV97001122', '10/2 OE R 100% CO', 17,utc_timestamp),
+-- id=37: Ne 24/2 CO N/A RING
+('CO',100.00,NULL,NULL,'NE',24.00,2,'N/A','RING','Z',NULL,NULL,TRUE,NOW(),1),
 
--- TexFibra Group
-('TFG44007851', '20/2 OE 100%CO', 18,utc_timestamp),
-('TFG55003291', '20/2 R 100%CO', 18,utc_timestamp),
+-- id=38: Ne 20/2 CO CARDED OE — fio OE retorcido
+('CO',100.00,NULL,NULL,'NE',20.00,2,'CARDED','OE','Z',NULL,NULL,TRUE,NOW(),1),
 
--- Malhas Premium
-('MPM31009832', '20/2 R 100% CO TRAMA', 19,utc_timestamp),
-('MPM42001233', '24/2 R 100% CO', 19,utc_timestamp),
+-- id=39: Ne 10/2 CO CARDED OE
+('CO',100.00,NULL,NULL,'NE',10.00,2,'CARDED','OE','Z',NULL,NULL,TRUE,NOW(),1),
 
--- Fiação Imperial
-('FIP91004573', '24/2 PENT.A.T.100%CO-TG', 20,utc_timestamp),
-('FIP82006741', '24/2 PENT.A.T. 100%CO', 20,utc_timestamp),
-('FIP82006941', '13/1 PENTZTWIST SOLUCELL', 20,utc_timestamp),
-('FIP82006771', '20/2 PENT.A.T. 100%CO', 20,utc_timestamp),
--- Corantes Delta
-('CDL33004591', '49,2 TEX PENT EGIPZTWIST', 21,utc_timestamp),
-('CDL55009861', '13/1 PENTZTWIST SOLUCELL', 21,utc_timestamp),
+-- id=40: Ne 14/1 CO CARDED RING
+('CO',100.00,NULL,NULL,'NE',14.00,1,'CARDED','RING','Z',NULL,NULL,TRUE,NOW(),1),
 
--- Têxtil Santa Luzia
-('TSL71001134', '13/1 PENT ZERO TWIST', 22,utc_timestamp),
-('TSL88003245', '20/1 100% CO - TG', 22,utc_timestamp),
+-- id=41: Ne 24/1 CO N/A RING — processo não especificado
+('CO',100.00,NULL,NULL,'NE',24.00,1,'N/A','RING','Z',NULL,NULL,TRUE,NOW(),1),
 
--- Fios & Tramas
-('FET45009871', '12/1 100% CO - TG', 23,utc_timestamp),
-('FET69007621', '12/1 PENT 100%CO-TG', 23,utc_timestamp),
-('FET69007622', '20/1 100% CO - TG', 23,utc_timestamp),
+-- id=42: Ne 24/1 CO COMBED RING
+('CO',100.00,NULL,NULL,'NE',24.00,1,'COMBED','RING','Z',NULL,NULL,TRUE,NOW(),1),
 
--- Algodoeira do Cerrado
-('ADC21005431', '14/1 CARD 100%CO TG', 24,utc_timestamp),
-('ADC34007890', '20/2 R 100% CO - TG', 24,utc_timestamp),
+-- id=43: Ne 36/1 CO COMBED RING — difere do id=21 que é CARDED OE
+('CO',100.00,NULL,NULL,'NE',36.00,1,'COMBED','RING','Z',NULL,NULL,TRUE,NOW(),1),
 
--- FibraTech Solutions
-('FTS92004512', '24/2 R 100% CO - TG', 25,utc_timestamp),
-('FTS61003219', '6/1 OE 100%CO', 25,utc_timestamp),
+-- id=44: Ne 24/2 CO COMBED RING
+('CO',100.00,NULL,NULL,'NE',24.00,2,'COMBED','RING','Z',NULL,NULL,TRUE,NOW(),1),
 
--- Indústria de Fios Paulista
-('IFP81004516', '2/34 MERC.GAZEADO 100%CO', 26,utc_timestamp),
-('IFP93006781', '120/2 FIADO 100% PES', 26,utc_timestamp),
+-- id=45: Ne 20/2 CO COMBED RING
+('CO',100.00,NULL,NULL,'NE',20.00,2,'COMBED','RING','Z',NULL,NULL,TRUE,NOW(),1),
 
--- Trama Forte Ltda
-('TFL52001139', '36/1 OE 100%CO', 27,utc_timestamp),
-('TFL67003241', '14/1 OE 100%CO', 27,utc_timestamp),
-('TFL67009241', '20/1 OE 100%A T.MALHARIA', 27,utc_timestamp),
+-- id=46: Ne 13/1 CO COMBED RING Z — ZTwist convencional
+('CO',100.00,NULL,NULL,'NE',13.00,1,'COMBED','RING','Z',NULL,NULL,TRUE,NOW(),1),
 
--- ColorFibra
-('CLF22009813', '40/1 PENTEADO 100%ALG', 28,utc_timestamp),
-('CLF33004511', '20/1 OE 100%A T.MALHARIA', 28,utc_timestamp),
+-- id=47: Ne 13/1 CO COMBED RING S — Zero Twist
+-- Direção S aplicada por convenção para fios zero twist
+('CO',100.00,NULL,NULL,'NE',13.00,1,'COMBED','RING','S',NULL,
+    'Zero Twist: direção S aplicada por convenção',TRUE,NOW(),1),
 
--- TexBrasil Insumos
-('TBI91005432', '30/1 OE 100%CO', 29,utc_timestamp),
-('TBI73006720', '16/1 CARD 52%CO + 48%PES', 29,utc_timestamp),
+-- id=48: DTEX 49.2/1 CO COMBED RING Z — algodão egípcio título em dtex
+('CO',100.00,NULL,NULL,'DTEX',49.20,1,'COMBED','RING','Z',NULL,
+    'Algodão egípcio penteado ZTwist título em dtex',TRUE,NOW(),1),
 
--- Fiação Modelo
-('FMD12004581', '2/34 CARD.MERC. 100%CO', 30,utc_timestamp),
-('FMD23006711', '16/1 OPEN END 100%ALG', 30,utc_timestamp);
+-- id=49: Ne 34/2 CO COMBED RING — difere do id=25 que é CARDED
+('CO',100.00,NULL,NULL,'NE',34.00,2,'COMBED','RING','Z',NULL,NULL,TRUE,NOW(),1),
+
+-- id=50: PES NE 120/2 N/A RING
+('PES',100.00,NULL,NULL,'NE',120.00,2,'N/A','RING','Z',NULL,NULL,TRUE,NOW(),1),
+
+-- id=51: Ne 30/2 CO COMBED RING — produto descontinuado CCB9900001
+('CO',100.00,NULL,NULL,'NE',30.00,2,'COMBED','RING','Z',NULL,NULL,TRUE,NOW(),1),
+
+-- id=52: Ne 20/1 CO CARDED RING — difere do id=2 (CARDED OE) e id=34 (N/A RING)
+('CO',100.00,NULL,NULL,'NE',20.00,1,'CARDED','RING','Z',NULL,NULL,TRUE,NOW(),1),
+
+-- id=53: PES DEN 75 filamento contínuo, 1 cabo
+('PES',100.00,NULL,NULL,'DEN',75.00,1,'N/A','AIRJET','Z',NULL,
+    '75 DEN / 36 filamentos',TRUE,NOW(),1),
+
+-- id=54: Ne 8/1 CO CARDED OE — produto descontinuado ALN9900001
+('CO',100.00,NULL,NULL,'NE',8.00,1,'CARDED','OE','Z',NULL,NULL,TRUE,NOW(),1);
+
+INSERT INTO produto (
+    codigo_produto, descricao_produto,
+    fornecedor_id, fio_tecnico_id,
+    ativo, data_cadastro, criado_por
+) VALUES
+
+-- CopperFibra (fornecedor_id=1)
+('CF110018411','36/1 OE 100%CO',              1, 21, TRUE, NOW(), 1),
+('CF220045210','14/1 OE 100%CO',              1, 22, TRUE, NOW(), 1),
+
+-- Cocari (fornecedor_id=2)
+('CCB1800411', '40/1 PENTEADO 100%ALG',       2,  3, TRUE, NOW(), 1),
+('CCB13270067','20/1 OE 100%A T.MALHARIA',    2,  2, TRUE, NOW(), 1),
+
+-- Fiação São Bento (fornecedor_id=3)
+('FSB520018562','30/1 OE 100%CO',             3, 23, TRUE, NOW(), 1),
+('FSB32008765', '16/1 CARD 52%CO + 48%PES',  3, 24, TRUE, NOW(), 1),
+
+-- Tecelagem Aurora (fornecedor_id=4)
+('TAU41009873','2/34 CARD.MERC. 100%CO',      4, 25, TRUE, NOW(), 1),
+('TAU65005421','16/1 OPEN END 100%ALG',        4,  5, TRUE, NOW(), 1),
+
+-- Tinturaria Brasil (fornecedor_id=5)
+('TBR31002751','12/1 PENT.EGIPCIO 100%A',     5, 26, TRUE, NOW(), 1),
+('TBR92006732','12/1 CARD 100%ALG',            5, 27, TRUE, NOW(), 1),
+
+-- Fibras Unidas (fornecedor_id=6)
+('FBU54009210','150/48 HIM 100%PES',           6, 28, TRUE, NOW(), 1),
+('FBU72001156','150D048FX2 TEXT AE 100%',      6, 28, TRUE, NOW(), 1),
+
+-- Algodoeira Nacional (fornecedor_id=7)
+('ALN87009843','10/1 OE 100% ALG',             7, 29, TRUE, NOW(), 1),
+('ALN66005412','6/1 OE COCARI 100% CO',        7, 30, TRUE, NOW(), 1),
+
+-- Malharia Tropical (fornecedor_id=8)
+('MTB45002317','6/1 OE 100%CO',                8, 30, TRUE, NOW(), 1),
+('MTB78005643','30/1 PENT 100% ALG',           8,  1, TRUE, NOW(), 1),
+
+-- CooperFibra Paraná (fornecedor_id=9)
+('CFP21008761','14/1 OE 50% CO + 50% PES',    9, 31, TRUE, NOW(), 1),
+('CFP33004520','12/1 PENTEADO 100%ALG',        9, 26, TRUE, NOW(), 1),
+('FCT89004811','2/40 SOFT PENT 100% CO',       9, 32, TRUE, NOW(), 1),
+
+-- Fios Catarinenses (fornecedor_id=10)
+('FCT71001194','14/1 OE 100% CO',             10, 22, TRUE, NOW(), 1),
+('FCT89004511','2/40 SOFT PENT 100% CO',      10, 32, TRUE, NOW(), 1),
+
+-- Textil Horizonte (fornecedor_id=11)
+('THO31004591','12/1 100% CO',                11, 33, TRUE, NOW(), 1),
+('THO56007841','12/1 PENT 100%CO',            11, 26, TRUE, NOW(), 1),
+
+-- Linhas Sul América (fornecedor_id=12)
+('LSA22008931','14/1 CARD 100% CO',           12, 40, TRUE, NOW(), 1),
+('LSA33002114','16/1 100% CO',                12, 35, TRUE, NOW(), 1),
+
+-- PoliFios Brasil (fornecedor_id=13)
+('PFB91007741','20/1 100% CO',                13, 34, TRUE, NOW(), 1),
+('PFB64003217','24/1 100% CO',                13, 41, TRUE, NOW(), 1),
+
+-- Tintas e Corantes Alfa (fornecedor_id=14)
+('TCA81004311','24/1 PENT 100%CO',            14, 42, TRUE, NOW(), 1),
+('TCA93006720','14/1 CARD.COMP 100% CO',      14, 40, TRUE, NOW(), 1),
+
+-- Tecidos Planalto (fornecedor_id=15)
+('TPL51008971','36/1 PENT COMP 100% CO',      15, 43, TRUE, NOW(), 1),
+('TPL72005411','16/1 OE F 100% CO',           15,  5, TRUE, NOW(), 1),
+
+-- Cooperativa Algodoeira Paulista (fornecedor_id=16)
+('CAP31004510','6/1 OE 100% CO',              16, 30, TRUE, NOW(), 1),
+('CAP42006780','10/1 OE 100% CO',             16, 29, TRUE, NOW(), 1),
+
+-- Fibras do Vale (fornecedor_id=17)
+('FDV86009214','20/1 OE 100%CO',              17,  2, TRUE, NOW(), 1),
+('FDV97001122','10/2 OE R 100% CO',           17, 39, TRUE, NOW(), 1),
+
+-- TexFibra Group (fornecedor_id=18)
+('TFG44007851','20/2 OE 100%CO',              18, 38, TRUE, NOW(), 1),
+('TFG55003291','20/2 R 100%CO',               18, 36, TRUE, NOW(), 1),
+
+-- Malhas Premium (fornecedor_id=19)
+('MPM31009832','20/2 R 100% CO TRAMA',        19, 36, TRUE, NOW(), 1),
+('MPM42001233','24/2 R 100% CO',              19, 37, TRUE, NOW(), 1),
+
+-- Fiação Imperial (fornecedor_id=20)
+('FIP91004573','24/2 PENT.A.T.100%CO-TG',    20, 44, TRUE, NOW(), 1),
+('FIP82006741','24/2 PENT.A.T. 100%CO',       20, 44, TRUE, NOW(), 1),
+('FIP82006941','13/1 PENTZTWIST SOLUCELL',    20, 46, TRUE, NOW(), 1),
+('FIP82006771','20/2 PENT.A.T. 100%CO',       20, 45, TRUE, NOW(), 1),
+
+-- Corantes Delta (fornecedor_id=21)
+('CDL33004591','49,2 TEX PENT EGIPZTWIST',    21, 48, TRUE, NOW(), 1),
+('CDL55009861','13/1 PENTZTWIST SOLUCELL',    21, 46, TRUE, NOW(), 1),
+
+-- Têxtil Santa Luzia (fornecedor_id=22)
+('TSL71001134','13/1 PENT ZERO TWIST',         22, 47, TRUE, NOW(), 1),
+('TSL88003245','20/1 100% CO - TG',            22, 34, TRUE, NOW(), 1),
+
+-- Fios & Tramas (fornecedor_id=23)
+('FET45009871','12/1 100% CO - TG',            23, 33, TRUE, NOW(), 1),
+('FET69007621','12/1 PENT 100%CO-TG',          23, 26, TRUE, NOW(), 1),
+('FET69007622','20/1 100% CO - TG',            23, 34, TRUE, NOW(), 1),
+
+-- Algodoeira do Cerrado (fornecedor_id=24)
+('ADC21005431','14/1 CARD 100%CO TG',          24, 40, TRUE, NOW(), 1),
+('ADC34007890','20/2 R 100% CO - TG',          24, 36, TRUE, NOW(), 1),
+
+-- FibraTech Solutions (fornecedor_id=25)
+('FTS92004512','24/2 R 100% CO - TG',          25, 37, TRUE, NOW(), 1),
+('FTS61003219','6/1 OE 100%CO',                25, 30, TRUE, NOW(), 1),
+
+-- Indústria de Fios Paulista (fornecedor_id=26)
+('IFP81004516','2/34 MERC.GAZEADO 100%CO',    26, 49, TRUE, NOW(), 1),
+('IFP93006781','120/2 FIADO 100% PES',         26, 50, TRUE, NOW(), 1),
+
+-- Trama Forte (fornecedor_id=27)
+('TFL52001139','36/1 OE 100%CO',               27, 21, TRUE, NOW(), 1),
+('TFL67003241','14/1 OE 100%CO',               27, 22, TRUE, NOW(), 1),
+('TFL67009241','20/1 OE 100%A T.MALHARIA',    27,  2, TRUE, NOW(), 1),
+
+-- ColorFibra (fornecedor_id=28)
+('CLF22009813','40/1 PENTEADO 100%ALG',        28,  3, TRUE, NOW(), 1),
+('CLF33004511','20/1 OE 100%A T.MALHARIA',    28,  2, TRUE, NOW(), 1),
+
+-- TexBrasil (fornecedor_id=29)
+('TBI91005432','30/1 OE 100%CO',               29, 23, TRUE, NOW(), 1),
+('TBI73006720','16/1 CARD 52%CO + 48%PES',    29, 24, TRUE, NOW(), 1),
+
+-- Fiação Modelo (fornecedor_id=30)
+('FMD12004581','2/34 CARD.MERC. 100%CO',       30, 25, TRUE, NOW(), 1),
+('FMD23006711','16/1 OPEN END 100%ALG',         30,  5, TRUE, NOW(), 1),
+
+-- -------------------------------------------------------
+-- 5 registros INATIVOS — produtos descontinuados
+-- -------------------------------------------------------
+('CCB9900001', '30/2 PENT 100%CO DESCONT',     2, 51, FALSE, NOW(), 1),
+('FSB9900001', '24/1 PENT 100%CO DESCONT',     3, 42, FALSE, NOW(), 1),
+('TAU9900001', '20/1 CARD 100%CO DESCONT',     4, 52, FALSE, NOW(), 1),
+('FBU9900001', '75D036 TEXT 100%PES DESCONT',  6, 53, FALSE, NOW(), 1),
+('ALN9900001', '8/1 OE 100%CO DESCONT',        7, 54, FALSE, NOW(), 1);
+
 
 -- Inserção de 10 notas fiscais e seus itens
 
@@ -504,72 +694,113 @@ INSERT INTO nota_item (nota_fiscal_id, produto_id, quantidade_recebida, numero_c
 VALUES (32, 17, 4000.00, 150, 16800.00, 4.20, NULL, utc_timestamp),
        (32, 18, 5000.00, 180, 25400.00, 5.08, NULL, utc_timestamp);
 
--- populando cadastro de laboratório
-
-INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
-VALUES (2, '9TK', 12.50, 45, 30, 120, 5.75, 15.20, 8.50, 6.25, 450, 'APROVADO', 17, utc_timestamp(),'2025-03-24', 'Texto observacao relativo ao lote 9TK');
-
-INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
-VALUES (3, '202100', 18.75, 60, 80, 250, 3.20, 12.90, 4.30, 15.80, 780, 'REPROVADO', 13, utc_timestamp(),'2025-07-24', 'Texto observacao relativo ao lote 202100');
-
-INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
-VALUES (5, '8', 10.25, 20, 15, 300, 7.80, 19.50, 12.10, 8.40, 120, 'APROVADO', 10, utc_timestamp(),'2025-08-03', 'Texto observacao relativo ao lote 8');
-
-INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
-VALUES (7, '225', 15.90, 70, 90, 400, 2.15, 11.75, 3.90, 12.60, 950, 'REPROVADO', 31, utc_timestamp(),'2025-06-17', 'Texto observacao relativo ao lote 225');
-
-INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
-VALUES (9, '10TK5', 13.40, 30, 40, 150, 6.50, 16.80, 9.20, 10.05, 300, 'APROVADO', 17, utc_timestamp(),'2025-07-30', 'Texto observacao relativo ao lote 10TK5');
-
-INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
-VALUES (12, '18J600', 17.10, 55, 60, 350, 4.90, 14.30, 6.70, 7.35, 600, 'REPROVADO', 13, utc_timestamp(),'2025-08-24', 'Texto observacao relativo ao lote 18J600');
-
-INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
-VALUES (13, '5KL', 11.80, 25, 20, 200, 8.30, 18.60, 11.50, 14.70, 150, 'APROVADO', 10, utc_timestamp(),'2025-08-04', 'Texto observacao relativo ao lote 5KL');
-
-INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
-VALUES (15, '300200', 19.60, 80, 110, 450, 1.95, 10.40, 2.80, 18.90, 850, 'REPROVADO', 31, utc_timestamp(),'2025-08-24', 'Texto observacao relativo ao lote 300200');
-
-INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
-VALUES (16, '12XY', 14.30, 40, 50, 180, 5.10, 13.70, 7.90, 9.15, 400, 'APROVADO', 17, utc_timestamp(),'2025-08-02', 'Texto observacao relativo ao lote 12XY');
-
-INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
-VALUES (18, '7PZ', 16.90, 65, 70, 320, 3.70, 17.20, 10.30, 5.85, 720, 'REPROVADO', 13, utc_timestamp(),'2025-08-01', 'Texto observacao relativo ao lote 7PZ');
-
-INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
-VALUES (1, '15AB', 12.70, 15, 10, 100, 6.25, 15.50, 8.70, 11.20, 200, 'APROVADO', 10, utc_timestamp(),'2025-08-04', 'Texto observacao relativo ao lote 15AB');
-
-INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
-VALUES (4, '400300', 18.20, 90, 120, 280, 2.80, 12.10, 4.50, 16.40, 900, 'REPROVADO', 31, utc_timestamp(),'2025-07-24', 'Texto observacao relativo ao lote 400300');
-
-INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
-VALUES (5, '20CD', 10.90, 35, 45, 130, 7.60, 19.80, 12.90, 7.80, 350, 'APROVADO', 17, utc_timestamp(),'2025-07-14', 'Texto observacao relativo ao lote 20CD');
-
-INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
-VALUES (6, '50EF', 15.50, 75, 85, 370, 4.30, 11.30, 3.10, 13.70, 650, 'REPROVADO', 13, utc_timestamp(),'2025-08-01', 'Texto observacao relativo ao lote 50EF');
-
-INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
-VALUES (8, '8GH', 13.10, 10, 25, 160, 6.90, 16.40, 9.80, 17.10, 100, 'APROVADO', 10, utc_timestamp(),'2025-08-03', 'Texto observacao relativo ao lote 8GH');
-
-INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
-VALUES (11, '25IJ', 17.80, 85, 95, 410, 3.50, 14.90, 6.20, 6.50, 800, 'REPROVADO', 31, utc_timestamp(),'2025-07-26', 'Texto observacao relativo ao lote 25IJ');
-
-INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
-VALUES (13, '30KL', 11.30, 50, 60, 220, 8.10, 18.10, 11.30, 19.20, 250, 'REPROVADO', 17, utc_timestamp(),'2025-07-28', 'Texto observacao relativo ao lote 30KL');
-
-INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
-VALUES (14, '40MN', 19.40, 30, 40, 190, 5.70, 10.80, 2.90, 9.90, 500, 'APROVADO', 13, utc_timestamp(),'2025-07-25', 'Texto observacao relativo ao lote 40MN');
-
-INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
-VALUES (17, '60OP', 14.70, 45, 55, 340, 4.20, 13.20, 7.50, 12.30, 750, 'REPROVADO', 10, utc_timestamp(),'2025-07-28', 'Texto observacao relativo ao lote 60OP');
-
-INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
-VALUES (19, '70PQ', 16.20, 20, 15, 270, 6.80, 17.70, 10.70, 5.20, 300, 'APROVADO', 31, utc_timestamp(),'2025-07-21', 'Texto observacao relativo ao lote 70PQ');
-
+-- ============================================================
+-- Populacao tabela laboratorio
+-- ============================================================
+INSERT INTO laboratorio (
+    item_nota_fiscal_id, numero_lote,
+    cvm, pontos_finos, pontos_grossos, neps,
+    h_pilosidade, resistencia, alongamento,
+    titulo_ne, torcao_t_m,
+    decisao, liberado_por,
+    data_cadastro, data_realizacao,
+    observacao_laudo,
+    situacao, substituido_por, substitui, motivo_substituicao
+) VALUES
+(2,  '9TK',    12.50, 45,  30,  120, 5.75, 15.20, 8.50,  6.25,  450, 'APROVADO',  17, utc_timestamp(), '2025-03-24', 'Texto observacao relativo ao lote 9TK',    'ATIVO', NULL, NULL, NULL),
+(3,  '202100', 18.75, 60,  80,  250, 3.20, 12.90, 4.30,  15.80, 780, 'REPROVADO', 13, utc_timestamp(), '2025-07-24', 'Texto observacao relativo ao lote 202100', 'ATIVO', NULL, NULL, NULL),
+(5,  '8',      10.25, 20,  15,  300, 7.80, 19.50, 12.10, 8.40,  120, 'APROVADO',  10, utc_timestamp(), '2025-08-03', 'Texto observacao relativo ao lote 8',      'ATIVO', NULL, NULL, NULL),
+(7,  '225',    15.90, 70,  90,  400, 2.15, 11.75, 3.90,  12.60, 950, 'REPROVADO', 31, utc_timestamp(), '2025-06-17', 'Texto observacao relativo ao lote 225',    'ATIVO', NULL, NULL, NULL),
+(9,  '10TK5',  13.40, 30,  40,  150, 6.50, 16.80, 9.20,  10.05, 300, 'APROVADO',  17, utc_timestamp(), '2025-07-30', 'Texto observacao relativo ao lote 10TK5',  'ATIVO', NULL, NULL, NULL),
+(12, '18J600', 17.10, 55,  60,  350, 4.90, 14.30, 6.70,  7.35,  600, 'REPROVADO', 13, utc_timestamp(), '2025-08-24', 'Texto observacao relativo ao lote 18J600', 'ATIVO', NULL, NULL, NULL),
+(13, '5KL',    11.80, 25,  20,  200, 8.30, 18.60, 11.50, 14.70, 150, 'APROVADO',  10, utc_timestamp(), '2025-08-04', 'Texto observacao relativo ao lote 5KL',    'ATIVO', NULL, NULL, NULL),
+(15, '300200', 19.60, 80,  110, 450, 1.95, 10.40, 2.80,  18.90, 850, 'REPROVADO', 31, utc_timestamp(), '2025-08-24', 'Texto observacao relativo ao lote 300200', 'ATIVO', NULL, NULL, NULL),
+(16, '12XY',   14.30, 40,  50,  180, 5.10, 13.70, 7.90,  9.15,  400, 'APROVADO',  17, utc_timestamp(), '2025-08-02', 'Texto observacao relativo ao lote 12XY',   'ATIVO', NULL, NULL, NULL),
+(18, '7PZ',    16.90, 65,  70,  320, 3.70, 17.20, 10.30, 5.85,  720, 'REPROVADO', 13, utc_timestamp(), '2025-08-01', 'Texto observacao relativo ao lote 7PZ',    'ATIVO', NULL, NULL, NULL),
+(1,  '15AB',   12.70, 15,  10,  100, 6.25, 15.50, 8.70,  11.20, 200, 'APROVADO',  10, utc_timestamp(), '2025-08-04', 'Texto observacao relativo ao lote 15AB',   'ATIVO', NULL, NULL, NULL),
+(4,  '400300', 18.20, 90,  120, 280, 2.80, 12.10, 4.50,  16.40, 900, 'REPROVADO', 31, utc_timestamp(), '2025-07-24', 'Texto observacao relativo ao lote 400300', 'ATIVO', NULL, NULL, NULL),
+(5,  '20CD',   10.90, 35,  45,  130, 7.60, 19.80, 12.90, 7.80,  350, 'APROVADO',  17, utc_timestamp(), '2025-07-14', 'Texto observacao relativo ao lote 20CD',   'ATIVO', NULL, NULL, NULL),
+(6,  '50EF',   15.50, 75,  85,  370, 4.30, 11.30, 3.10,  13.70, 650, 'REPROVADO', 13, utc_timestamp(), '2025-08-01', 'Texto observacao relativo ao lote 50EF',   'ATIVO', NULL, NULL, NULL),
+(8,  '8GH',    13.10, 10,  25,  160, 6.90, 16.40, 9.80,  17.10, 100, 'APROVADO',  10, utc_timestamp(), '2025-08-03', 'Texto observacao relativo ao lote 8GH',    'ATIVO', NULL, NULL, NULL),
+(11, '25IJ',   17.80, 85,  95,  410, 3.50, 14.90, 6.20,  6.50,  800, 'REPROVADO', 31, utc_timestamp(), '2025-07-26', 'Texto observacao relativo ao lote 25IJ',   'ATIVO', NULL, NULL, NULL),
+(13, '30KL',   11.30, 50,  60,  220, 8.10, 18.10, 11.30, 19.20, 250, 'REPROVADO', 17, utc_timestamp(), '2025-07-28', 'Texto observacao relativo ao lote 30KL',   'ATIVO', NULL, NULL, NULL),
+(14, '40MN',   19.40, 30,  40,  190, 5.70, 10.80, 2.90,  9.90,  500, 'APROVADO',  13, utc_timestamp(), '2025-07-25', 'Texto observacao relativo ao lote 40MN',   'ATIVO', NULL, NULL, NULL),
+(17, '60OP',   14.70, 45,  55,  340, 4.20, 13.20, 7.50,  12.30, 750, 'REPROVADO', 10, utc_timestamp(), '2025-07-28', 'Texto observacao relativo ao lote 60OP',   'ATIVO', NULL, NULL, NULL),
+(19, '70PQ',   16.20, 20,  15,  270, 6.80, 17.70, 10.70, 5.20,  300, 'APROVADO',  31, utc_timestamp(), '2025-07-21', 'Texto observacao relativo ao lote 70PQ',   'ATIVO', NULL, NULL, NULL);
 -- Laudo 1 (sobre o item da Nota 31, produto 9)
---INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
---VALUES (61, 'LQ2025A', 14.80, 40, 55, 210, 5.20, 14.90, 7.10, 9.80, 420, 'APROVADO', 17, utc_timestamp(),'2025-09-02', 'Texto observacao relativo ao lote LQ2025A');
+-- INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
+-- VALUES (61, 'LQ2025A', 14.80, 40, 55, 210, 5.20, 14.90, 7.10, 9.80, 420, 'APROVADO', 17, utc_timestamp(),'2025-09-02', 'Texto observacao relativo ao lote LQ2025A');
 
--- Laudo 2 (sobre o item da Nota 32, produto 17)
---INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
---VALUES (63, 'LQ2025B', 12.30, 25, 30, 150, 6.70, 18.40, 9.30, 10.90, 350, 'REPROVADO', 13, utc_timestamp(),'2025-09-02', 'Texto observacao relativo ao lote LQ2025B');
+--  Laudo 2 (sobre o item da Nota 32, produto 17)
+-- INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
+-- VALUES (63, 'LQ2025B', 12.30, 25, 30, 150, 6.70, 18.40, 9.30, 10.90, 350, 'REPROVADO', 13, utc_timestamp(),'2025-09-02', 'Texto observacao relativo ao lote LQ2025B');
+
+
+INSERT INTO engenharia (
+    laudo_laboratorio_id,
+    engenheiro,
+    teste_amostra_fisica_tecelagem,
+    teste_acabamento,
+    decisao,
+    restricao_uso,
+    observacao,
+    data_realizacao,
+    data_cadastro,
+    data_alteracao,
+    criado_por,
+    alterado_por,
+    situacao,
+    substituido_por,
+    substitui,
+    motivo_substituicao
+) VALUES
+
+-- lote 202100 — reprovado por variação de título e neps elevado
+(2,  7,  TRUE,  FALSE, 'REPROVADO',       NULL,
+    'Lote reprovado: neps acima do limite aceitável e título fora da tolerância.',
+    '2025-07-26', utc_timestamp(), NULL, 16, NULL, 'ATIVO', NULL, NULL, NULL),
+
+-- lote 225 — aprovado parcial, restrito a artigos de menor exigência
+(4,  16, FALSE, TRUE,  'APROVADO_PARCIAL', 'Uso restrito a artigos de malha grossa categoria C. Proibido uso em malharia fina.',
+    'Resistência abaixo do especificado. Aprovado parcialmente após teste em tecelagem.',
+    '2025-06-20', utc_timestamp(), NULL, 3,  NULL, 'ATIVO', NULL, NULL, NULL),
+
+-- lote 18J600 — reprovado, pilosidade e pontos grossos fora do limite
+(6,  3,  TRUE,  TRUE,  'REPROVADO',       NULL,
+    'Pilosidade e pontos grossos excedem limite máximo. Reprovado sem possibilidade de uso.',
+    '2025-08-27', utc_timestamp(), NULL, 7,  NULL, 'ATIVO', NULL, NULL, NULL),
+
+-- lote 300200 — reprovado, múltiplos parâmetros fora da especificação
+(8,  7,  TRUE,  FALSE, 'REPROVADO',       NULL,
+    'Resistência, alongamento e torção fora dos limites. Lote rejeitado integralmente.',
+    '2025-08-27', utc_timestamp(), NULL, 16, NULL, 'ATIVO', NULL, NULL, NULL),
+
+-- lote 7PZ — aprovado parcial com restrição de volume
+(10, 16, FALSE, FALSE, 'APROVADO_PARCIAL', 'Uso permitido somente em ordens de produção de até 500kg. Monitoramento obrigatório no processo.',
+    'Torção com desvio moderado. Amostra física aprovada em teste de tecelagem com restrição de volume.',
+    '2025-08-04', utc_timestamp(), NULL, 3,  NULL, 'ATIVO', NULL, NULL, NULL),
+
+-- lote 400300 — reprovado, composição suspeita no blend
+(12, 3,  TRUE,  TRUE,  'REPROVADO',       NULL,
+    'Blend CO/PES com proporção fora do especificado. Reprovado após teste de composição.',
+    '2025-07-27', utc_timestamp(), NULL, 7,  NULL, 'ATIVO', NULL, NULL, NULL),
+
+-- lote 50EF — aprovado parcial restrito a cor escura
+(14, 7,  FALSE, TRUE,  'APROVADO_PARCIAL', 'Uso restrito a artigos em cores escuras. Vedado uso em artigos brancos ou pastéis.',
+    'CVM elevado pode gerar irregularidade visual em cores claras. Aprovado para cores escuras após avaliação.',
+    '2025-08-04', utc_timestamp(), NULL, 16, NULL, 'ATIVO', NULL, NULL, NULL),
+
+-- lote 25IJ — reprovado, pontos finos e grossos acima do limite
+(16, 16, TRUE,  FALSE, 'REPROVADO',       NULL,
+    'Pontos finos e grossos muito acima do limite. Uniformidade comprometida.',
+    '2025-07-29', utc_timestamp(), NULL, 3,  NULL, 'ATIVO', NULL, NULL, NULL),
+
+-- lote 30KL — reprovado, título fora de especificação
+(17, 3,  FALSE, TRUE,  'REPROVADO',       NULL,
+    'Título Ne medido diverge do especificado em mais de 5%. Lote reprovado.',
+    '2025-07-31', utc_timestamp(), NULL, 7,  NULL, 'ATIVO', NULL, NULL, NULL),
+
+-- lote 60OP — aprovado parcial com restrição de processo
+(19, 7,  TRUE,  TRUE,  'APROVADO_PARCIAL', 'Uso permitido somente em processo de malharia circular. Proibido uso em teares de pinça.',
+    'Resistência à tração limítrofe. Aprovado para malharia circular após teste de amostra física.',
+    '2025-07-31', utc_timestamp(), NULL, 16, NULL, 'ATIVO', NULL, NULL, NULL);

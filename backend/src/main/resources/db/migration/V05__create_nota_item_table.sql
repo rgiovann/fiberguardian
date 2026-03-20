@@ -11,6 +11,8 @@ CREATE TABLE nota_item (
     data_alteracao DATETIME NULL,
     criado_por BIGINT NULL,
     alterado_por BIGINT NULL,
+    ativo BOOLEAN NOT NULL DEFAULT TRUE,
+
     CONSTRAINT fk_nota_item_nota FOREIGN KEY (nota_fiscal_id) REFERENCES nota_fiscal(id) ON DELETE CASCADE,
     CONSTRAINT fk_nota_item_produto FOREIGN KEY (produto_id) REFERENCES produto(id),
     CONSTRAINT uk_nota_item_unico_produto_por_nota UNIQUE (nota_fiscal_id, produto_id)

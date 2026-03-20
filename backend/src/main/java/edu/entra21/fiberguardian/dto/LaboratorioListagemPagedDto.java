@@ -1,6 +1,6 @@
 package edu.entra21.fiberguardian.dto;
 
-import edu.entra21.fiberguardian.model.StatusLaboratorio;
+import edu.entra21.fiberguardian.model.DecisaoLaboratorio;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +23,6 @@ public class LaboratorioListagemPagedDto {
     private String emailEmitidoPor;
     private LocalDate dataRealizacao;
     private String observacoes;
-    private StatusLaboratorio status;
+    private DecisaoLaboratorio decisao;
 }
 

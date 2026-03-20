@@ -64,6 +64,7 @@
                 'assets/js/fiberguardian_utils.js',
                 'assets/js/tela_consulta_recebimento.js',
             ],
+            'tela_cadastro_fio_tecnico.html': ['assets/js/fiberguardian_utils.js'],
         };
 
         /**
@@ -117,7 +118,7 @@
                 function (event) {
                     console.log(
                         '[FG] Evento fiberGuardian:paginaCarregada recebido:',
-                        event.detail
+                        event.detail,
                     );
 
                     const pagina = event?.detail?.pagina;
@@ -129,7 +130,7 @@
                     } else {
                         console.log('[FG] Não é index.html, nenhum recolhimento feito');
                     }
-                }
+                },
             );
 
             // Recupera dados do usuário no sessionStorage
@@ -139,7 +140,7 @@
                     FiberGuardian.UsuarioLogado = JSON.parse(dadosUsuario);
                     console.log(
                         'Usuário logado recuperado:',
-                        FiberGuardian.UsuarioLogado
+                        FiberGuardian.UsuarioLogado,
                     );
                     aplicarControleDeAcesso(FiberGuardian.UsuarioLogado.role);
 
@@ -155,7 +156,7 @@
                 } catch (erro) {
                     console.warn(
                         'Erro ao interpretar dados do usuário no sessionStorage:',
-                        erro
+                        erro,
                     );
                     sessionStorage.removeItem('usuario');
                     window.location.href = 'login.html';
@@ -243,7 +244,7 @@
                 FiberGuardian[nomeModulo].init();
             } else {
                 console.warn(
-                    `Módulo [${nomeModulo}] não encontrado ou sem método init().`
+                    `Módulo [${nomeModulo}] não encontrado ou sem método init().`,
                 );
             }
         }
