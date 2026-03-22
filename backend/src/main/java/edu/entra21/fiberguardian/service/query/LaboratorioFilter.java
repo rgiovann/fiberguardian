@@ -16,7 +16,7 @@ public class LaboratorioFilter {
     private String cnpj;
     private String codigoProduto;
     private String email;
-    private DecisaoLaboratorio status;
+    private DecisaoLaboratorio decisao;
 
     /**
      * Agora é e-mail do usuário que emitiu o laudo (campo da tabela Usuario).

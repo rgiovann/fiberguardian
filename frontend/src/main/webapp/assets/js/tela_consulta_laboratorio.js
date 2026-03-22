@@ -18,18 +18,18 @@
             return document.querySelector('.table-container table tbody');
         }
 
-        // Gera o HTML da badge de status com fallback seguro
-        function badgeStatusHtml(statusRaw) {
-            const raw = (statusRaw ?? '').toString().trim();
-            if (!raw) return ''; // sem status -> célula vazia (mantém comportamento atual)
+        // Gera o HTML da badge de decisao com fallback seguro
+        function badgeDecisaoHtml(decisaoRaw) {
+            const raw = (decisaoRaw ?? '').toString().trim();
+            if (!raw) return ''; // sem decisao -> célula vazia (mantém comportamento atual)
 
             const s = raw.toUpperCase();
             const cls =
                 s === 'APROVADO'
                     ? 'bg-success'
                     : s === 'REPROVADO'
-                    ? 'bg-danger'
-                    : 'bg-secondary'; // fallback neutro p/ valores inesperados
+                      ? 'bg-danger'
+                      : 'bg-secondary'; // fallback neutro p/ valores inesperados
 
             // Escape para evitar XSS (OWASP: output encoding)
             return `<span class="badge ${cls}">${escapeHtml(raw)}</span>`;
@@ -46,7 +46,7 @@
                         '>': '&gt;',
                         '"': '&quot;',
                         "'": '&#39;',
-                    }[m])
+                    })[m],
             );
         }
 
@@ -62,7 +62,7 @@
                     tbody.innerHTML = '';
                 } else {
                     console.warn(
-                        '[FG] tbody não encontrado ao iniciar tela (provável reconstrução do DOM).'
+                        '[FG] tbody não encontrado ao iniciar tela (provável reconstrução do DOM).',
                     );
                 }
 
@@ -84,7 +84,7 @@
                         const confirmado = await FiberGuardian.Utils.confirmarAcaoAsync(
                             `Deseja realmente excluir o teste de laboratorio relativo a Nota
                             Fiscal ${codigoNf} produto ${codigoProduto} ?`,
-                            'Confirmação de Exclusão'
+                            'Confirmação de Exclusão',
                         );
 
                         if (!confirmado) return;
@@ -102,13 +102,13 @@
                                         'X-XSRF-TOKEN': csrfToken,
                                     },
                                     credentials: 'include',
-                                }
+                                },
                             );
 
                             if (resposta.ok) {
                                 FiberGuardian.Utils.exibirMensagemModal(
                                     `Teste de laboratório excluído com sucesso.`,
-                                    'success'
+                                    'success',
                                 );
                                 buscarLaudos(paginaAtual);
                             } else {
@@ -119,7 +119,7 @@
                             FiberGuardian.Utils.exibirErroDeRede(
                                 'Erro de rede ao excluir a nota fiscal.',
                                 null,
-                                erro
+                                erro,
                             );
                         }
                     }
@@ -144,7 +144,7 @@
                                 linha.children[6]?.textContent.trim() ?? '',
                             dataRealizacaoNaFormatado: dataFormatada, //
                             observacoes: linha.children[8]?.textContent.trim() ?? '',
-                            status: linha.children[9]?.textContent.trim() ?? '',
+                            decisao: linha.children[9]?.textContent.trim() ?? '',
                         };
 
                         try {
@@ -161,7 +161,7 @@
                                     },
                                     credentials: 'include',
                                     body: JSON.stringify(jsonBody),
-                                }
+                                },
                             );
 
                             if (resposta.ok) {
@@ -182,7 +182,7 @@
                             FiberGuardian.Utils.exibirErroDeRede(
                                 'Erro de rede ao gerar o PDF.',
                                 null,
-                                erro
+                                erro,
                             );
                         }
                     }
@@ -202,7 +202,7 @@
 
                 const inputNrNotFiscal = document.getElementById('nrNotaFiscal');
                 const btnBuscarNrNotaFiscal = document.getElementById(
-                    'btnBuscarNrNotaFiscal'
+                    'btnBuscarNrNotaFiscal',
                 );
                 const dropdownNrNotaFiscal =
                     document.getElementById('dropdownNrNotaFiscal');
@@ -221,7 +221,7 @@
 
                 if (!btnSair || !btnConsultarLaudo || !btnLimpar) {
                     console.error(
-                        'Botão Sair, Pesquisar Nota Fiscal ou Limpar Pesquisa não encontrado!'
+                        'Botão Sair, Pesquisar Nota Fiscal ou Limpar Pesquisa não encontrado!',
                     );
                     return;
                 }
@@ -260,7 +260,7 @@
                 FiberGuardian.Utils.fecharQualquerDropdownAberto(
                     [dropdownFornecedor, dropdownNrNotaFiscal, dropdownEmitidoPor],
                     [inputFornecedor, inputNrNotFiscal, inputEmitidoPor],
-                    [btnBuscarFornecedor, btnBuscarNrNotaFiscal, btnBuscarEmitidoPor]
+                    [btnBuscarFornecedor, btnBuscarNrNotaFiscal, btnBuscarEmitidoPor],
                 );
 
                 btnBuscarEmitidoPor.addEventListener('click', async function () {
@@ -271,14 +271,14 @@
                         FiberGuardian.Utils.exibirMensagemModalComFoco(
                             'Digite parte do nome do usário para buscar.',
                             'warning',
-                            inputFornecedor
+                            inputFornecedor,
                         );
                         return;
                     }
                     // Monta a URL com PathVariable para o CNPJ e query param para codigo_nf
                     const url = new URL(
                         `/api/usuarios/lista-usuario-por-role`,
-                        window.location.origin
+                        window.location.origin,
                     );
 
                     url.searchParams.append('nome', codigoParcial);
@@ -287,7 +287,7 @@
                     if (FiberGuardian?.UsuarioLogado?.role) {
                         url.searchParams.append(
                             'role',
-                            FiberGuardian.UsuarioLogado.role.toUpperCase()
+                            FiberGuardian.UsuarioLogado.role.toUpperCase(),
                         );
                     }
 
@@ -325,7 +325,7 @@
                                             'Turno',
                                         ],
                                         msgVazio: 'Nenhum usuário encontrado.',
-                                    }
+                                    },
                                 );
 
                             emailUsuarioSelecionado = item.email;
@@ -350,7 +350,7 @@
 
                                 btnBuscarEmitidoPor.disabled = false;
                                 btnBuscarEmitidoPor.classList.remove(
-                                    'campo-desabilitado'
+                                    'campo-desabilitado',
                                 );
 
                                 btnTrocarEmitidoPor.disabled = true;
@@ -361,7 +361,7 @@
                         } else {
                             await FiberGuardian.Utils.tratarErroFetch(
                                 resposta,
-                                inputEmitidoPor
+                                inputEmitidoPor,
                             );
                         }
                     } catch (erro) {
@@ -369,7 +369,7 @@
                         FiberGuardian.Utils.exibirErroDeRede(
                             'Erro de rede ao buscar fornecedores.',
                             inputEmitidoPor,
-                            erro
+                            erro,
                         );
                     }
                 });
@@ -382,7 +382,7 @@
                         FiberGuardian.Utils.exibirMensagemModalComFoco(
                             'Digite parte do nome do fornecedor para buscar.',
                             'warning',
-                            inputFornecedor
+                            inputFornecedor,
                         );
                         return;
                     }
@@ -392,7 +392,7 @@
 
                         const resposta = await fetch(
                             `/api/fornecedores/list/recebimento?nome=${encodeURIComponent(
-                                codigoParcial
+                                codigoParcial,
                             )}`,
                             {
                                 method: 'GET',
@@ -401,7 +401,7 @@
                                     'X-XSRF-TOKEN': csrfToken,
                                 },
                                 credentials: 'include',
-                            }
+                            },
                         );
 
                         if (resposta.ok) {
@@ -416,7 +416,7 @@
                                         camposExibir: ['nome', 'cnpj'],
                                         titulosColunas: ['Fornecedor', 'CNPJ'],
                                         msgVazio: 'Nenhum fornecedor encontrado.',
-                                    }
+                                    },
                                 );
 
                             cnpjFornecedorSelecionado = item.cnpj;
@@ -441,7 +441,7 @@
 
                                 btnBuscarFornecedor.disabled = false;
                                 btnBuscarFornecedor.classList.remove(
-                                    'campo-desabilitado'
+                                    'campo-desabilitado',
                                 );
 
                                 btnTrocarFornecedor.disabled = true;
@@ -452,7 +452,7 @@
                         } else {
                             await FiberGuardian.Utils.tratarErroFetch(
                                 resposta,
-                                inputFornecedor
+                                inputFornecedor,
                             );
                         }
                     } catch (erro) {
@@ -460,7 +460,7 @@
                         FiberGuardian.Utils.exibirErroDeRede(
                             'Erro de rede ao buscar fornecedores.',
                             inputFornecedor,
-                            erro
+                            erro,
                         );
                     }
                 });
@@ -474,7 +474,7 @@
                         // Monta a URL com o parâmetro codigo
                         const url = new URL(
                             '/api/notas-fiscais/list',
-                            window.location.origin
+                            window.location.origin,
                         );
 
                         if (codigoParcial) {
@@ -498,7 +498,7 @@
                                     nome: nf.fornecedor.nome,
                                     dataRecebimento: nf.dataRecebimento,
                                     valorTotal: nf.valorTotal,
-                                })
+                                }),
                             );
 
                             const { index, item } =
@@ -523,7 +523,7 @@
                                         ],
                                         msgVazio:
                                             'Nenhum produto encontrado ou campo busca vazio.',
-                                    }
+                                    },
                                 );
 
                             // Armazena do objeto recebido o código ou descrição
@@ -533,7 +533,7 @@
                         } else {
                             await FiberGuardian.Utils.tratarErroFetch(
                                 resposta,
-                                inputNrNotFiscal
+                                inputNrNotFiscal,
                             );
                         }
                     } catch (erro) {
@@ -541,7 +541,7 @@
                         FiberGuardian.Utils.exibirErroDeRede(
                             'Erro de rede ao buscar notas fiscais.',
                             inputNrNotFiscal,
-                            erro
+                            erro,
                         );
                     }
                 });
@@ -551,7 +551,7 @@
                 btnSair.addEventListener('click', async () => {
                     const confirmado = await FiberGuardian.Utils.confirmarAcaoAsync(
                         'Deseja realmente voltar ao Menu Principal?',
-                        'Sair do Sistema'
+                        'Sair do Sistema',
                     );
 
                     if (confirmado) {
@@ -606,7 +606,7 @@
                 const notafiscal = codigoNotFiscalSelecionada ?? '';
                 const fornecedor = cnpjFornecedorSelecionado ?? '';
                 const email = emailUsuarioSelecionado ?? '';
-                const status = document.getElementById('status').value;
+                const decisao = document.getElementById('decisao').value;
 
                 if (
                     dataInicialValor &&
@@ -616,7 +616,7 @@
                     FiberGuardian.Utils.exibirMensagemModalComFoco(
                         'Data Inicial não pode ser maior que Data Final.',
                         'warning',
-                        dataInicialValor
+                        dataInicialValor,
                     );
                     return;
                 }
@@ -632,7 +632,7 @@
                 if (notafiscal) url.searchParams.append('notafiscal', notafiscal);
                 if (fornecedor) url.searchParams.append('cnpj', fornecedor);
                 if (email) url.searchParams.append('email', email);
-                if (status) url.searchParams.append('status', status);
+                if (decisao) url.searchParams.append('decisao', decisao);
 
                 const resposta = await fetch(url.toString(), {
                     method: 'GET',
@@ -658,7 +658,7 @@
                 FiberGuardian.Utils.exibirErroDeRede(
                     'Erro de rede ao buscar laudos.',
                     formPesquisa,
-                    erro
+                    erro,
                 );
             }
         }
@@ -668,7 +668,7 @@
             if (!tabelaBody) {
                 console.error(
                     '[FG] tbody não encontrado — abortando renderização',
-                    dados
+                    dados,
                 );
                 return;
             }
@@ -698,28 +698,28 @@
             <td style="max-width:80px;">${escapeHtml(lab.numeroNf ?? '')}</td>
             <td class="align-middle">
             <div class="text-truncate" style="max-width:60px;" title="${escapeHtml(
-                lab.cnpj ?? ''
+                lab.cnpj ?? '',
             )}" aria-label="${escapeHtml(lab.cnpj ?? '')}">
                 ${escapeHtml(lab.cnpj ?? '')}
             </div>
             </td>
             <td class="align-middle">
             <div class="text-truncate" style="max-width:90px;" title="${escapeHtml(
-                lab.empresa ?? ''
+                lab.empresa ?? '',
             )}" aria-label="${escapeHtml(lab.empresa ?? '')}">
                 ${escapeHtml(lab.empresa ?? '')}
             </div>
             </td>
             <td class="align-middle">
             <div class="text-truncate" style="max-width:60px;" title="${escapeHtml(
-                lab.codigoProduto ?? ''
+                lab.codigoProduto ?? '',
             )}" aria-label="${escapeHtml(lab.codigoProduto ?? '')}">
                 ${escapeHtml(lab.codigoProduto ?? '')}
             </div>
             </td>
             <td class="align-middle">
             <div class="text-truncate" style="max-width:90px;" title="${escapeHtml(
-                lab.descricao ?? ''
+                lab.descricao ?? '',
             )}" aria-label="${escapeHtml(lab.descricao ?? '')}">
                 ${escapeHtml(lab.descricao ?? '')}
             </div>
@@ -727,7 +727,7 @@
             <td style="max-width:120px;">${escapeHtml(lab.numeroLote ?? '')}</td>
             <td class="align-middle">
             <div class="text-truncate" style="max-width:120px;" title="${escapeHtml(
-                lab.emailEmitidoPor ?? ''
+                lab.emailEmitidoPor ?? '',
             )}" aria-label="${escapeHtml(lab.emailEmitidoPor ?? '')}">
                 ${escapeHtml(lab.emailEmitidoPor ?? '')}
             </div>
@@ -735,13 +735,13 @@
             <td style="max-width:120px;">${escapeHtml(dataFormatada ?? '')}</td>
             <td class="align-middle">
             <div class="text-truncate" style="max-width:130px;" title="${escapeHtml(
-                lab.observacoes ?? ''
+                lab.observacoes ?? '',
             )}" aria-label="${escapeHtml(lab.observacoes ?? '')}">
                 ${escapeHtml(lab.observacoes ?? '')}
             </div>
             </td>
-            <td style="max-width:90px;" class="text-center">${badgeStatusHtml(
-                lab.status
+            <td style="max-width:90px;" class="text-center">${badgeDecisaoHtml(
+                lab.decisao,
             )}</td>
             <td class="actions-col">
             <div class="dropdown" style="position: relative;">
@@ -781,8 +781,8 @@
             dados.first ? 'disabled' : ''
         }>Anterior</button>
         <span class="align-self-center">Página ${dados.pageNumber + 1} de ${
-                dados.totalPages
-            }</span>
+            dados.totalPages
+        }</span>
         <button id="btnProxima" class="btn btn-secondary ms-2" ${
             dados.last ? 'disabled' : ''
         }>Próxima</button>

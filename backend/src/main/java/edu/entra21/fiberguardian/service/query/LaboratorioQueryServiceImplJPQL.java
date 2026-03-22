@@ -35,7 +35,7 @@ public class LaboratorioQueryServiceImplJPQL implements LaboratorioQueryService 
 
         String select =
                 "select new edu.entra21.fiberguardian.dto.LaboratorioListagemPagedDto(" +
-                        " l.id, nf.codigoNf, f.cnpj, f.nomeFornecedor, p.codigo, p.descricao, l.numeroLote, u.email, l.dataRealizacao, l.observacaoLaudo, l.status" +
+                        " l.id, nf.codigoNf, f.cnpj, f.nomeFornecedor, p.codigo, p.descricao, l.numeroLote, u.email, l.dataRealizacao, l.observacaoLaudo, l.decisao" +
                         ")";
 
         String from =
@@ -85,9 +85,9 @@ public class LaboratorioQueryServiceImplJPQL implements LaboratorioQueryService 
                 params.put("usuarioEmail", usuarioEmail);
             }
             // status
-            if (filtro.getStatus() != null) {
-                where.append(" and l.status = :status");
-                params.put("status", filtro.getStatus());
+            if (filtro.getDecisao() != null) {
+                where.append(" and l.decisao = :decisao");
+                params.put("decisao", filtro.getDecisao());
             }
         }
 
@@ -133,7 +133,7 @@ public class LaboratorioQueryServiceImplJPQL implements LaboratorioQueryService 
                 "empresa", "f.nomeFornecedor",
                 "codigo", "p.codigo",
                 "dataEmissao", "l.dataRealizacao",
-                "status", "l.status",
+                "status", "l.decisao",
                 "email", "u.email"
         );
 

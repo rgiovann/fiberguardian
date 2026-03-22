@@ -62,10 +62,10 @@
             </div>
           </div>
 
-          <!-- Segunda linha: Recebido Por, Nº Nota Fiscal, Status -->
+          <!-- Segunda linha: Recebido Por, Nº Nota Fiscal, Decisão, Situação -->
           <div class="row mb-3">
             <!-- Recebido Por -->
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 mb-3">
               <label for="recebidoPor" class="form-label">Recebido Por</label>
               <div class="input-group">
                 <input type="text" id="recebidoPor" name="recebidoPor" class="form-control" autocomplete="off"
@@ -84,7 +84,7 @@
             </div>
 
             <!-- Nº Nota Fiscal -->
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 mb-3">
               <label for="nrNotaFiscal" class="form-label">Nº Nota Fiscal</label>
               <div class="input-group">
                 <input type="text" id="nrNotaFiscal" name="nrNotaFiscal" class="form-control"
@@ -98,16 +98,28 @@
                 aria-labelledby="nrNotaFiscal"></div>
             </div>
 
-            <!-- Status -->
-            <div class="col-md-4 mb-3">
-              <label for="status" class="form-label">Status</label>
-              <select class="form-control" id="status" name="status">
-                <option value="">-- Selecione o status --</option>
+            <!-- Decisão (era Status) -->
+            <div class="col-md-3 mb-3">
+              <label for="decisao" class="form-label">Decisão</label>
+              <select class="form-control" id="decisao" name="decisao">
+                <option value="">-- Selecione a decisão --</option>
                 <option value="APROVADO">Aprovado</option>
                 <option value="REPROVADO">Reprovado</option>
               </select>
             </div>
+
+            <!-- Situação (novo) -->
+            <div class="col-md-3 mb-3">
+              <label for="situacao" class="form-label">Situação</label>
+              <select class="form-control" id="situacao" name="situacao">
+                <option value="">-- Selecione a situação --</option>
+                <option value="ATIVO">Ativo</option>
+                <option value="SUBSTITUIDO">Substituído</option>
+                <option value="INVALIDADO">Invalidado</option>
+              </select>
+            </div>
           </div>
+
           <!-- Botões -->
           <div class="text-center mt-4">
             <button type="button" class="btn btn-primary btn-custom" id="btnConsultarLaudo" name="btnConsultarLaudo">
@@ -133,10 +145,10 @@
                 <th>Produto</th>
                 <th>Descrição</th>
                 <th>Lote</th>
-                <th>Lib. Por</th>
+                <th>Liberado p/</th>
                 <th>Data</th>
                 <th>Obs.</th>
-                <th>Status</th>
+                <th>Decisão</th>
                 <th class="actions-col">Ações</th>
               </tr>
             </thead>

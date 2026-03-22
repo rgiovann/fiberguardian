@@ -698,7 +698,7 @@ VALUES (32, 17, 4000.00, 150, 16800.00, 4.20, NULL, utc_timestamp),
 -- Populacao tabela laboratorio
 -- ============================================================
 INSERT INTO laboratorio (
-    item_nota_fiscal_id, numero_lote,
+    item_nota_fiscal_id, produto_id, numero_lote,
     cvm, pontos_finos, pontos_grossos, neps,
     h_pilosidade, resistencia, alongamento,
     titulo_ne, torcao_t_m,
@@ -707,26 +707,66 @@ INSERT INTO laboratorio (
     observacao_laudo,
     situacao, substituido_por, substitui, motivo_substituicao
 ) VALUES
-(2,  '9TK',    12.50, 45,  30,  120, 5.75, 15.20, 8.50,  6.25,  450, 'APROVADO',  17, utc_timestamp(), '2025-03-24', 'Texto observacao relativo ao lote 9TK',    'ATIVO', NULL, NULL, NULL),
-(3,  '202100', 18.75, 60,  80,  250, 3.20, 12.90, 4.30,  15.80, 780, 'REPROVADO', 13, utc_timestamp(), '2025-07-24', 'Texto observacao relativo ao lote 202100', 'ATIVO', NULL, NULL, NULL),
-(5,  '8',      10.25, 20,  15,  300, 7.80, 19.50, 12.10, 8.40,  120, 'APROVADO',  10, utc_timestamp(), '2025-08-03', 'Texto observacao relativo ao lote 8',      'ATIVO', NULL, NULL, NULL),
-(7,  '225',    15.90, 70,  90,  400, 2.15, 11.75, 3.90,  12.60, 950, 'REPROVADO', 31, utc_timestamp(), '2025-06-17', 'Texto observacao relativo ao lote 225',    'ATIVO', NULL, NULL, NULL),
-(9,  '10TK5',  13.40, 30,  40,  150, 6.50, 16.80, 9.20,  10.05, 300, 'APROVADO',  17, utc_timestamp(), '2025-07-30', 'Texto observacao relativo ao lote 10TK5',  'ATIVO', NULL, NULL, NULL),
-(12, '18J600', 17.10, 55,  60,  350, 4.90, 14.30, 6.70,  7.35,  600, 'REPROVADO', 13, utc_timestamp(), '2025-08-24', 'Texto observacao relativo ao lote 18J600', 'ATIVO', NULL, NULL, NULL),
-(13, '5KL',    11.80, 25,  20,  200, 8.30, 18.60, 11.50, 14.70, 150, 'APROVADO',  10, utc_timestamp(), '2025-08-04', 'Texto observacao relativo ao lote 5KL',    'ATIVO', NULL, NULL, NULL),
-(15, '300200', 19.60, 80,  110, 450, 1.95, 10.40, 2.80,  18.90, 850, 'REPROVADO', 31, utc_timestamp(), '2025-08-24', 'Texto observacao relativo ao lote 300200', 'ATIVO', NULL, NULL, NULL),
-(16, '12XY',   14.30, 40,  50,  180, 5.10, 13.70, 7.90,  9.15,  400, 'APROVADO',  17, utc_timestamp(), '2025-08-02', 'Texto observacao relativo ao lote 12XY',   'ATIVO', NULL, NULL, NULL),
-(18, '7PZ',    16.90, 65,  70,  320, 3.70, 17.20, 10.30, 5.85,  720, 'REPROVADO', 13, utc_timestamp(), '2025-08-01', 'Texto observacao relativo ao lote 7PZ',    'ATIVO', NULL, NULL, NULL),
-(1,  '15AB',   12.70, 15,  10,  100, 6.25, 15.50, 8.70,  11.20, 200, 'APROVADO',  10, utc_timestamp(), '2025-08-04', 'Texto observacao relativo ao lote 15AB',   'ATIVO', NULL, NULL, NULL),
-(4,  '400300', 18.20, 90,  120, 280, 2.80, 12.10, 4.50,  16.40, 900, 'REPROVADO', 31, utc_timestamp(), '2025-07-24', 'Texto observacao relativo ao lote 400300', 'ATIVO', NULL, NULL, NULL),
-(5,  '20CD',   10.90, 35,  45,  130, 7.60, 19.80, 12.90, 7.80,  350, 'APROVADO',  17, utc_timestamp(), '2025-07-14', 'Texto observacao relativo ao lote 20CD',   'ATIVO', NULL, NULL, NULL),
-(6,  '50EF',   15.50, 75,  85,  370, 4.30, 11.30, 3.10,  13.70, 650, 'REPROVADO', 13, utc_timestamp(), '2025-08-01', 'Texto observacao relativo ao lote 50EF',   'ATIVO', NULL, NULL, NULL),
-(8,  '8GH',    13.10, 10,  25,  160, 6.90, 16.40, 9.80,  17.10, 100, 'APROVADO',  10, utc_timestamp(), '2025-08-03', 'Texto observacao relativo ao lote 8GH',    'ATIVO', NULL, NULL, NULL),
-(11, '25IJ',   17.80, 85,  95,  410, 3.50, 14.90, 6.20,  6.50,  800, 'REPROVADO', 31, utc_timestamp(), '2025-07-26', 'Texto observacao relativo ao lote 25IJ',   'ATIVO', NULL, NULL, NULL),
-(13, '30KL',   11.30, 50,  60,  220, 8.10, 18.10, 11.30, 19.20, 250, 'REPROVADO', 17, utc_timestamp(), '2025-07-28', 'Texto observacao relativo ao lote 30KL',   'ATIVO', NULL, NULL, NULL),
-(14, '40MN',   19.40, 30,  40,  190, 5.70, 10.80, 2.90,  9.90,  500, 'APROVADO',  13, utc_timestamp(), '2025-07-25', 'Texto observacao relativo ao lote 40MN',   'ATIVO', NULL, NULL, NULL),
-(17, '60OP',   14.70, 45,  55,  340, 4.20, 13.20, 7.50,  12.30, 750, 'REPROVADO', 10, utc_timestamp(), '2025-07-28', 'Texto observacao relativo ao lote 60OP',   'ATIVO', NULL, NULL, NULL),
-(19, '70PQ',   16.20, 20,  15,  270, 6.80, 17.70, 10.70, 5.20,  300, 'APROVADO',  31, utc_timestamp(), '2025-07-21', 'Texto observacao relativo ao lote 70PQ',   'ATIVO', NULL, NULL, NULL);
+-- item_nf=2  → produto_id=2  (CF220045210 / CopperFibra)
+(2,  2,  '9TK',    12.50, 45,  30,  120, 5.75, 15.20, 8.50,  6.25,  450, 'APROVADO',  17, utc_timestamp(), '2025-03-24', 'Texto observacao relativo ao lote 9TK',    'ATIVO', NULL, NULL, NULL),
+
+-- item_nf=3  → produto_id=5  (FSB520018562 / Fiação São Bento)
+(3,  5,  '202100', 18.75, 60,  80,  250, 3.20, 12.90, 4.30,  15.80, 780, 'REPROVADO', 13, utc_timestamp(), '2025-07-24', 'Texto observacao relativo ao lote 202100', 'ATIVO', NULL, NULL, NULL),
+
+-- item_nf=5  → produto_id=9  (TBR31002751 / Tinturaria Brasil)
+(5,  9,  '8',      10.25, 20,  15,  300, 7.80, 19.50, 12.10, 8.40,  120, 'APROVADO',  10, utc_timestamp(), '2025-08-03', 'Texto observacao relativo ao lote 8',      'ATIVO', NULL, NULL, NULL),
+
+-- item_nf=7  → produto_id=14 (ALN66005412 / Algodoeira Nacional)
+(7,  14, '225',    15.90, 70,  90,  400, 2.15, 11.75, 3.90,  12.60, 950, 'REPROVADO', 31, utc_timestamp(), '2025-06-17', 'Texto observacao relativo ao lote 225',    'ATIVO', NULL, NULL, NULL),
+
+-- item_nf=9  → produto_id=18 (CFP33004520 / CooperFibra Paraná)
+(9,  18, '10TK5',  13.40, 30,  40,  150, 6.50, 16.80, 9.20,  10.05, 300, 'APROVADO',  17, utc_timestamp(), '2025-07-30', 'Texto observacao relativo ao lote 10TK5',  'ATIVO', NULL, NULL, NULL),
+
+-- item_nf=12 → produto_id=23 (THO56007841 / Textil Horizonte)
+(12, 23, '18J600', 17.10, 55,  60,  350, 4.90, 14.30, 6.70,  7.35,  600, 'REPROVADO', 13, utc_timestamp(), '2025-08-24', 'Texto observacao relativo ao lote 18J600', 'ATIVO', NULL, NULL, NULL),
+
+-- item_nf=13 → produto_id=26 (PFB91007741 / PoliFios Brasil)
+(13, 26, '5KL',    11.80, 25,  20,  200, 8.30, 18.60, 11.50, 14.70, 150, 'APROVADO',  10, utc_timestamp(), '2025-08-04', 'Texto observacao relativo ao lote 5KL',    'ATIVO', NULL, NULL, NULL),
+
+-- item_nf=15 → produto_id=31 (TPL72005411 / Tecidos Planalto)
+(15, 31, '300200', 19.60, 80,  110, 450, 1.95, 10.40, 2.80,  18.90, 850, 'REPROVADO', 31, utc_timestamp(), '2025-08-24', 'Texto observacao relativo ao lote 300200', 'ATIVO', NULL, NULL, NULL),
+
+-- item_nf=16 → produto_id=34 (FDV86009214 / Fibras do Vale)
+(16, 34, '12XY',   14.30, 40,  50,  180, 5.10, 13.70, 7.90,  9.15,  400, 'APROVADO',  17, utc_timestamp(), '2025-08-02', 'Texto observacao relativo ao lote 12XY',   'ATIVO', NULL, NULL, NULL),
+
+-- item_nf=18 → produto_id=38 (TFG44007851 / TexFibra Group)
+(18, 38, '7PZ',    16.90, 65,  70,  320, 3.70, 17.20, 10.30, 5.85,  720, 'REPROVADO', 13, utc_timestamp(), '2025-08-01', 'Texto observacao relativo ao lote 7PZ',    'ATIVO', NULL, NULL, NULL),
+
+-- item_nf=1  → produto_id=1  (CF110018411 / CopperFibra)
+(1,  1,  '15AB',   12.70, 15,  10,  100, 6.25, 15.50, 8.70,  11.20, 200, 'APROVADO',  10, utc_timestamp(), '2025-08-04', 'Texto observacao relativo ao lote 15AB',   'ATIVO', NULL, NULL, NULL),
+
+-- item_nf=4  → produto_id=6  (FSB32008765 / Fiação São Bento)
+(4,  6,  '400300', 18.20, 90,  120, 280, 2.80, 12.10, 4.50,  16.40, 900, 'REPROVADO', 31, utc_timestamp(), '2025-07-24', 'Texto observacao relativo ao lote 400300', 'ATIVO', NULL, NULL, NULL),
+
+-- item_nf=5  → produto_id=9  (TBR31002751 / Tinturaria Brasil) — segundo lote da mesma NF
+(5,  9,  '20CD',   10.90, 35,  45,  130, 7.60, 19.80, 12.90, 7.80,  350, 'APROVADO',  17, utc_timestamp(), '2025-07-14', 'Texto observacao relativo ao lote 20CD',   'ATIVO', NULL, NULL, NULL),
+
+-- item_nf=6  → produto_id=13 (ALN87009843 / Algodoeira Nacional)
+(6,  13, '50EF',   15.50, 75,  85,  370, 4.30, 11.30, 3.10,  13.70, 650, 'REPROVADO', 13, utc_timestamp(), '2025-08-01', 'Texto observacao relativo ao lote 50EF',   'ATIVO', NULL, NULL, NULL),
+
+-- item_nf=8  → produto_id=17 (CFP21008761 / CooperFibra Paraná)
+(8,  17, '8GH',    13.10, 10,  25,  160, 6.90, 16.40, 9.80,  17.10, 100, 'APROVADO',  10, utc_timestamp(), '2025-08-03', 'Texto observacao relativo ao lote 8GH',    'ATIVO', NULL, NULL, NULL),
+
+-- item_nf=11 → produto_id=22 (THO31004591 / Textil Horizonte)
+(11, 22, '25IJ',   17.80, 85,  95,  410, 3.50, 14.90, 6.20,  6.50,  800, 'REPROVADO', 31, utc_timestamp(), '2025-07-26', 'Texto observacao relativo ao lote 25IJ',   'ATIVO', NULL, NULL, NULL),
+
+-- item_nf=13 → produto_id=26 (PFB91007741 / PoliFios Brasil) — segundo lote da mesma NF
+(13, 26, '30KL',   11.30, 50,  60,  220, 8.10, 18.10, 11.30, 19.20, 250, 'REPROVADO', 17, utc_timestamp(), '2025-07-28', 'Texto observacao relativo ao lote 30KL',   'ATIVO', NULL, NULL, NULL),
+
+-- item_nf=14 → produto_id=30 (TPL51008971 / Tecidos Planalto)
+(14, 30, '40MN',   19.40, 30,  40,  190, 5.70, 10.80, 2.90,  9.90,  500, 'APROVADO',  13, utc_timestamp(), '2025-07-25', 'Texto observacao relativo ao lote 40MN',   'ATIVO', NULL, NULL, NULL),
+
+-- item_nf=17 → produto_id=35 (FDV97001122 / Fibras do Vale)
+(17, 35, '60OP',   14.70, 45,  55,  340, 4.20, 13.20, 7.50,  12.30, 750, 'REPROVADO', 10, utc_timestamp(), '2025-07-28', 'Texto observacao relativo ao lote 60OP',   'ATIVO', NULL, NULL, NULL),
+
+-- item_nf=19 → produto_id=39 (MPM42001233 / Malhas Premium)
+(19, 39, '70PQ',   16.20, 20,  15,  270, 6.80, 17.70, 10.70, 5.20,  300, 'APROVADO',  31, utc_timestamp(), '2025-07-21', 'Texto observacao relativo ao lote 70PQ',   'ATIVO', NULL, NULL, NULL);
+
 -- Laudo 1 (sobre o item da Nota 31, produto 9)
 -- INSERT INTO laboratorio (item_nota_fiscal_id, numero_lote, cvm, pontos_finos, pontos_grossos, neps, h_pilosidade, resistencia, alongamento, titulo_ne, torcao_t_m, status, liberado_por, data_cadastro, data_realizacao, observacao_laudo)
 -- VALUES (61, 'LQ2025A', 14.80, 40, 55, 210, 5.20, 14.90, 7.10, 9.80, 420, 'APROVADO', 17, utc_timestamp(),'2025-09-02', 'Texto observacao relativo ao lote LQ2025A');

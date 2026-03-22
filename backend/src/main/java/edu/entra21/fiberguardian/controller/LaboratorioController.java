@@ -121,7 +121,7 @@ public class LaboratorioController {
             @RequestParam(required = false) String notafiscal,
             @RequestParam(required = false) String cnpj,
             @RequestParam(required = false) String email,
-            @RequestParam(required = false) DecisaoLaboratorio status,
+            @RequestParam(required = false) DecisaoLaboratorio decisao,
             @PageableDefault(size = 20, page=0) Pageable pageable
 
     ) {
@@ -132,7 +132,7 @@ public class LaboratorioController {
         filtro.setCodigoNf(notafiscal);
         filtro.setCnpj(cnpj);
         filtro.setEmail(email);
-        filtro.setStatus(status);
+        filtro.setDecisao(decisao);
 
         Page<LaboratorioListagemPagedDto> result = laboratorioQueryService.buscarLaudoPorFiltro(filtro, pageable);
         return new PageDto<>(result);
