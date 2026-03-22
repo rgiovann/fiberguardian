@@ -7,7 +7,7 @@
     // 1. VARIÁVEIS DE CONTROLE E CONSTANTES
     // ----------------------------------------------------------------------
     const URL_CONSULTA_LAUDOS = '/api/laboratorios/paged';
-    const STATUS_REPROVADO = 'REPROVADO';
+    const DECISAO_REPROVADO = 'REPROVADO';
     const COLSPAN_COUNT = 6;
 
     let paginaAtual = 0;
@@ -30,7 +30,7 @@
         if (!csrf) {
             FiberGuardian.Utils.exibirMensagemModal(
                 'Erro: Token CSRF não encontrado.',
-                'danger'
+                'danger',
             );
             throw new Error('CSRF Token missing');
         }
@@ -54,19 +54,19 @@
                     '>': '&gt;',
                     '"': '&quot;',
                     "'": '&#39;',
-                }[m])
+                })[m],
         );
     }
 
     /**
-     * Função para gerar o HTML da badge de status.
+     * Função para gerar o HTML da badge de decisao.
      */
-    function badgeStatusHtml(statusRaw) {
-        const raw = (statusRaw ?? '').toString().trim();
+    function badgeDecisaoHtml(decisaoRaw) {
+        const raw = (decisaoRaw ?? '').toString().trim();
         if (!raw) return '';
 
         const s = raw.toUpperCase();
-        const cls = s === STATUS_REPROVADO ? 'bg-danger' : 'bg-secondary';
+        const cls = s === DECISAO_REPROVADO ? 'bg-danger' : 'bg-secondary';
 
         return `<span class="badge ${cls}">${escapeHtml(raw)}</span>`;
     }
@@ -90,7 +90,7 @@
             const url = new URL(URL_CONSULTA_LAUDOS, window.location.origin);
             url.searchParams.append('page', pagina);
             url.searchParams.append('size', tamanhoPagina);
-            url.searchParams.append('status', STATUS_REPROVADO);
+            url.searchParams.append('decisao', DECISAO_REPROVADO);
 
             const resposta = await fetch(url.toString(), {
                 method: 'GET',
@@ -114,7 +114,7 @@
                 // Tratamento de erro que utiliza o modal de mensagem genérico
                 await FiberGuardian.Utils.tratarErroFetch(
                     resposta,
-                    document.getElementById('resultadosContainer')
+                    document.getElementById('resultadosContainer'),
                 );
                 renderizarTabela([]);
             }
@@ -123,7 +123,7 @@
                 FiberGuardian.Utils.exibirErroDeRede(
                     'Erro de rede ao buscar laudos reprovados.',
                     null,
-                    erro
+                    erro,
                 );
             }
             if (resultadosTableBody) {
@@ -151,8 +151,8 @@
                     <i class="fas fa-chevron-left"></i> Anterior
                 </button>
                 <span class="align-self-center">Página ${dados.pageNumber + 1} de ${
-            dados.totalPages
-        }</span>
+                    dados.totalPages
+                }</span>
                 <button id="btnProxima" class="btn btn-secondary ms-2" ${
                     dados.last ? 'disabled' : ''
                 }>
@@ -195,22 +195,22 @@
             // Formatando data
             const dataTeste = teste.dataRealizacao
                 ? new Date(teste.dataRealizacao + 'T00:00:00').toLocaleDateString(
-                      'pt-BR'
+                      'pt-BR',
                   )
                 : '';
 
             row.innerHTML = `
                 <td class="align-middle">${escapeHtml(dataTeste)}</td>
                 <td class="align-middle">${escapeHtml(
-                    teste.empresa || teste.fornecedor?.nome || ''
+                    teste.empresa || teste.fornecedor?.nome || '',
                 )}</td>
                 <td class="align-middle">${escapeHtml(
-                    teste.numeroNf || teste.notaFiscal?.numero || ''
+                    teste.numeroNf || teste.notaFiscal?.numero || '',
                 )}</td>
                 <td class="align-middle">${escapeHtml(
-                    teste.codigoProduto || teste.produto?.codigo || ''
+                    teste.codigoProduto || teste.produto?.codigo || '',
                 )}</td>
-                <td class="align-middle">${badgeStatusHtml(teste.status)}</td>
+                <td class="align-middle">${badgeDecisaoHtml(teste.decisao)}</td>
                 <td class="actions-col">
                     <div class="dropdown" style="position: relative;">
                         <button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
@@ -244,7 +244,7 @@
             FiberGuardian.Core.carregarPagina
         ) {
             FiberGuardian.Core.carregarPagina(
-                `tela_cadastro_parecer_engenharia.html?id=${laboratorioId}`
+                `tela_cadastro_parecer_engenharia.html?id=${laboratorioId}`,
             );
         } else {
             console.error('Core não disponível. Redirecionamento completo será usado.');
@@ -265,7 +265,7 @@
                 // Usa FiberGuardian.Utils.confirmarAcaoAsync para exibir o modal de confirmação
                 const confirmado = await FiberGuardian.Utils.confirmarAcaoAsync(
                     'Deseja realmente voltar ao Menu Principal?',
-                    'Sair da Consulta'
+                    'Sair da Consulta',
                 );
                 if (confirmado) {
                     // Se confirmado, chama a função de navegação do Core/Utils
@@ -318,7 +318,7 @@
             FiberGuardian.TelaConsultaTestesReprovados.init();
         } else {
             console.error(
-                'Módulo [TelaConsultaTestesReprovados] não encontrado. Verifique se fiberguardian_core.js foi carregado corretamente.'
+                'Módulo [TelaConsultaTestesReprovados] não encontrado. Verifique se fiberguardian_core.js foi carregado corretamente.',
             );
         }
     });
